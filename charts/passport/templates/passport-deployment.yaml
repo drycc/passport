@@ -1,0 +1,50 @@
+{{- if eq .Values.global.passport_location "on-cluster" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drycc-passport
+  labels:
+    heritage: drycc
+  annotations:
+    component.drycc.cc/version: {{ .Values.image_tag }}
+spec:
+  replicas: {{ .Values.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: drycc-passport
+  template:
+    metadata:
+      labels:
+        app: drycc-passport
+    spec:
+      serviceAccount: drycc-passport
+      containers:
+        - name: drycc-passport
+          image: {{.Values.image_registry}}{{.Values.org}}/passport:{{.Values.image_tag}}
+          imagePullPolicy: {{.Values.pull_policy}}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 8000
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+            periodSeconds: 5
+          ports:
+            - containerPort: 8000
+              name: http
+          {{- include "passport.limits" . | indent 10 }}
+          {{- include "passport.envs" . | indent 10 }}
+          {{- include "passport.volumeMounts" . | indent 10 }}
+      {{- include "passport.volumes" . | indent 6 }}
+{{- end }}

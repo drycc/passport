@@ -1,0 +1,161 @@
+.login-gradient {
+  background-image: -webkit-linear-gradient(top,#654a86,#534292);
+  background-image: linear-gradient(to bottom,#654a86,#534292);
+  background-color: #534292;
+}
+
+.login-button {
+  cursor: pointer;
+  color: #fff;
+  background-color: #79589f;
+  background-image: -webkit-gradient(linear,right top,left bottom,color-stop(0,rgba(159,88,150,0)),color-stop(1,rgba(159,88,150,0.6)));
+  background-image: -o-linear-gradient(left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%);
+  background-image: -moz-linear-gradient(left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%);
+  background-image: -webkit-linear-gradient(left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%);
+  background-image: -ms-linear-gradient(left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%);
+  background-image: linear,to left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%;
+}
+
+.login-button:active {
+  background-color: #5f467e;
+}
+
+@media screen AND (min-width: 30em) {
+  .mw-430px-ns {
+    max-width: 430px;
+  }
+}
+
+.screenreader-only {
+  display: block;
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Cookie Banner */
+#heroku-cookie-banner {
+  display: none;
+}
+
+.heroku-cookie-banner {
+  background: #f9f9fb;
+  font-family: inherit;
+  line-height: 1.4;
+  box-shadow: 0 0 0 1px rgba(89, 105, 128, 0.05),
+    0 3px 20px 0 rgba(89, 105, 128, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 1000;
+  display: flex;
+}
+
+.heroku-cookie-banner a {
+  color: #4a90e2;
+}
+
+.heroku-cookie-banner.heroku-cookie-banner p {
+  margin: 0;
+  padding: 0;
+  color: #333d47;
+  padding: 15px 20px;
+  max-width: 1024px;
+  margin-right: auto;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.heroku-cookie-banner__dismiss {
+  border-left: 1px solid #e7e7e7;
+  display: flex;
+  padding: 20px;
+  transition: background-color 0.3s;
+}
+
+.heroku-cookie-banner__dismiss:hover {
+  background-color: #f0f7ff;
+}
+
+.heroku-cookie-banner__dismiss svg {
+  width: 16px;
+  height: 100%;
+  fill: currentColor;
+  vertical-align: middle;
+}
+
+/* Media Queries */
+
+@media (max-width: 600px) {
+  .heroku-cookie-banner {
+    font-size: 13px;
+    flex-direction: column;
+  }
+
+  .heroku-cookie-banner p,
+  .heroku-cookie-banner__dismiss {
+    padding: 15px;
+  }
+
+  .heroku-cookie-banner__dismiss {
+    text-decoration: none;
+    border-top: 1px solid #eee;
+    border-left: none;
+  }
+
+  .heroku-cookie-banner__dismiss::after {
+    content: 'Dismiss';
+    padding-left: 10px;
+  }
+
+  .heroku-cookie-banner__dismiss svg {
+    height: 16px;
+  }
+
+  #heroku-cookie-banner.dark-mode .heroku-cookie-banner__dismiss {
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Overrides */
+/* Dark mode */
+
+#heroku-cookie-banner.dark-mode .heroku-cookie-banner {
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#heroku-cookie-banner.dark-mode .heroku-cookie-banner p {
+  color: #fff;
+}
+
+#heroku-cookie-banner.dark-mode .heroku-cookie-banner a {
+  color: #5ca6fc;
+}
+
+#heroku-cookie-banner.dark-mode .heroku-cookie-banner__dismiss {
+  border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+#heroku-cookie-banner.dark-mode .heroku-cookie-banner__dismiss:hover {
+  background-color: #27507f;
+}
+
+/* Overrides */
+/* Banner mode */
+#heroku-cookie-banner.banner-mode .heroku-cookie-banner {
+  border-radius: 3px;
+  margin: 20px auto;
+  z-index: 0;
+  max-width: 1024px;
+}
+
+/* Overrides */
+/* Fixed mode */
+#heroku-cookie-banner.fixed-mode .heroku-cookie-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}

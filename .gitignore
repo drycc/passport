@@ -1,0 +1,27 @@
+*.py[cod]
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+
+# coverage reports
+.coverage
+coverage.out
+coverage.xml
+htmlcov/
+
+# python virtual environments for testing
+venv/
+
+.idea
+env/

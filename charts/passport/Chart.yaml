@@ -1,0 +1,7 @@
+name: passport
+home: https://github.com/drycc/passport
+version: <Will be populated by the ci before publishing the chart>
+description: Drycc Workflow passport (API).
+maintainers:
+  - name: Drycc Team
+    email: engineering@drycc.com

@@ -1,0 +1,74 @@
+org: "drycc"
+pull_policy: "Always"
+image_tag: "canary"
+image_registry: ""
+# Set passport deployment replicas
+replicas: 1
+# limits_cpu: "100m"
+# limits_memory: "50Mi"
+## Configuring this will no longer use the built-in database component
+database_url: ""
+# Any custom controller environment variables
+# can be specified as key-value pairs under environment
+# this is usually a non required setting.
+environment:
+  RESERVED_NAMES: "drycc, drycc-builder, drycc-monitor-grafana"
+## LDAP setting
+#  LDAP_ENDPOINT: ""
+#  LDAP_BIND_DN: ""
+#  LDAP_BIND_PASSWORD: ""
+#  LDAP_USER_BASEDN: ""
+#  LDAP_USER_FILTER: ""
+#  LDAP_GROUP_BASEDN: ""
+#  LDAP_GROUP_FILTER: ""
+#  LDAP_ACTIVE_GROUP: ""
+#  LDAP_STAFF_GROUP: ""
+#  LDAP_SUPERUSER_GROUP:  ""
+## OATUH2 setting
+#  ACCESS_TOKEN_EXPIRE_SECONDS: 2592000
+#  ID_TOKEN_EXPIRE_SECONDS: 2592000
+#  AUTHORIZATION_CODE_EXPIRE_SECONDS: 600
+#  CLIENT_SECRET_GENERATOR_LENGTH: 64
+#  REFRESH_TOKEN_EXPIRE_SECONDS: 5184000
+## EAMIL setting
+#  EMAIL_HOST: ""
+#  EMAIL_PORT: ""
+#  DEFAULT_FROM_EMAIL: ""
+#  EMAIL_HOST_USER: ""
+#  EMAIL_HOST_PASSWORD: ""
+#  EMAIL_USE_TLS: ""
+#  EMAIL_USE_SSL: ""
+#  DEFAULT_FROM_EMAIL: ""
+# Used to create Django admin users
+admin_username: "admin"
+admin_password: "admin"
+admin_email: "admin@email.com"
+
+global:
+  # Admin email, used for each component to send email to administrator
+  email: "drycc@drycc.cc"
+  # Set the location of Workflow's PostgreSQL database
+  #
+  # Valid values are:
+  # - on-cluster: Run PostgreSQL within the Kubernetes cluster (credentials are generated
+  #   automatically; backups are sent to object storage
+  #   configured above)
+  # - off-cluster: Run PostgreSQL outside the Kubernetes cluster (configure in database section)
+  database_location: "on-cluster"
+
+  # Role-Based Access Control for Kubernetes >= 1.5
+  use_rbac: false
+  # Please check `kubernetes.io/ingress.class`
+  ingress_class: ""
+  # A domain name consists of one or more parts.
+  # Periods (.) are used to separate these parts.
+  # Each part must be 1 to 63 characters in length and can contain lowercase letters, digits, and hyphens (-).
+  # It must start and end with a lowercase letter or digit.
+  cluster_domain: "cluster.local"
+  # The public resolvable hostname to build your cluster with.
+  #
+  # This will be the hostname that is used to build endpoints such as "drycc.$HOSTNAME"
+  platform_domain: ""
+  # Whether cert_passport is enabled to automatically generate passport certificates
+  cert_passport_enabled: "true"
+  passport_location: "on-cluster"

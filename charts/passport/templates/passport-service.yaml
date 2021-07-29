@@ -1,0 +1,15 @@
+{{- if eq .Values.global.passport_location "on-cluster" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: drycc-passport
+  labels:
+    heritage: drycc
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+  selector:
+    app: drycc-passport
+{{- end }}

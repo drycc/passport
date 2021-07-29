@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+#
+# This script is designed to be run inside the container
+#
+
+# fail hard and fast even on pipelines
+set -eo pipefail
+
+# set debug based on envvar
+[[ $DRYCC_DEBUG == "true" ]] && set -x
+
+echo system information:
+echo "Django Version: $(./manage.py --version)"
+python --version
+
+mkdir -p /app/data/logs
+chmod -R 777 /app/data/logs
+
+echo "Django checks:"
+python /app/manage.py check --deploy api
+
+echo ""
+echo "Health Checks:"
+python /app/manage.py healthchecks
+
+echo ""
+echo "Database Migrations:"
+python /app/manage.py migrate --noinput
+
+echo ""
+echo "Create administrator"
+python /app/manage.py createadminuser --username "${ADMIN_USERNAME}" --password "${ADMIN_PASSWORD}" --noinput --email "${ADMIN_EMAIL}"
+
+echo ""
+echo "Create application for drycc controller "
+python /app/manage.py create_oauth2_application
+
+# spawn a gunicorn server in the background
+echo ""
+echo "Starting up Gunicorn"
+gunicorn -c /app/passport/gunicorn/config.py api.wsgi &
+
+# smart shutdown on SIGTERM (SIGINT is handled by gunicorn)
+function on_exit() {
+	GUNICORN_PID=$(cat /tmp/gunicorn.pid)
+	kill -TERM "$GUNICORN_PID" 2>/dev/null
+	wait "$GUNICORN_PID" 2>/dev/null
+	exit 0
+}
+trap on_exit TERM
+
+echo ""
+echo drycc-passport running...
+
+wait
