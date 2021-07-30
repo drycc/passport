@@ -6,7 +6,13 @@
 # fail hard and fast even on pipelines
 set -eou pipefail
 
+function creating_rsa_key() {
+    mkdir -p /var/run/secrets/drycc/passport/ \
+      && openssl genrsa -out /var/run/secrets/drycc/passport/oidc-rsa-private-key 4096
+}
+
 su-exec postgres pg_ctl -D "$PGDATA" start
+creating_rsa_key
 python3 manage.py check
 coverage run manage.py test --settings=api.settings.testing --noinput api
 coverage report -m

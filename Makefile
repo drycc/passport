@@ -1,7 +1,7 @@
 # If DRYCC_REGISTRY is not set, try to populate it from legacy DEV_REGISTRY
 DRYCC_REGISTRY ?= $(DEV_REGISTRY)
 IMAGE_PREFIX ?= drycc
-COMPONENT ?= manager
+COMPONENT ?= passport
 SHORT_NAME ?= $(COMPONENT)
 PLATFORM ?= linux/amd64,linux/arm64
 

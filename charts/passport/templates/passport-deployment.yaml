@@ -25,8 +25,8 @@ spec:
       serviceAccount: drycc-passport
       containers:
         - name: drycc-passport
-          image: {{.Values.image_registry}}{{.Values.org}}/passport:{{.Values.image_tag}}
-          imagePullPolicy: {{.Values.pull_policy}}
+          image: {{.Values.image_registry}}/{{.Values.org}}/passport:{{.Values.image_tag}}
+          imagePullPolicy: {{.Values.image_pull_policy}}
           livenessProbe:
             httpGet:
               path: /healthz

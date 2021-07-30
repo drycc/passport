@@ -1,5 +1,5 @@
 org: "drycc"
-pull_policy: "Always"
+image_pull_policy: "Always"
 image_tag: "canary"
 image_registry: ""
 # Set passport deployment replicas

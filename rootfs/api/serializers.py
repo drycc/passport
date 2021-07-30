@@ -2,7 +2,6 @@
 Classes to serialize the RESTful representation of Drycc API models.
 """
 import logging
-import json
 
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm

@@ -1,6 +1,6 @@
 {{- if eq .Values.global.passport_location "on-cluster" }}
 {{- if .Values.global.cert_passport_enabled }}
-apiVersion: cert-passport.io/v1alpha2
+apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: drycc-passport

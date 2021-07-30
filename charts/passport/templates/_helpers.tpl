@@ -12,7 +12,7 @@ rbac.authorization.k8s.io/v1
 {{- end -}}
 
 {{/* Generate passport deployment envs */}}
-{{- define "passport.envs" -}}
+{{- define "passport.envs" }}
 env:
 - name: "TZ"
   value: {{ .Values.time_zone | default "UTC" | quote }}
@@ -28,13 +28,17 @@ env:
     secretKeyRef:
       name: passport-creds
       key: social-auth-drycc-controller-secret
+- name: WORKFLOW_NAMESPACE
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.namespace
 {{- if (.Values.database_url) }}
 - name: DRYCC_DATABASE_URL
   valueFrom:
     secretKeyRef:
       name: passport-creds
       key: database-url
-{{- else if eq .Values.global.database_location "on-cluster"  }}
+{{- else if eq .Values.global.database_location "on-cluster" }}
 - name: DRYCC_DATABASE_USER
   valueFrom:
     secretKeyRef:
@@ -53,10 +57,6 @@ env:
 - name: DRYCC_DATABASE_URL
   value: "postgres://$(DRYCC_DATABASE_USER):$(DRYCC_DATABASE_PASSWORD)@$(DRYCC_DATABASE_SERVICE_HOST):$(DRYCC_DATABASE_SERVICE_PORT)/$(DRYCC_DATABASE_NAME)"
 {{- end }}
-- name: WORKFLOW_NAMESPACE
-  valueFrom:
-    fieldRef:
-    fieldPath: metadata.namespace
 {{- range $key, $value := .Values.environment }}
 - name: {{ $key }}
   value: {{ $value | quote }}

@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os.path
 import tempfile
 import ldap
-import base64
 import dj_database_url
 
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
@@ -359,11 +358,11 @@ OAUTH2_PROVIDER = {
     "OAUTH2_VALIDATOR_CLASS": "api.serializers.CustomOAuth2Validator",
     "PKCE_REQUIRED": False,
     "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
-    "ACCESS_TOKEN_EXPIRE_SECONDS": int(os.environ.get('ACCESS_TOKEN_EXPIRE_SECONDS', 30 * 86400)),
-    "ID_TOKEN_EXPIRE_SECONDS": int(os.environ.get('ID_TOKEN_EXPIRE_SECONDS', 30 * 86400)),
-    "AUTHORIZATION_CODE_EXPIRE_SECONDS": int(os.environ.get('AUTHORIZATION_CODE_EXPIRE_SECONDS', 600)),
-    "CLIENT_SECRET_GENERATOR_LENGTH": int(os.environ.get('CLIENT_SECRET_GENERATOR_LENGTH', 64)),
-    "REFRESH_TOKEN_EXPIRE_SECONDS": int(os.environ.get('REFRESH_TOKEN_EXPIRE_SECONDS', 60 * 86400)),
+    "ACCESS_TOKEN_EXPIRE_SECONDS": int(os.environ.get('ACCESS_TOKEN_EXPIRE_SECONDS', 30 * 86400)),  # noqa
+    "ID_TOKEN_EXPIRE_SECONDS": int(os.environ.get('ID_TOKEN_EXPIRE_SECONDS', 30 * 86400)),  # noqa
+    "AUTHORIZATION_CODE_EXPIRE_SECONDS": int(os.environ.get('AUTHORIZATION_CODE_EXPIRE_SECONDS', 600)),  # noqa
+    "CLIENT_SECRET_GENERATOR_LENGTH": int(os.environ.get('CLIENT_SECRET_GENERATOR_LENGTH', 64)),  # noqa
+    "REFRESH_TOKEN_EXPIRE_SECONDS": int(os.environ.get('REFRESH_TOKEN_EXPIRE_SECONDS', 60 * 86400)),  # noqa
     "ROTATE_REFRESH_TOKEN": True,
     "SCOPES": {
         "profile": "Profile",

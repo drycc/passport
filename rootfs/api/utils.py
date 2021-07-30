@@ -5,7 +5,6 @@ import logging
 import six
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.core.cache import cache
 
 logger = logging.getLogger(__name__)
 
