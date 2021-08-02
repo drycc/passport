@@ -28,6 +28,10 @@ echo "Database Migrations:"
 python /app/manage.py migrate --noinput
 
 echo ""
+echo "Collectstatic:"
+python /app/manage.py collectstatic --noinput
+
+echo ""
 if [ "${ADMIN_USERNAME}" ] && [ "${ADMIN_PASSWORD}" ] && [ "${ADMIN_EMAIL}" ]; then
   echo "Create administrator"
   python /app/manage.py createadminuser --username "${ADMIN_USERNAME}" --password "${ADMIN_PASSWORD}" --noinput --email "${ADMIN_EMAIL}"
