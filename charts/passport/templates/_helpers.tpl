@@ -17,7 +17,7 @@ env:
 - name: "TZ"
   value: {{ .Values.time_zone | default "UTC" | quote }}
 - name: "DRYCC_CONTROLLER_DOMAIN"
-  value: drycc.{{ .Values.global.platform_domain }}
+  value: http://drycc.{{ .Values.global.platform_domain }}
 - name: SOCIAL_AUTH_DRYCC_CONTROLLER_KEY
   valueFrom:
     secretKeyRef:
@@ -36,7 +36,7 @@ env:
   value: {{ .Values.admin_username | default "admin" | quote }}
 - name: ADMIN_PASSWORD
   value: {{ .Values.admin_password | default "admin" | quote }}
-- name: ADMIN_EMAIN
+- name: ADMIN_EMAIL
   value: {{ .Values.admin_email | default "admin@email.com" | quote }}
 {{- if (.Values.database_url) }}
 - name: DRYCC_DATABASE_URL

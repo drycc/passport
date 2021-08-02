@@ -2,8 +2,7 @@ FROM docker.io/library/python:3.9-alpine
 
 COPY requirements.txt /app/requirements.txt
 
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
-  && apk add --update --virtual .build-deps \
+RUN apk add --update --virtual .build-deps \
     postgresql-dev \
     gcc \
     libffi-dev \

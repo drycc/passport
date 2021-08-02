@@ -20,7 +20,7 @@ class Command(createsuperuser.Command):
         if password and not username:
             raise CommandError("--username is required if specifying --password")
         user = self.UserModel._default_manager.db_manager(database).\
-                get(username=username)
+            filter(username=username)
         if user:
             self.stdout.write('That username is already created')
             return

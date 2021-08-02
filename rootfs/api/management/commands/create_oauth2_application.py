@@ -21,19 +21,19 @@ class Command(BaseCommand):
         user = User.objects.filter(is_superuser=True).first()
         if not user:
             self.stdout.write("Cannot create because there is no superuser")
-        application, created = Application.objects.get_or_create(
-            client_id=client_id,
-            client_secret=client_secret,
+        application, updated = Application.objects.update_or_create(
+            name='Drycc Controller',
             defaults={
-                'name': 'Drycc Controller',
+                'client_id': client_id,
+                'client_secret': client_secret,
                 'user': user,
-                'redirect_uris': f'{controller_domain}/complete/drycc/',
+                'redirect_uris': f'{controller_domain}/v2/complete/drycc/',
                 'authorization_grant_type': 'authorization-code',
                 'client_type': 'Public',
                 'algorithm': 'RS256'
             }
         )
-        if created:
+        if updated:
             self.stdout.write('Drycc controller app created')
         else:
-            self.stdout.write("Drycc controller app already exists")
+            self.stdout.write("Drycc controller app updated")
