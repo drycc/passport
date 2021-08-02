@@ -30,6 +30,6 @@ spec:
   tls:
     - secretName: drycc-passport-certificate-auto
       hosts:
-        - drycc.{{ .Values.global.platform_domain }}
+        - drycc-passport.{{ .Values.global.platform_domain }}
   {{- end }}
 {{- end }}

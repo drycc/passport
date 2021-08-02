@@ -32,6 +32,12 @@ env:
   valueFrom:
     fieldRef:
       fieldPath: metadata.namespace
+- name: ADMIN_USERNAME
+  value: {{ .Values.admin_username | default "admin" | quote }}
+- name: ADMIN_PASSWORD
+  value: {{ .Values.admin_password | default "admin" | quote }}
+- name: ADMIN_EMAIN
+  value: {{ .Values.admin_email | default "admin@email.com" | quote }}
 {{- if (.Values.database_url) }}
 - name: DRYCC_DATABASE_URL
   valueFrom:
