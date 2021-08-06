@@ -1,0 +1,40 @@
+{% extends 'user/base.html' %}
+
+{% block body %}
+    <div class="collaborator-list limit-width ember-view">
+        <table class="w-100 mb5">
+            <tr class="w-100 f5">
+                <th class="pv2 pr1 bb b--light-gray b">
+                    change_message
+                </th>
+                <th class="pv2 pr1 bb b--light-gray b">
+                    content_type
+                </th>
+                <th class="pv2 pr1 bb b--light-gray b">
+                    action_time
+                </th>
+            </tr>
+            {% for log in logs %}
+                <tr class="ember-view">
+                    <td class="bb b--light-silver pv2 pr1 gray">
+                        {% if log.change_message %}
+                            {% for msg in log.change_message %}
+                                {% for k, v in msg.items %}
+                                    {{ k }}
+                                    {% for field in v.fields %}
+                                        {{ field }}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endfor %}
+                            .
+                        {% endif %}
+                    </td>
+                    <td class="bb b--light-silver pv2 pr1 gray">{{log.content_type}}</td>
+                    <td class="bb b--light-silver pv2 pr1 gray">{{log.action_time}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
+
+{% block  is_log_active %}active{% endblock %}

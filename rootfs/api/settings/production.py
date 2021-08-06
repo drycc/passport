@@ -114,8 +114,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ANONYMOUS_USER_ID = -1
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/admin/'
+LOGIN_URL = '/user/login/'
+LOGIN_REDIRECT_URL = '/'
 
 # Security settings
 CORS_ALLOW_CREDENTIALS = True
@@ -170,9 +170,6 @@ REST_FRAMEWORK = {
     'DEFAULT_MODEL_SERIALIZER_CLASS': 'rest_framework.serializers.ModelSerializer',
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -373,6 +370,8 @@ OAUTH2_PROVIDER = {
 }
 REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = (
     'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    'rest_framework.authentication.SessionAuthentication',
+    'rest_framework.authentication.BasicAuthentication',
 )
 
 EMAIL_HOST = os.environ.get('EMAIL_HOST', '')

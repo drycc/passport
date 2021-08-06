@@ -1,6 +1,6 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'index.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'css/index.css' %}" type="text/css">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
@@ -10,7 +10,7 @@
         <h1 class="logo"><a href="https://www.heroku.com" title="Heroku">Heroku</a></h1>
         <div class="panel">
             <h2 class="h3">Log in to your account</h2>
-            <form method="post" action="{% url 'login' %}">
+            <form method="post" action="{% url 'user_login' %}">
                 {% csrf_token %}
                 {% if form.errors %}
 {#                {{form.errors}}#}
@@ -29,13 +29,13 @@
 
 
                 <button class="btn btn-primary btn-lg btn-block" name="commit" type="submit">Log In</button>
-                <input type="hidden" name="next" value="{{ next }}">
+                <input type="hidden" name="next" value="/">
 
             </form>
 
-            <a class="panel-footer" href="/accounts/register/"><span>Sign Up</span></a>
+            <a class="panel-footer" href="/user/register/"><span>Sign Up</span></a>
 
         </div>
-        <a href="/accounts/password_reset/" style="margin-left: 25px;color: #fff">Forgot your password?</a>
+        <a href="/user/password_reset/" style="margin-left: 25px;color: #fff">Forgot your password?</a>
     </div>
 </div>

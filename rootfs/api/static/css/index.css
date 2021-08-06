@@ -103,7 +103,7 @@ form label {
 
 
 form .input-icon.icon-username {
-    background: url("../static/icon-username.png");
+    background: url("/static/images/icon-username.png");
     background-repeat: repeat
 }
 
@@ -131,7 +131,7 @@ input:-webkit-autofill {
 }
 
 form .input-icon.icon-password {
-    background: url("../static/icon-password.png");
+    background: url("/static/images/icon-password.png");
     background-repeat: repeat
 }
 

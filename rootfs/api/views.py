@@ -1,10 +1,13 @@
 import logging
+import json
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.contrib.auth import views
+from django.db.models import Q
+from django.shortcuts import redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.utils.encoding import force_bytes, force_text
@@ -14,11 +17,15 @@ from django.views.generic.edit import CreateView
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.urls import reverse_lazy
+from rest_framework import status
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 from api import serializers
 from api.exceptions import ServiceUnavailable, DryccException
 from api.serializers import RegisterForm
-from api.utils import account_activation_token, get_local_host
+from api.utils import account_activation_token, get_local_host, login_required
 from api.viewset import NormalUserViewSet
 
 logger = logging.getLogger(__name__)
@@ -54,14 +61,20 @@ class LivenessCheckView(View):
     head = get
 
 
+@login_required()
+def index(request):
+    return redirect('grants/')
+
+
 class RegisterView(CreateView):
     form_class = RegisterForm
-    template_name = 'registration/register.html'
+    template_name = 'user/register.html'
     success_url = reverse_lazy('register_done')
 
     def post(self, request, *args, **kwargs):
         if settings.LDAP_ENDPOINT:
-            raise DryccException("You cannot register user when ldap is enabled.")
+            raise DryccException(
+                "You cannot register user when ldap is enabled.")
         form = self.form_class(request.POST)
         self.object = None
         if form.is_valid():
@@ -72,7 +85,7 @@ class RegisterView(CreateView):
             domain = get_local_host(request)
             mail_subject = 'Activate your account.'
             message = render_to_string(
-                'registration/account_activation_email.html', {
+                'user/account_activation_email.html', {
                     'user': user,
                     'domain': domain,
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -87,7 +100,7 @@ class RegisterView(CreateView):
 
 
 class RegisterDoneView(TemplateView):
-    template_name = 'registration/register_done.html'
+    template_name = 'user/register_done.html'
     title = _('Activate email sent')
 
 
@@ -105,7 +118,8 @@ class ActivateAccount(View):
             user.is_staff = True
             user.save()
             # login(request, user)
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            login(request, user,
+                  backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'Your account have been confirmed.')
             return redirect('/accounts/activate/done/')
         else:
@@ -115,17 +129,17 @@ class ActivateAccount(View):
 
 
 class ActivateAccountDoneView(TemplateView):
-    template_name = 'registration/account_activation_done.html'
+    template_name = 'user/account_activation_done.html'
     title = _('Activate account done')
 
 
 class ActivateAccountFailView(TemplateView):
-    template_name = 'registration/account_activation_fail.html'
+    template_name = 'user/account_activation_fail.html'
     title = _('Activate account fail')
 
 
-def index(request):
-    return render(request, 'registration/login.html')
+class UserLoginView(views.LoginView):
+    template_name = 'user/login.html'
 
 
 class UserDetailView(NormalUserViewSet):
@@ -145,4 +159,120 @@ class UserEmailView(NormalUserViewSet):
 
 
 class LoginDoneView(TemplateView):
-    template_name = 'registration/Heroku_Login.html'
+    template_name = 'user/login_done.html'
+
+
+class UserPasswordResetView(views.PasswordResetView):
+    email_template_name = 'user/password_reset_email.html'
+    success_url = reverse_lazy('user_password_reset_done')
+    template_name = 'user/password_reset_form.html'
+
+
+class UserPasswordResetDoneView(views.PasswordResetDoneView):
+    template_name = 'user/password_reset_done.html'
+
+
+class UserPasswordResetConfirmView(views.PasswordResetConfirmView):
+    success_url = reverse_lazy('user_password_reset_complete')
+    template_name = 'user/password_reset_confirm.html'
+
+
+class UserPasswordResetCompleteView(views.PasswordResetCompleteView):
+    template_name = 'user/password_reset_complete.html'
+
+
+class UserPasswordChangeView(views.PasswordChangeView):
+    success_url = reverse_lazy('user_password_change_done')
+    template_name = 'user/password_change_form.html'
+
+
+class UserPasswordchangeDoneView(views.PasswordChangeDoneView):
+    template_name = 'user/password_change_done.html'
+
+
+class UserLogoutView(views.LogoutView):
+    template_name = 'user/logged_out.html'
+
+
+class ListViewSet(ModelViewSet):
+
+    def get_queryset(self, *args, **kwargs):
+        serializer = self.serializer_class(data=self.request.query_params)
+        serializer.is_valid(raise_exception=True)
+
+        serializerlist = serializers.ListSerializer(
+            data=self.request.query_params)
+        serializerlist.is_valid(raise_exception=True)
+        q = Q(user=self.request.user)
+        if serializerlist.validated_data.get('section'):
+            q &= Q(created__range=serializerlist.validated_data.get('section'))
+        return self.model.objects.filter(
+            q, **serializer.validated_data).order_by(self.order_by)[0:100]
+
+
+class UserGrantsTemplateView(ListViewSet):
+    from oauth2_provider.models import Grant
+    model = Grant
+    serializer_class = serializers.UserGrantsSerializer
+    renderer_classes = [TemplateHTMLRenderer]
+    order_by = '-created'
+
+    def retrieve(self, request, *args, **kwargs):
+        grants = self.get_queryset(*args, **kwargs)
+        return Response({'grants': grants, 'user': request.user},
+                        template_name='user/grants.html')
+
+
+class UserGrantDeleteView(ListViewSet):
+    from oauth2_provider.models import Grant
+    model = Grant
+
+    def destroy(self, request, *args, **kwargs):
+        grant = get_object_or_404(self.model,
+                                  id=self.kwargs['pk'],
+                                  user=request.user)
+
+        grant.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserTokensTemplateView(ListViewSet):
+    from oauth2_provider.models import AccessToken
+    model = AccessToken
+    serializer_class = serializers.UserTokensSerializer
+    renderer_classes = [TemplateHTMLRenderer]
+    order_by = '-created'
+
+    def retrieve(self, request, *args, **kwargs):
+        tokens = self.get_queryset(*args, **kwargs)
+        return Response({'tokens': tokens},
+                        template_name='user/tokens.html')
+
+
+class UserTokenDeleteView(ListViewSet):
+    from oauth2_provider.models import AccessToken
+    model = AccessToken
+
+    def destroy(self, request, *args, **kwargs):
+        token = get_object_or_404(self.model,
+                                  id=self.kwargs['pk'],
+                                  user=request.user)
+
+        token.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserLogsView(ListViewSet):
+    from django.contrib.admin.models import LogEntry
+    model = LogEntry
+    serializer_class = serializers.UserLogsSerializer
+    renderer_classes = [TemplateHTMLRenderer]
+    order_by = '-action_time'
+
+    def retrieve(self, request, *args, **kwargs):
+        logs = self.get_queryset(*args, **kwargs)
+        for log in logs:
+            if log.change_message:
+                log.change_message = json.loads(log.change_message)
+        return Response({'logs': logs},
+                        template_name='user/logs.html')
