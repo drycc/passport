@@ -1,5 +1,5 @@
 {{- if eq .Values.global.passport_location "on-cluster" }}
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "passport-api-server"
@@ -18,14 +18,17 @@ spec:
   - host: drycc-passport.{{ .Values.global.platform_domain }}
     http:
       paths:
-      {{- if eq .Values.global.ingress_class "gce" "alb" }}
-      - path: /*
-      {{- else }}{{/* Has annotations but ingress class is not "gce" nor "alb" */}}
-      - path: /
-      {{- end }}
+      - pathType: Prefix
+        {{- if eq .Values.global.ingress_class "gce" "alb" }}
+        path: /*
+        {{- else }}{{/* Has annotations but ingress class is not "gce" nor "alb" */}}
+        path: /
+        {{- end }}
         backend:
-          serviceName: drycc-passport
-          servicePort: 80
+          service:
+            name: drycc-passport
+            port: 
+              number: 80
   {{ if .Values.global.cert_passport_enabled }}
   tls:
     - secretName: drycc-passport-certificate-auto
