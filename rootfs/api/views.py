@@ -191,7 +191,7 @@ class UserPasswordchangeDoneView(views.PasswordChangeDoneView):
 
 
 class UserLogoutView(views.LogoutView):
-    template_name = 'user/logged_out.html'
+    template_name = 'user/logout.html'
 
 
 class ListViewSet(ModelViewSet):

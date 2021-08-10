@@ -1,0 +1,37 @@
+.login-gradient {
+  background-image: -webkit-linear-gradient(top,#654a86,#534292);
+  background-image: linear-gradient(to bottom,#654a86,#534292);
+  background-color: #534292;
+}
+
+.login-button {
+  cursor: pointer;
+  color: #fff;
+  background-color: #79589f;
+  background-image: -webkit-gradient(linear,right top,left bottom,color-stop(0,rgba(159,88,150,0)),color-stop(1,rgba(159,88,150,0.6)));
+  background-image: -o-linear-gradient(left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%);
+  background-image: -moz-linear-gradient(left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%);
+  background-image: -webkit-linear-gradient(left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%);
+  background-image: -ms-linear-gradient(left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%);
+  background-image: linear,to left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%;
+}
+
+.login-button:active {
+  background-color: #5f467e;
+}
+
+@media screen AND (min-width: 30em) {
+  .mw-430px-ns {
+    max-width: 430px;
+  }
+}
+
+.screenreader-only {
+  display: block;
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

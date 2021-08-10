@@ -263,7 +263,7 @@ random_secret = ')u_jckp95wule8#wxd8sm!0tj2j&aveozu!nnpgl)2x&&16gfj'
 SECRET_KEY = os.environ.get('DRYCC_SECRET_KEY', random_secret)
 
 # database setting
-DRYCC_DATABASE_URL = os.environ.get('DRYCC_DATABASE_URL', 'postgres://:@:5432/passport')
+DRYCC_DATABASE_URL = os.environ.get('DRYCC_DATABASE_URL', 'postgres://postgres:123456@192.168.6.50:5432/drycc_passport')
 DATABASES = {
     'default': dj_database_url.config(default=DRYCC_DATABASE_URL,
                                       conn_max_age=600)

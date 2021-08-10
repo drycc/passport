@@ -1,15 +1,5 @@
-{% load static %}
-
-<link rel="stylesheet" href="{% static 'index.css' %}" type="text/css">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Reset Password</title>
-</head>
-
-<div class="container">
-    <div class="panel">
-        <h2 class="h3" style="margin-bottom: 40px;color: green">Register successful</h2>
-        <p>We have sent an email to your mailbox, please log in the email to activate your account.</p>
-    </div>
-</div>
+{% extends 'user/message.html' %}
+{% block title %}Register successful{% endblock %}
+{% block message %}
+We have sent an email to your mailbox, please log in the email to activate your account..
+{% endblock %}

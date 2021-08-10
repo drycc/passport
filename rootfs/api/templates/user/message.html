@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="w-100 h-100 login-gradient" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drycc | Message</title>
+    <link rel="stylesheet" href="{% static 'css/purple3.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/message.css' %}">
+  </head>
+  <body class="h-100 w-100 flex flex-column">
+
+    <main role="main" class="flex flex-column w-100 h-100">
+<div class="flex flex-1 items-center mw-430px-ns self-center w-100">
+  <div class="mh4 w-100 flex flex-column items-center">
+    <div class="br2 w-100-ns mw-430px-ns self-center flex flex-column bg-white pv5 ph6">
+
+  <div class="tc mb4">
+    <h1 class="f1 fw3 purple"> {% block title %}{% endblock %}</h1>
+  </div>
+  <p class="tc gray-90">
+    {% block message %}{% endblock %}
+  </p>
+
+    </div>
+  </div>
+</div>
+
+      <footer class="mt2 mb5 mw-430px-ns self-center flex flex-column justify-end w-100">
+        <div class="mt2 mh4 self-center w-100-ns mw-430px-ns flex flex-column items-center">
+          <div>
+            <ul class="list flex flex-column flex-row-ns pa0 items-center justify-between w-100">
+              <li class="mb2 mb0-ns word-nowrap mr2">
+                <a class="hk-link light-gray no-underline" href="https://github.com/drycc">Github</a>
+              </li>
+              <li class="mb2 mb0-ns mr2">
+                <a class="hk-link light-gray no-underline" href="https://www.drycc.cc">Docs</a>
+              </li>
+              <li class="mb2 mb0-ns">
+                <a class="hk-link light-gray no-underline" href="https://join.slack.com/t/drycc/shared_invite/zt-70z6zufm-4Rs7i1bPDH42CAxzkm85qg">Slack</a>
+              </li>
+            </ul>
+            <div class="tc light-gray">© {% now "Y" %} drycc.cc</div>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+
+</body></html>

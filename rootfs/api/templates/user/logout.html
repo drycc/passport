@@ -1,0 +1,8 @@
+{% extends 'user/message.html' %}
+{% block title %}Logout{% endblock %}
+{% block message %}
+Logout successfully. Return to the login later.
+<script>
+  window.setTimeout("window.location='/'", 2000);
+</script>
+{% endblock %}
