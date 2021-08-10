@@ -55,7 +55,7 @@ USE_TZ = True
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, '..', "web", "dist")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,6 +74,7 @@ TEMPLATES = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -89,12 +90,12 @@ ROOT_URLCONF = 'passport.urls'
 WSGI_APPLICATION = 'api.wsgi.application'
 
 INSTALLED_APPS = (
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     'django.contrib.humanize',
     # Third-party apps
     'corsheaders',
@@ -343,8 +344,10 @@ if LDAP_ENDPOINT:
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'static'))
+STATIC_URL = '/assets/'
+#STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'static'))
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'web', 'dist', 'assets'))
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # see: https://django-oauth-toolkit.readthedocs.io/en/latest/oidc.html?highlight=oidc.key#creating-rsa-private-key  # noqa
 with open('/var/run/secrets/drycc/passport/oidc-rsa-private-key') as f:

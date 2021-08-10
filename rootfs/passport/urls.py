@@ -16,15 +16,14 @@ Including another URLconf
 from django.urls import path
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.views import static
+from django.views.generic.base import TemplateView
 from api.settings import production
 from api.views import LivenessCheckView, ReadinessCheckView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^static/(?P<path>.*)$', static.serve,
-        {'document_root': production.STATIC_ROOT}, name='static'),
+    path(r'', TemplateView.as_view(template_name="index.html")),
     url(r'^healthz$', LivenessCheckView.as_view()),
     url(r'^readiness$', ReadinessCheckView.as_view()),
-    url(r'^', include('api.urls')),
+    url(r'^api', include('api.urls')),
 ]
