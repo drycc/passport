@@ -1,8 +1,7 @@
 import logging
-import json
 
 from django.conf import settings
-from django.contrib import messages
+from django.contrib import messages, auth
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.auth import views
@@ -18,7 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.urls import reverse_lazy
 from rest_framework import status
-from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -63,7 +62,7 @@ class LivenessCheckView(View):
 
 @login_required()
 def index(request):
-    return redirect('grants/')
+    return redirect('/access-tokens')
 
 
 class RegisterView(CreateView):
@@ -121,11 +120,11 @@ class ActivateAccount(View):
             login(request, user,
                   backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'Your account have been confirmed.')
-            return redirect('/accounts/activate/done/')
+            return redirect('/user/activate/done/')
         else:
             messages.warning(request, (
                 'The confirmation link was invalid, possibly because it has already been used.'))  # noqa
-            return redirect('/accounts/activate/fail/')
+            return redirect('/user/activate/fail/')
 
 
 class ActivateAccountDoneView(TemplateView):
@@ -148,6 +147,14 @@ class UserDetailView(NormalUserViewSet):
 
     def get_object(self):
         return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        user = serializers.UserSerializer(data=request.data,
+                                          instance=request.user,
+                                          partial=True)
+        if user.is_valid():
+            user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserEmailView(NormalUserViewSet):
@@ -210,43 +217,16 @@ class ListViewSet(ModelViewSet):
             q, **serializer.validated_data).order_by(self.order_by)[0:100]
 
 
-class UserGrantsTemplateView(ListViewSet):
-    from oauth2_provider.models import Grant
-    model = Grant
-    serializer_class = serializers.UserGrantsSerializer
-    renderer_classes = [TemplateHTMLRenderer]
-    order_by = '-created'
-
-    def retrieve(self, request, *args, **kwargs):
-        grants = self.get_queryset(*args, **kwargs)
-        return Response({'grants': grants, 'user': request.user},
-                        template_name='user/grants.html')
-
-
-class UserGrantDeleteView(ListViewSet):
-    from oauth2_provider.models import Grant
-    model = Grant
-
-    def destroy(self, request, *args, **kwargs):
-        grant = get_object_or_404(self.model,
-                                  id=self.kwargs['pk'],
-                                  user=request.user)
-
-        grant.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 class UserTokensTemplateView(ListViewSet):
     from oauth2_provider.models import AccessToken
     model = AccessToken
     serializer_class = serializers.UserTokensSerializer
-    renderer_classes = [TemplateHTMLRenderer]
     order_by = '-created'
 
     def retrieve(self, request, *args, **kwargs):
         tokens = self.get_queryset(*args, **kwargs)
-        return Response({'tokens': tokens},
-                        template_name='user/tokens.html')
+        serializer = self.get_serializer(tokens, many=True)
+        return Response(serializer.data)
 
 
 class UserTokenDeleteView(ListViewSet):
@@ -262,17 +242,18 @@ class UserTokenDeleteView(ListViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class UserLogsView(ListViewSet):
-    from django.contrib.admin.models import LogEntry
-    model = LogEntry
-    serializer_class = serializers.UserLogsSerializer
-    renderer_classes = [TemplateHTMLRenderer]
-    order_by = '-action_time'
+class UserAccountPasswordView(ListViewSet):
 
-    def retrieve(self, request, *args, **kwargs):
-        logs = self.get_queryset(*args, **kwargs)
-        for log in logs:
-            if log.change_message:
-                log.change_message = json.loads(log.change_message)
-        return Response({'logs': logs},
-                        template_name='user/logs.html')
+    def update(self, request, *args, **kwargs):
+        if not request.data.get('new_password'):
+            raise DryccException("new_password is a required field")
+        if not request.data.get('password'):
+            raise DryccException("password is a required field")
+        if len(request.data.get('new_password')) < 8:
+            raise DryccException("password must be 8 or more characters. ")
+        if not request.user.check_password(request.data['password']):
+            raise AuthenticationFailed('Current password does not match')
+        request.user.set_password(request.data['new_password'])
+        request.user.save()
+        auth.logout(request)
+        return HttpResponse(status=204)

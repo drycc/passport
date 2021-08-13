@@ -1,7 +1,7 @@
 import axios from "../utils/axios";
 
 export function getUser() {
-    return axios.get(`/api/users/`)
+    return axios.get(`/user/info/`)
 }
 
 export function dealUser(obj) {
@@ -12,9 +12,17 @@ export function dealUser(obj) {
 }
 
 export function getCsrf() {
-    return axios.get('/api/user/csrf/')
+    return axios.get('/user/csrf/')
 }
 
 export function postLogout() {
-    return axios.post(`/api/user/logout/`)
+    return axios.post(`/user/logout/`)
+}
+
+export function putAccount(data) {
+    return axios.put(`/user/info/`, data)
+}
+
+export function putAccountPassword(data) {
+    return axios.put(`/user/password/`, data)
 }

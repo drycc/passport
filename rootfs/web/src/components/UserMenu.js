@@ -1,4 +1,5 @@
 import {onMounted, reactive, toRefs} from "vue";
+import { useRouter } from 'vue-router'
 import {dealUser, getUser, postLogout} from "../services/user";
 
 export default {
@@ -14,41 +15,34 @@ export default {
         }
     },
     setup() {
+        const router = useRouter()
         const state = reactive({
             user :{
                 username: null,
                 email: null,
                 is_superuser: null
             },
-            isHiddenAdmin: true,
-            adminUrl: ''
         })
         const logout = () => {
             postLogout().then(res=>{
-                localStorage.clear()
-                if (res.status == 302) {
+                if (res.status == 200) {
+                    sessionStorage.clear()
                     router.push({ path: '/'})
                 }
             })
             location.reload(true)
         }
         onMounted(async () => {
-            var currentUser = sessionStorage.getItem('user')
-            if (currentUser){
-                state.user = JSON.parse(currentUser)
+            let user = sessionStorage.getItem('user')
+            if (user){
+                state.user = JSON.parse(user)
             }else {
-                // const res = await getUser()
-                const res = ''
+                const res = await getUser()
                 state.user = dealUser(res)
                 if (state.user){
                     sessionStorage.setItem('user', JSON.stringify(state.user))
                 }
             }
-
-            if (state.user.is_superuser){
-                state.isHiddenAdmin = false
-            }
-            state.adminUrl = process.env.NODE_ENV == 'development' ? 'http://d.uucin.com/admin/' : 'http://d.uucin.com/admin/'
         })
 
         return {

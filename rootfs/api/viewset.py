@@ -1,6 +1,5 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from oauth2_provider.contrib.rest_framework import TokenHasScope
 
 
 class NormalUserViewSet(viewsets.ModelViewSet):
@@ -10,4 +9,4 @@ class NormalUserViewSet(viewsets.ModelViewSet):
     To use it, at minimum you'll need to provide the `serializer_class` attribute and
     the `model` attribute shortcut.
     """
-    permission_classes = [IsAuthenticated, TokenHasScope]
+    permission_classes = [IsAuthenticated]

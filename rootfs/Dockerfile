@@ -1,3 +1,13 @@
+FROM node:16-alpine3.14 as build-app
+
+ADD web /app
+WORKDIR /app
+
+RUN echo 'http://mirrors.aliyun.com/alpine/v3.4/main' > /etc/apk/repositories \
+    && npm install \
+    && yarn build
+
+
 FROM docker.io/library/python:3.9-alpine
 
 COPY requirements.txt /app/requirements.txt
@@ -27,6 +37,7 @@ RUN apk add --update --virtual .build-deps \
   && apk del .build-deps
 
 COPY . /app
+COPY --from=build-app /app/dist /app/web/dist
 
 WORKDIR /app
 CMD ["/app/bin/boot"]

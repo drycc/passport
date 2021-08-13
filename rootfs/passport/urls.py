@@ -14,16 +14,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from django.conf.urls import include, url
+from django.conf.urls import include, url, re_path
 from django.contrib import admin
 from django.views.generic.base import TemplateView
-from api.settings import production
+from api import views
 from api.views import LivenessCheckView, ReadinessCheckView
 
 urlpatterns = [
+    re_path(r'^$', views.index, name='index'),
     path('admin/', admin.site.urls),
     path(r'', TemplateView.as_view(template_name="index.html")),
+    path(r'access-tokens', TemplateView.as_view(template_name="index.html")),
+    path(r'account-setting', TemplateView.as_view(template_name="index.html")),
+
     url(r'^healthz$', LivenessCheckView.as_view()),
     url(r'^readiness$', ReadinessCheckView.as_view()),
-    url(r'^api', include('api.urls')),
+
+    re_path(r"^user/", include('api.urls')),
+    re_path(r'^oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    re_path(r'^accounts/', include('django.contrib.auth.urls')),
 ]

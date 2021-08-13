@@ -1,9 +1,9 @@
 import App from './App.vue'
 import router from './router'
 import { createApp } from 'vue'
+import { Toast } from 'vant';
 import { i18n, setLang, getUAgentLang } from './lang'
 import 'vant/lib/index.css';
-
 
 /**
  * 时间对象的格式化;
@@ -47,4 +47,5 @@ init()
 const app = createApp(App)
 app.use(router)
 app.use(i18n)
+app.use(Toast);
 app.mount('#app')

@@ -2247,7 +2247,7 @@ form .input-icon::after {
 }
 
 form .input-icon.icon-username {
-    background: url("../assets/icon-username.png");
+    background: url("../../assets/icon-username.png");
     background-repeat: repeat
 }
 
@@ -2260,7 +2260,7 @@ form .input-icon.icon-username {
 }
 
 form .input-icon.icon-password {
-    background: url("../assets/icon-password.png");
+    background: url("../../assets/icon-password.png");
     background-repeat: repeat
 }
 

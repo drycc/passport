@@ -7859,7 +7859,7 @@ progress::-moz-progress-bar {
     padding: 12px 20px 10px;
     min-height: 63px;
     margin-top: 18px;
-    border-bottom: 1px solid #e7ebf3;
+    /*border-bottom: 1px solid #e7ebf3;*/
     -webkit-flex-shrink: 0;
     -moz-flex-shrink: 0;
     flex-shrink: 0;

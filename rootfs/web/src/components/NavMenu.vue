@@ -1,8 +1,5 @@
 <!--导航栏菜单组件-->
 <template>
-    <a role="button" class="glostick__menu-icon" @click="openOrCloseMenu">
-        <div class="icon-navigator-toggle" id="menu-nav"></div>
-    </a>
     <ul id="glostick__menu--navigator" class="glostick__menu glostick__menu--navigator" :class="{'glostick__menu--open': isMenuActived}">
         <li class="glostick__menu__listitem">
             <a class="glostick__menu__item glostick__menu__item--dashboard" href="/">Dashboard</a>

@@ -1,17 +1,21 @@
 import axios from "../utils/axios";
 
 export function getAccessTokenList() {
-    return axios.get(`/api/tokens/`)
+    return axios.get(`/user/tokens/`)
 }
 
 export function dealAccessTokenList(obj) {
-    return obj.data.results.map(item => {
+    return obj.data.map(item => {
         return {
             id: item.id,
-            name: item.name,
-            authorization_grant_type: item.authorization_grant_type,
-            user: item.user,
-            created: item.created
+            application: item.application,
+            token: item.token,
+            created: item.created,
+            expires: item.expires
         }
     })
+}
+
+export function deleteAccessToken(id) {
+    return axios.delete(`/user/tokens/` + id)
 }
