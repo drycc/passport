@@ -3,9 +3,8 @@ FROM node:16-alpine3.14 as build-app
 ADD web /app
 WORKDIR /app
 
-RUN echo 'http://mirrors.aliyun.com/alpine/v3.4/main' > /etc/apk/repositories \
-    && npm install \
-    && yarn build
+RUN npm install \
+  && yarn build
 
 
 FROM docker.io/library/python:3.9-alpine
