@@ -2,16 +2,13 @@
 
 {% load i18n %}
 {% load static %}
-
-<link rel="stylesheet" href="{% static 'css/index.css' %}" type="text/css">
 {% block content %}
     <div class="container">
-        <h1 class="logo"><a href="https://www.heroku.com" title="Heroku">Heroku</a></h1>
+        <h1 class="logo"><a href="https://www.drycc.cc" title="Drycc">Drycc</a></h1>
         <div class="panel">
         {% if not error %}
-            <h2 class="h3" style="font-weight: 200;">{% trans "Authorize" %} {{ application.name }}?</h2>
-            <p style="padding: 40px 40px 0px 40px;">{% trans "Application requires the following permissions" %}</p>
-            <form id="authorizationForm" method="post" style="margin-top: -20px">
+            <h2 class="h3">{% trans "Authorize" %} {{ application.name }}?</h2>
+            <form id="authorizationForm" method="post">
                 {% csrf_token %}
 
                 {% for field in form %}
@@ -19,19 +16,10 @@
                         {{ field }}
                     {% endif %}
                 {% endfor %}
-                <ul>
-                    {% for scope in scopes_descriptions %}
-                        <li>{{ scope }}</li>
-                    {% endfor %}
-                </ul>
-
                 {{ form.errors }}
                 {{ form.non_field_errors }}
                 <br>
-                <input style="color: #79589f;background: #fff;border: 1px solid #79589f;width: 120px"
-                       type="submit" class="btn btn-large" value="{% trans 'Cancel' %}"/>
-                <input style="color: #fff;background-color: #60467e;background-image: -webkit-linear-gradient(left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%);;width: 120px"
-                       type="submit" class="w-50 btn btn-large btn-primary" name="allow" value="{% trans 'Authorize' %}"/>
+                <input type="submit" class="btn btn-primary btn-lg btn-block" name="allow" value="{% trans 'Authorize' %}"/>
             </form>
         {% else %}
             <h2>Error: {{ error.error }}</h2>

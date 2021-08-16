@@ -1,9 +1,6 @@
 {% load static %}
-
-<link rel="stylesheet" href="{% static 'css/index.css' %}" type="text/css">
-
 <!DOCTYPE html>
-<html lang="en">
+<html class="w-100 h-100 login-gradient" lang="en">
 <head>
     <meta charset="utf-8">
     <title>{% block title %}{% endblock title %}</title>
@@ -12,48 +9,15 @@
     <meta name="author" content="">
 
     {% block css %}
-        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/base.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/message.css' %}" type="text/css">
     {% endblock css %}
-
-    <style>
-        body {
-            font-family: benton-sans,'Helvetica Neue',helvetica,arial,sans-serif;
-            font-size: 14px;
-            line-height: 1.42857;
-            color: #3f3f44;
-            margin: 0;
-
-            padding-top: 60px;
-            padding-bottom: 40px;
-            background-image: linear-gradient(to bottom,#654a86,#534292);
-            background-color: #534292;
-        }
-        .block-center {
-            max-width: 500px;
-            padding: 19px 29px 29px;
-            margin: 0 auto 20px;
-            background-color: #fff;
-            border: 1px solid #e5e5e5;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-            -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-            box-shadow: 0 1px 2px rgba(0,0,0,.05);
-        }
-        .block-center .block-center-heading {
-            margin-bottom: 10px;
-        }
-
-    </style>
 </head>
 
-<body>
-
+<body class="w-100 h-100 login-gradient">
 <div class="page-wrap gradient-primary">
     {% block content %}
     {% endblock content %}
 </div>
-
 </body>
 </html>

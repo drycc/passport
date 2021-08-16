@@ -21,7 +21,8 @@ DEBUG = bool(os.environ.get('DRYCC_DEBUG', True))
 # will be suppressed, and exceptions will propagate upwards
 # https://docs.djangoproject.com/en/2.2/ref/settings/#debug-propagate-exceptions
 DEBUG_PROPAGATE_EXCEPTIONS = True
-
+# Enable Django admin
+ADMIN_ENABLED = bool(os.environ.get('ADMIN_ENABLED', False))
 # Silence two security messages around SSL as router takes care of them
 # https://docs.djangoproject.com/en/2.2/ref/checks/#security
 SILENCED_SYSTEM_CHECKS = [
@@ -52,7 +53,10 @@ USE_TZ = True
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, '..', "web", "dist")],
+        'DIRS': [
+            os.path.join(BASE_DIR, '..', "web", "dist"),
+            os.path.join(BASE_DIR, "templates"),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

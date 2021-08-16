@@ -16,6 +16,7 @@ from django.views.generic.edit import CreateView
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.urls import reverse_lazy
+# from oauth2_provider.views import AuthorizationView
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
@@ -24,7 +25,7 @@ from rest_framework.viewsets import ModelViewSet
 from api import serializers
 from api.exceptions import ServiceUnavailable, DryccException
 from api.serializers import RegisterForm
-from api.utils import account_activation_token, get_local_host, login_required
+from api.utils import account_activation_token, get_local_host
 from api.viewset import NormalUserViewSet
 
 logger = logging.getLogger(__name__)
@@ -60,9 +61,8 @@ class LivenessCheckView(View):
     head = get
 
 
-@login_required()
-def index(request):
-    return redirect('/access-tokens')
+# class AuthorizationTemplateView(AuthorizationView):
+#     template_name = "oauth2_provider/authorize.html"
 
 
 class RegisterView(CreateView):
@@ -116,7 +116,6 @@ class ActivateAccount(View):
             user.is_active = True
             user.is_staff = True
             user.save()
-            # login(request, user)
             login(request, user,
                   backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'Your account have been confirmed.')

@@ -1,6 +1,6 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/index.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'css/base.css' %}" type="text/css">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
@@ -13,7 +13,6 @@
             <form method="post" action="{% url 'user_login' %}">
                 {% csrf_token %}
                 {% if form.errors %}
-{#                {{form.errors}}#}
                 <div class="alert alert-danger">There was a problem with your login.</div>
                 {% endif %}
                 <div class="form-group">
@@ -26,15 +25,10 @@
                     <div class="input-icon icon-password"></div>
                     <input autocomplete="off" class="form-control password" id="password" name="password" :placeholder="Password" type="password"/>
                 </div>
-
-
                 <button class="btn btn-primary btn-lg btn-block" name="commit" type="submit">Log In</button>
                 <input type="hidden" name="next" value={{ next }}>
-
             </form>
-
             <a class="panel-footer" href="/user/register/"><span>Sign Up</span></a>
-
         </div>
         <a href="/user/password_reset/" style="margin-left: 25px;color: #fff">Forgot your password?</a>
     </div>

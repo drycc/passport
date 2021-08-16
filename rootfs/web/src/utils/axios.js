@@ -12,9 +12,9 @@ axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 axios.interceptors.request.use(
     (config)=>{
-        let token = getCookie('csrftoken')
-        if(token){
-            config.headers['X-CSRFToken'] = token;
+        let csrftoken = getCookie('csrftoken')
+        if(csrftoken){
+            config.headers['X-CSRFToken'] = csrftoken;
         }
         return config
     }
