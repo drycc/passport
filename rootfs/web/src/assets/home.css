@@ -174,7 +174,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('/src/assets/style/ninja-avatar-96x96.png');
+    background-image: url('/src/assets/style/avatar.png');
     background-size: cover;
     border-radius: 50%;
     z-index: 1;

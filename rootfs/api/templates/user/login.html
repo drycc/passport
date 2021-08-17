@@ -1,13 +1,13 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/base.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'css/user.css' %}" type="text/css">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
 </head>
 <div class="page-wrap gradient-primary">
     <div class="container">
-        <h1 class="logo"><a href="https://www.heroku.com" title="Heroku">Heroku</a></h1>
+        <h1 class="logo"><a href="https://www.drycc.cc" title="Drycc">Drycc</a></h1>
         <div class="panel">
             <h2 class="h3">Log in to your account</h2>
             <form method="post" action="{% url 'user_login' %}">
@@ -17,12 +17,10 @@
                 {% endif %}
                 <div class="form-group">
                     <label for="username">{{ form.username.label_tag }}</label>
-                    <div class="input-icon icon-username"></div>
                     <input autofocus="off" class="form-control" id="username" name="username" :placeholder="Username" type="text" >
                 </div>
                 <div class="form-group">
                     <label for="password">{{ form.password.label_tag }}</label>
-                    <div class="input-icon icon-password"></div>
                     <input autocomplete="off" class="form-control password" id="password" name="password" :placeholder="Password" type="password"/>
                 </div>
                 <button class="btn btn-primary btn-lg btn-block" name="commit" type="submit">Log In</button>
@@ -30,6 +28,6 @@
             </form>
             <a class="panel-footer" href="/user/register/"><span>Sign Up</span></a>
         </div>
-        <a href="/user/password_reset/" style="margin-left: 25px;color: #fff">Forgot your password?</a>
+        <a href="/user/password_reset/" class="white-link">Forgot your password?</a>
     </div>
 </div>

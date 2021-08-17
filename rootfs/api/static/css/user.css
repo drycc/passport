@@ -102,23 +102,9 @@ form label {
 }
 
 
-form .input-icon.icon-username {
-    background: url("../images/icon-username.png");
-    background-repeat: repeat
-}
-
-form .input-icon {
-    position: absolute;
-    bottom: 13px;
-    margin-top: -9px;
-    left: 12px;
-    width: 18px;
-    height: 18px;
-}
-
 form input[type="text"], form input[type="email"], form input[type="password"], form input[type="number"] {
     height: 44px;
-    padding-left: 50px;
+    padding-left: 20px;
 }
 
 
@@ -128,23 +114,6 @@ input:-webkit-autofill {
 
 .form-control {
     padding-right: 8px;
-}
-
-form .input-icon.icon-password {
-    background: url("../images/icon-password.png");
-    background-repeat: repeat
-}
-
-form .input-icon::after {
-    content: '';
-    position: absolute;
-    right: -11px;
-    top: -10px;
-    bottom: -10px;
-    width: 1px;
-    opacity: .5;
-    background-color: rgba(212,212,212,0);
-    background-image: linear-gradient(to top,rgba(212,212,212,0) 0,#d4d4d4 30%,#d4d4d4 70%,rgba(212,212,212,0) 100%);
 }
 
 .form-control {
@@ -268,4 +237,21 @@ form li {
 
 .error {
     color: #c20707;
+}
+
+.tc {
+    text-align: center
+}
+
+.gray-90 {
+    color: rgba(89, 105, 129, .9)
+}
+
+.inverted-wrapper {
+    padding: 40px 40px 0px 40px;
+}
+
+.white-link {
+    margin-left: 25px;
+    color: #fff
 }

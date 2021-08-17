@@ -1,16 +1,19 @@
-{% extends "oauth2_provider/base.html" %}
-
 {% load i18n %}
 {% load static %}
-{% block content %}
+<link rel="stylesheet" href="{% static 'css/user.css' %}" type="text/css">
+<head>
+    <meta charset="UTF-8">
+    <title>Change Password</title>
+</head>
+<div class="page-wrap gradient-primary">
     <div class="container">
         <h1 class="logo"><a href="https://www.drycc.cc" title="Drycc">Drycc</a></h1>
         <div class="panel">
-        {% if not error %}
+            {% if not error %}
             <h2 class="h3">{% trans "Authorize" %} {{ application.name }}?</h2>
+            {{ updated }}
             <form id="authorizationForm" method="post">
                 {% csrf_token %}
-
                 {% for field in form %}
                     {% if field.is_hidden %}
                         {{ field }}
@@ -21,10 +24,11 @@
                 <br>
                 <input type="submit" class="btn btn-primary btn-lg btn-block" name="allow" value="{% trans 'Authorize' %}"/>
             </form>
-        {% else %}
-            <h2>Error: {{ error.error }}</h2>
-            <p>{{ error.description }}</p>
-        {% endif %}
-    	</div>
+            {% else %}
+            <h2 class="h3">{{ error.error }}</h2>
+            <p class="tc gray-90 inverted-wrapper">{{ error.description }}</p>
+            <div class="inverted-wrapper"></div>
+            {% endif %}
+        </div>
     </div>
-{% endblock %}
+</div>

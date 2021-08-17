@@ -1,6 +1,6 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/base.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'css/user.css' %}" type="text/css">
 
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,6 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="username">{{ form.username.label_tag }}</label>
-                    <div class="input-icon icon-username"></div>
                     <input autofocus="off" class="form-control" id="username" name="username" :placeholder="Username" type="text" >
                     <div class="error">{{ form.username.errors }}</div>
                 </div>
