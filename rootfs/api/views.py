@@ -182,15 +182,6 @@ class UserPasswordResetCompleteView(views.PasswordResetCompleteView):
     template_name = 'user/password_reset_complete.html'
 
 
-class UserPasswordChangeView(views.PasswordChangeView):
-    success_url = reverse_lazy('user_password_change_done')
-    template_name = 'user/password_change_form.html'
-
-
-class UserPasswordchangeDoneView(views.PasswordChangeDoneView):
-    template_name = 'user/password_change_done.html'
-
-
 class UserLogoutView(views.LogoutView):
     template_name = 'user/logout.html'
 

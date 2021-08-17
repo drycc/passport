@@ -102,7 +102,7 @@ export default {
             putAccount({username: state.user.username}).then(res=>{
                 if (res.status == 204) {
                     updateUser()
-                    state.userBTN = hiddenBTN
+                    state.nameBTN = hiddenBTN
                 }
             })
         }

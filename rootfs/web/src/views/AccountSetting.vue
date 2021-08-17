@@ -81,7 +81,7 @@
                         </div>
 
                         <div class="mt2 f5 lh-copy dark-gray">
-                            Changing your password will also reset your API key.
+                            Change the password here.
                         </div>
                     </div>
 
@@ -143,7 +143,6 @@ export default AccountSetting
 </script>
 
 <style scoped>
-    /*@import "../assets/bashboard.css";*/
     .pr1 {
         padding-right: 15px;
     }

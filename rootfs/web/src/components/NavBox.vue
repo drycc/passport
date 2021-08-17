@@ -19,5 +19,4 @@ export default NavBox
 </script>
 
 <style scoped>
-    /*@import "../assets/bashboard.css";*/
 </style>

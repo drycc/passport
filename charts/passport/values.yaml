@@ -12,7 +12,6 @@ database_url: ""
 # can be specified as key-value pairs under environment
 # this is usually a non required setting.
 environment:
-  RESERVED_NAMES: "drycc, drycc-builder, drycc-monitor-grafana"
 ## LDAP setting
 #  LDAP_ENDPOINT: ""
 #  LDAP_BIND_DN: ""

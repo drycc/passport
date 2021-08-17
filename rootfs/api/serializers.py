@@ -3,13 +3,14 @@ Classes to serialize the RESTful representation of Drycc API models.
 """
 import logging
 
-from django.contrib.auth.models import User
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.forms import UserCreationForm
-from rest_framework import serializers
-from oauth2_provider.oauth2_validators import OAuth2Validator
+from django.contrib.auth.models import User
 from oauth2_provider.models import Grant, AccessToken
+from oauth2_provider.oauth2_validators import OAuth2Validator
+from rest_framework import serializers
 
+from api.exceptions import DryccException
 from api.utils import timestamp2datetime
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         if validated_data.get('username'):
+            qs = User.objects.filter(username=validated_data.get('username')).\
+                exclude(username=instance.username)
+            if qs:
+                raise DryccException("new username already exists.")
             instance.username = validated_data.get('username')
         if validated_data.get('email'):
             instance.email = validated_data.get('email')

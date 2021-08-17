@@ -54,7 +54,6 @@ export default AccessTokenList
 </script>
 
 <style scoped>
-    /*@import "../assets/bashboard.css";*/
     .pr1 {
         padding-right: 15px;
     }

@@ -32,12 +32,6 @@ urlpatterns = [
     re_path(r'reset/done/?$',
             views.UserPasswordResetCompleteView.as_view(),
             name='user_password_reset_complete'),
-    re_path(r'password_change/?$', views.UserPasswordChangeView.as_view(),
-            name='user_password_change'),
-    re_path(r'password_change/done/?$',
-            views.UserPasswordchangeDoneView.as_view(),
-            name='user_password_change_done'),
-
     re_path(r'login/?$', views.UserLoginView.as_view(), name='user_login'),
     re_path(r'login/done/?$', LoginDoneView.as_view(), name='login_done'),
     re_path(r'logout/?$', views.UserLogoutView.as_view(), name='user_logout'),

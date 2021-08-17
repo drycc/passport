@@ -7,7 +7,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import os.path
-import tempfile
 import ldap
 import dj_database_url
 
@@ -103,7 +102,6 @@ INSTALLED_APPS = (
     'guardian',
     'gunicorn',
     'rest_framework',
-    'rest_framework.authtoken',
     'oauth2_provider',
     # passport apps
     'api'
@@ -149,13 +147,12 @@ CORS_EXPOSE_HEADERS = (
 )
 
 X_FRAME_OPTIONS = 'DENY'
-# todo debug oauth2
-# CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = None
-# SESSION_COOKIE_SECURE = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
+CSRF_COOKIE_SECURE = bool(os.environ.get('CSRF_COOKIE_SECURE', False))
+SESSION_COOKIE_SECURE = bool(os.environ.get('SESSION_COOKIE_SECURE', False))
 
 # Honor HTTPS from a trusted proxy
 # see https://docs.djangoproject.com/en/2.2/ref/settings/#secure-proxy-ssl-header
@@ -249,16 +246,6 @@ LOGGING = {
         },
     }
 }
-# TEST_RUNNER = 'api.tests.SilentDjangoTestSuiteRunner'
-
-# default drycc passport settings
-LOG_LINES = 100
-TEMPDIR = tempfile.mkdtemp(prefix='drycc')
-
-# names which apps cannot reserve for routing
-DRYCC_RESERVED_NAMES = os.environ.get('RESERVED_NAMES', '').\
-    replace(' ', '').split(',')
-
 # security keys and auth tokens
 random_secret = ')u_jckp95wule8#wxd8sm!0tj2j&aveozu!nnpgl)2x&&16gfj'
 SECRET_KEY = os.environ.get('DRYCC_SECRET_KEY', random_secret)
@@ -268,23 +255,6 @@ DRYCC_DATABASE_URL = os.environ.get('DRYCC_DATABASE_URL', 'postgres://:@:5432/pa
 DATABASES = {
     'default': dj_database_url.config(default=DRYCC_DATABASE_URL,
                                       conn_max_age=600)
-}
-
-# Redis Configuration
-DRYCC_REDIS_ADDRS = os.environ.get('DRYCC_REDIS_ADDRS', '127.0.0.1:6379').split(
-    ",")
-DRYCC_REDIS_PASSWORD = os.environ.get('DRYCC_REDIS_PASSWORD', '')
-
-# Cache Configuration
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": ['redis://:{}@{}'.format(DRYCC_REDIS_PASSWORD, DRYCC_REDIS_ADDR) \
-                     for DRYCC_REDIS_ADDR in DRYCC_REDIS_ADDRS],  # noqa
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.ShardClient",
-        }
-    }
 }
 
 # LDAP settings taken from environment variables.
