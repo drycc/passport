@@ -7,9 +7,10 @@ Drycc (pronounced DAY-iss) Workflow is an open source Platform as a Service (Paa
 
 For more information about the Drycc Workflow, please visit the main project page at https://github.com/drycc/workflow.
 
-We welcome your input! If you have feedback, please [submit an issue][issues]. If you'd like to participate in development, please read the "Development" section below and [submit a pull request][prs].
+We welcome your input! If you have feedback, please [submit an issue](issues).
+If you'd like to participate in development, please read the "Development" section below and [submit a pull request](prs).
 
 # About
 
-The Passport is the Oauth2.0 API server for [Drycc Workflow][workflow].
+The Passport is the Oauth2.0 API server for [Drycc Workflow](https://drycc.cc).
 
