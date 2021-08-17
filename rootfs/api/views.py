@@ -16,7 +16,6 @@ from django.views.generic.edit import CreateView
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.urls import reverse_lazy
-# from oauth2_provider.views import AuthorizationView
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
@@ -59,10 +58,6 @@ class LivenessCheckView(View):
         return HttpResponse("OK")
 
     head = get
-
-
-# class AuthorizationTemplateView(AuthorizationView):
-#     template_name = "oauth2_provider/authorize.html"
 
 
 class RegisterView(CreateView):
