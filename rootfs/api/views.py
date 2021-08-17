@@ -230,6 +230,9 @@ class UserTokenDeleteView(ListViewSet):
 class UserAccountPasswordView(ListViewSet):
 
     def update(self, request, *args, **kwargs):
+        if settings.LDAP_ENDPOINT:
+            raise DryccException(
+                "You cannot change user info when ldap is enabled.")
         if not request.data.get('new_password'):
             raise DryccException("new_password is a required field")
         if not request.data.get('password'):

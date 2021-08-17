@@ -3,6 +3,7 @@ Classes to serialize the RESTful representation of Drycc API models.
 """
 import logging
 
+from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -32,6 +33,9 @@ class UserSerializer(serializers.ModelSerializer):
                   "is_staff", "is_active", "is_superuser")
 
     def update(self, instance, validated_data):
+        if settings.LDAP_ENDPOINT:
+            raise DryccException(
+                "You cannot change user info when ldap is enabled.")
         if validated_data.get('username'):
             qs = User.objects.filter(username=validated_data.get('username')).\
                 exclude(username=instance.username)

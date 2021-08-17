@@ -257,6 +257,40 @@ DATABASES = {
                                       conn_max_age=600)
 }
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.2/howto/static-files/
+STATIC_URL = '/assets/'
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'web', 'dist', 'assets'))
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# see: https://django-oauth-toolkit.readthedocs.io/en/latest/oidc.html?highlight=oidc.key#creating-rsa-private-key  # noqa
+with open('/var/run/secrets/drycc/passport/oidc-rsa-private-key') as f:
+    OIDC_RSA_PRIVATE_KEY = f.read()
+OAUTH2_PROVIDER = {
+    "OIDC_ENABLED": True,
+    "OIDC_RSA_PRIVATE_KEY": OIDC_RSA_PRIVATE_KEY,
+    "OAUTH2_VALIDATOR_CLASS": "api.serializers.CustomOAuth2Validator",
+    "PKCE_REQUIRED": False,
+    "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
+    "ACCESS_TOKEN_EXPIRE_SECONDS": int(os.environ.get('ACCESS_TOKEN_EXPIRE_SECONDS', 30 * 86400)),  # noqa
+    "ID_TOKEN_EXPIRE_SECONDS": int(os.environ.get('ID_TOKEN_EXPIRE_SECONDS', 30 * 86400)),  # noqa
+    "AUTHORIZATION_CODE_EXPIRE_SECONDS": int(os.environ.get('AUTHORIZATION_CODE_EXPIRE_SECONDS', 600)),  # noqa
+    "CLIENT_SECRET_GENERATOR_LENGTH": int(os.environ.get('CLIENT_SECRET_GENERATOR_LENGTH', 64)),  # noqa
+    "REFRESH_TOKEN_EXPIRE_SECONDS": int(os.environ.get('REFRESH_TOKEN_EXPIRE_SECONDS', 60 * 86400)),  # noqa
+    "ROTATE_REFRESH_TOKEN": True,
+    "SCOPES": {
+        "profile": "Profile",
+        "openid": "OpenID Connect scope",
+    },
+    "DEFAULT_SCOPES": ['openid', ],
+    "DEFAULT_CODE_CHALLENGE_METHOD": 'S256',
+}
+REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = (
+    'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    'rest_framework.authentication.SessionAuthentication',
+    'rest_framework.authentication.BasicAuthentication',
+)
+
 # LDAP settings taken from environment variables.
 LDAP_ENDPOINT = os.environ.get('LDAP_ENDPOINT', '')
 LDAP_BIND_DN = os.environ.get('LDAP_BIND_DN', '')
@@ -275,7 +309,6 @@ LDAP_SUPERUSER_GROUP = os.environ.get('LDAP_SUPERUSER_GROUP', '')
 # In order to debug LDAP configuration it is possible to enable
 # verbose logging from auth-ldap plugin:
 # https://pythonhosted.org/django-auth-ldap/logging.html
-
 if LDAP_ENDPOINT:
     AUTHENTICATION_BACKENDS = ("django_auth_ldap.backend.LDAPBackend",) + AUTHENTICATION_BACKENDS  # noqa
     AUTH_LDAP_SERVER_URI = LDAP_ENDPOINT
@@ -311,40 +344,6 @@ if LDAP_ENDPOINT:
     AUTH_LDAP_MIRROR_GROUPS = True
     AUTH_LDAP_FIND_GROUP_PERMS = True
     AUTH_LDAP_CACHE_GROUPS = False
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-STATIC_URL = '/assets/'
-STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'web', 'dist', 'assets'))
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# see: https://django-oauth-toolkit.readthedocs.io/en/latest/oidc.html?highlight=oidc.key#creating-rsa-private-key  # noqa
-with open('/var/run/secrets/drycc/passport/oidc-rsa-private-key') as f:
-    OIDC_RSA_PRIVATE_KEY = f.read()
-OAUTH2_PROVIDER = {
-    "OIDC_ENABLED": True,
-    "OIDC_RSA_PRIVATE_KEY": OIDC_RSA_PRIVATE_KEY,
-    "OAUTH2_VALIDATOR_CLASS": "api.serializers.CustomOAuth2Validator",
-    "PKCE_REQUIRED": False,
-    "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
-    "ACCESS_TOKEN_EXPIRE_SECONDS": int(os.environ.get('ACCESS_TOKEN_EXPIRE_SECONDS', 30 * 86400)),  # noqa
-    "ID_TOKEN_EXPIRE_SECONDS": int(os.environ.get('ID_TOKEN_EXPIRE_SECONDS', 30 * 86400)),  # noqa
-    "AUTHORIZATION_CODE_EXPIRE_SECONDS": int(os.environ.get('AUTHORIZATION_CODE_EXPIRE_SECONDS', 600)),  # noqa
-    "CLIENT_SECRET_GENERATOR_LENGTH": int(os.environ.get('CLIENT_SECRET_GENERATOR_LENGTH', 64)),  # noqa
-    "REFRESH_TOKEN_EXPIRE_SECONDS": int(os.environ.get('REFRESH_TOKEN_EXPIRE_SECONDS', 60 * 86400)),  # noqa
-    "ROTATE_REFRESH_TOKEN": True,
-    "SCOPES": {
-        "profile": "Profile",
-        "openid": "OpenID Connect scope",
-    },
-    "DEFAULT_SCOPES": ['openid', ],
-    "DEFAULT_CODE_CHALLENGE_METHOD": 'S256',
-}
-REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = (
-    'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-    'rest_framework.authentication.SessionAuthentication',
-    'rest_framework.authentication.BasicAuthentication',
-)
 
 EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
 EMAIL_PORT = os.environ.get('EMAIL_PORT', '')
