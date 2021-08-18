@@ -44,6 +44,13 @@ admin_password: "admin"
 admin_email: "admin@email.com"
 
 global:
+  # Set the location of Workflow's grafana instance
+  #
+  # Valid values are:
+  # - on-cluster: Run Grafana within the Kubernetes cluster
+  # - off-cluster: Grafana is running outside of the cluster
+  grafana_location: "on-cluster"
+
   # Admin email, used for each component to send email to administrator
   email: "drycc@drycc.cc"
   # Set the location of Workflow's PostgreSQL database
