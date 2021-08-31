@@ -6,12 +6,9 @@ WORKDIR /app
 RUN npm install \
   && yarn build
 
-
 FROM docker.io/library/python:3.9-alpine
 
 COPY requirements.txt /app/requirements.txt
-
-ENV PATH="/app/.venv/bin:${PATH}"
 
 RUN apk add --update --virtual .build-deps \
     postgresql-dev \
@@ -23,12 +20,13 @@ RUN apk add --update --virtual .build-deps \
     cargo \
     rust \
   && python3 -m venv /app/.venv \
+  && source /app/.venv/bin/activate \
   && pip3 install --disable-pip-version-check --no-cache-dir -r /app/requirements.txt \
   && runDeps="$( \
-    scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
+    scanelf --needed --nobanner --format '%n#p' --recursive /app/.venv \
     | tr ',' '\n' \
     | sort -u \
-    | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+    | awk 'system("[ -e /app/.venv/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
     )" \
   && apk add --update --virtual .passport-rundeps \
     $runDeps \
@@ -40,6 +38,8 @@ RUN apk add --update --virtual .build-deps \
 
 COPY . /app
 COPY --from=build-app /app/dist /app/web/dist
+
+ENTRYPOINT ["/app/bin/entrypoint"]
 
 WORKDIR /app
 CMD ["/app/bin/boot"]
