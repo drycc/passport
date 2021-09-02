@@ -6,7 +6,7 @@ from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.auth import views
 from django.db.models import Q
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.utils.encoding import force_bytes, force_text
@@ -65,10 +65,14 @@ class RegisterView(CreateView):
     template_name = 'user/register.html'
     success_url = reverse_lazy('register_done')
 
+    def get(self, request, *args, **kwargs):
+        if settings.LDAP_ENDPOINT or not settings.REGISTER_ENABLED:
+            return render(request, template_name='user/register_fail.html')
+        return CreateView.get(self, request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
-        if settings.LDAP_ENDPOINT:
-            raise DryccException(
-                "You cannot register user when ldap is enabled.")
+        if settings.LDAP_ENDPOINT or not settings.REGISTER_ENABLED:
+            return render(request, template_name='user/register_fail.html')
         form = self.form_class(request.POST)
         self.object = None
         if form.is_valid():

@@ -14,7 +14,7 @@ from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DRYCC_DEBUG', True))
+DEBUG = bool(os.environ.get('DRYCC_DEBUG', False))
 
 # If set to True, Django's normal exception handling of view functions
 # will be suppressed, and exceptions will propagate upwards
@@ -22,6 +22,9 @@ DEBUG = bool(os.environ.get('DRYCC_DEBUG', True))
 DEBUG_PROPAGATE_EXCEPTIONS = True
 # Enable Django admin
 ADMIN_ENABLED = bool(os.environ.get('ADMIN_ENABLED', False))
+# Enable Register
+# If this function is enabled, please set Django email related parameters
+REGISTER_ENABLED = bool(os.environ.get('REGISTER_ENABLED', False))
 # Silence two security messages around SSL as router takes care of them
 # https://docs.djangoproject.com/en/2.2/ref/checks/#security
 SILENCED_SYSTEM_CHECKS = [
