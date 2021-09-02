@@ -94,6 +94,7 @@ WSGI_APPLICATION = 'api.wsgi.application'
 
 INSTALLED_APPS = (
     'whitenoise.runserver_nostatic',
+    'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
