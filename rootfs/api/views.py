@@ -67,12 +67,12 @@ class RegistrationView(CreateView):
 
     def get(self, request, *args, **kwargs):
         if settings.LDAP_ENDPOINT or not settings.REGISTRATION_ENABLED:
-            return render(request, template_name='user/registration_fail.html')
+            return render(request, template_name='user/registration_disable.html')
         return CreateView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         if settings.LDAP_ENDPOINT or not settings.REGISTRATION_ENABLED:
-            return render(request, template_name='user/registration_fail.html')
+            return render(request, template_name='user/registration_disable.html')
         form = self.form_class(request.POST)
         self.object = None
         if form.is_valid():
