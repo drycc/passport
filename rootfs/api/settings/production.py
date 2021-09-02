@@ -22,9 +22,9 @@ DEBUG = bool(os.environ.get('DRYCC_DEBUG', False))
 DEBUG_PROPAGATE_EXCEPTIONS = True
 # Enable Django admin
 ADMIN_ENABLED = bool(os.environ.get('ADMIN_ENABLED', False))
-# Enable Register
+# Enable Registration
 # If this function is enabled, please set Django email related parameters
-REGISTER_ENABLED = bool(os.environ.get('REGISTER_ENABLED', False))
+REGISTRATION_ENABLED = bool(os.environ.get('REGISTRATION_ENABLED', False))
 # Silence two security messages around SSL as router takes care of them
 # https://docs.djangoproject.com/en/2.2/ref/checks/#security
 SILENCED_SYSTEM_CHECKS = [

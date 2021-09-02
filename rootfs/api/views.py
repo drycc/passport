@@ -23,7 +23,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from api import serializers
 from api.exceptions import ServiceUnavailable, DryccException
-from api.serializers import RegisterForm
+from api.serializers import RegistrationForm
 from api.utils import account_activation_token, get_local_host
 from api.viewset import NormalUserViewSet
 
@@ -60,19 +60,19 @@ class LivenessCheckView(View):
     head = get
 
 
-class RegisterView(CreateView):
-    form_class = RegisterForm
-    template_name = 'user/register.html'
-    success_url = reverse_lazy('register_done')
+class RegistrationView(CreateView):
+    form_class = RegistrationForm
+    template_name = 'user/registration.html'
+    success_url = reverse_lazy('registration_done')
 
     def get(self, request, *args, **kwargs):
-        if settings.LDAP_ENDPOINT or not settings.REGISTER_ENABLED:
-            return render(request, template_name='user/register_fail.html')
+        if settings.LDAP_ENDPOINT or not settings.REGISTRATION_ENABLED:
+            return render(request, template_name='user/registration_fail.html')
         return CreateView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        if settings.LDAP_ENDPOINT or not settings.REGISTER_ENABLED:
-            return render(request, template_name='user/register_fail.html')
+        if settings.LDAP_ENDPOINT or not settings.REGISTRATION_ENABLED:
+            return render(request, template_name='user/registration_fail.html')
         form = self.form_class(request.POST)
         self.object = None
         if form.is_valid():
@@ -97,8 +97,8 @@ class RegisterView(CreateView):
             return self.form_invalid(form)
 
 
-class RegisterDoneView(TemplateView):
-    template_name = 'user/register_done.html'
+class RegistrationDoneView(TemplateView):
+    template_name = 'user/registration_done.html'
     title = _('Activate email sent')
 
 

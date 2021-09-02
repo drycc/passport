@@ -17,7 +17,7 @@ from api.utils import timestamp2datetime
 logger = logging.getLogger(__name__)
 
 
-class RegisterForm(UserCreationForm):
+class RegistrationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ('username', 'email', 'password1', 'password2')

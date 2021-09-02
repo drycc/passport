@@ -15,7 +15,7 @@ environment:
 ## General settings
 #  DRYCC_DEBUG: False
 #  ADMIN_ENABLED: False
-#  REGISTER_ENABLED: False
+#  REGISTRATION_ENABLED: False
 ## LDAP setting
 #  LDAP_ENDPOINT: ""
 #  LDAP_BIND_DN: ""
