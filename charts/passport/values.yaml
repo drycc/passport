@@ -12,6 +12,10 @@ database_url: ""
 # can be specified as key-value pairs under environment
 # this is usually a non required setting.
 environment:
+## General settings
+#  DRYCC_DEBUG: False
+#  ADMIN_ENABLED: False
+#  REGISTRATION_ENABLED: False
 ## LDAP setting
 #  LDAP_ENDPOINT: ""
 #  LDAP_BIND_DN: ""
@@ -37,7 +41,6 @@ environment:
 #  EMAIL_HOST_PASSWORD: ""
 #  EMAIL_USE_TLS: ""
 #  EMAIL_USE_SSL: ""
-#  DEFAULT_FROM_EMAIL: ""
 # Used to create Django admin users
 admin_username: "admin"
 admin_password: "admin"

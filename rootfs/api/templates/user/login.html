@@ -1,6 +1,6 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/user.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
@@ -26,7 +26,7 @@
                 <button class="btn btn-primary btn-lg btn-block" name="commit" type="submit">Log In</button>
                 <input type="hidden" name="next" value={{ next }}>
             </form>
-            <a class="panel-footer" href="/user/register/"><span>Sign Up</span></a>
+            <a class="panel-footer" href="/user/registration/"><span>Sign Up</span></a>
         </div>
         <a href="/user/password_reset/" class="white-link">Forgot your password?</a>
     </div>

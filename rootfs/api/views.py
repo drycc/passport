@@ -6,7 +6,7 @@ from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.auth import views
 from django.db.models import Q
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.utils.encoding import force_bytes, force_text
@@ -23,7 +23,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from api import serializers
 from api.exceptions import ServiceUnavailable, DryccException
-from api.serializers import RegisterForm
+from api.serializers import RegistrationForm
 from api.utils import account_activation_token, get_local_host
 from api.viewset import NormalUserViewSet
 
@@ -60,15 +60,19 @@ class LivenessCheckView(View):
     head = get
 
 
-class RegisterView(CreateView):
-    form_class = RegisterForm
-    template_name = 'user/register.html'
-    success_url = reverse_lazy('register_done')
+class RegistrationView(CreateView):
+    form_class = RegistrationForm
+    template_name = 'user/registration.html'
+    success_url = reverse_lazy('registration_done')
+
+    def get(self, request, *args, **kwargs):
+        if settings.LDAP_ENDPOINT or not settings.REGISTRATION_ENABLED:
+            return render(request, template_name='user/registration_disable.html')
+        return CreateView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        if settings.LDAP_ENDPOINT:
-            raise DryccException(
-                "You cannot register user when ldap is enabled.")
+        if settings.LDAP_ENDPOINT or not settings.REGISTRATION_ENABLED:
+            return render(request, template_name='user/registration_disable.html')
         form = self.form_class(request.POST)
         self.object = None
         if form.is_valid():
@@ -93,8 +97,8 @@ class RegisterView(CreateView):
             return self.form_invalid(form)
 
 
-class RegisterDoneView(TemplateView):
-    template_name = 'user/register_done.html'
+class RegistrationDoneView(TemplateView):
+    template_name = 'user/registration_done.html'
     title = _('Activate email sent')
 
 

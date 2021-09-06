@@ -3,7 +3,7 @@ from django.urls import re_path
 from rest_framework.routers import DefaultRouter
 
 from api import views
-from api.views import RegisterView, ActivateAccount, RegisterDoneView, \
+from api.views import RegistrationView, ActivateAccount, RegistrationDoneView, \
     ActivateAccountDoneView, ActivateAccountFailView, LoginDoneView
 
 router = DefaultRouter(trailing_slash=False)
@@ -12,11 +12,11 @@ urlpatterns = [
     re_path(r'^', include(router.urls)),
     re_path(r'^info/?$',
             views.UserDetailView.as_view({'get': 'retrieve', 'put': 'update'})),
-    re_path(r'register/?$', RegisterView.as_view(), name='register'),
+    re_path(r'registration/?$', RegistrationView.as_view(), name='registration'),
     re_path(r'activate/(?P<uidb64>.+)/(?P<token>.+)/?$',
             ActivateAccount.as_view(), name='user_activate_account'),
-    re_path(r'register/done/?$', RegisterDoneView.as_view(),
-            name='user_register_done'),
+    re_path(r'registration/done/?$', RegistrationDoneView.as_view(),
+            name='user_registration_done'),
     re_path(r'activate/done/?$', ActivateAccountDoneView.as_view(),
             name='user_activate_account_done'),
     re_path(r'activate/fail/?$', ActivateAccountFailView.as_view(),
