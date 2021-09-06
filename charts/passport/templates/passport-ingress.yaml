@@ -27,9 +27,9 @@ spec:
         backend:
           service:
             name: drycc-passport
-            port: 
+            port:
               number: 80
-  {{ if .Values.global.cert_passport_enabled }}
+  {{ if .Values.global.cert_manager_enabled }}
   tls:
     - secretName: drycc-passport-certificate-auto
       hosts:

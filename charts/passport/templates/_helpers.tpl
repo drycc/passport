@@ -17,7 +17,11 @@ env:
 - name: "TZ"
   value: {{ .Values.time_zone | default "UTC" | quote }}
 - name: "DRYCC_CONTROLLER_DOMAIN"
+{{- if eq .Values.global.cert_manager_enabled "true" }}
+  value: https://drycc.{{ .Values.global.platform_domain }}
+{{- else }}
   value: http://drycc.{{ .Values.global.platform_domain }}
+{{- end }}
 - name: SOCIAL_AUTH_DRYCC_CONTROLLER_KEY
   valueFrom:
     secretKeyRef:
