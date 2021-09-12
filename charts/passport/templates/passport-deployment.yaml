@@ -23,28 +23,38 @@ spec:
         app: drycc-passport
     spec:
       serviceAccount: drycc-passport
+      initContainers:
+      - name: drycc-passport-init
+        image: docker.io/drycc/python-dev:latest
+        imagePullPolicy: {{.Values.image_pull_policy}}
+        command:
+          - netcat
+          - -v
+          - -u
+          - $(DRYCC_DATABASE_URL)
+        {{- include "passport.envs" . | indent 8 }}
       containers:
-        - name: drycc-passport
-          image: {{.Values.image_registry}}/{{.Values.image_org}}/passport:{{.Values.image_tag}}
-          imagePullPolicy: {{.Values.image_pull_policy}}
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 8000
-            initialDelaySeconds: 30
-            timeoutSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /readiness
-              port: 8000
-            initialDelaySeconds: 30
-            timeoutSeconds: 10
-            periodSeconds: 5
-          ports:
-            - containerPort: 8000
-              name: http
-          {{- include "passport.limits" . | indent 10 }}
-          {{- include "passport.envs" . | indent 10 }}
-          {{- include "passport.volumeMounts" . | indent 10 }}
+      - name: drycc-passport
+        image: {{.Values.image_registry}}/{{.Values.image_org}}/passport:{{.Values.image_tag}}
+        imagePullPolicy: {{.Values.image_pull_policy}}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 8000
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+          periodSeconds: 5
+        ports:
+          - containerPort: 8000
+            name: http
+        {{- include "passport.limits" . | indent 8 }}
+        {{- include "passport.envs" . | indent 8 }}
+        {{- include "passport.volumeMounts" . | indent 8 }}
       {{- include "passport.volumes" . | indent 6 }}
 {{- end }}
