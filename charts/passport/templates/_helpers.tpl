@@ -17,7 +17,7 @@ env:
 - name: "TZ"
   value: {{ .Values.time_zone | default "UTC" | quote }}
 - name: "DRYCC_CONTROLLER_DOMAIN"
-{{- if eq .Values.global.cert_manager_enabled "true" }}
+{{- if .Values.global.cert_manager_enabled }}
   value: https://drycc.{{ .Values.global.platform_domain }}
 {{- else }}
   value: http://drycc.{{ .Values.global.platform_domain }}

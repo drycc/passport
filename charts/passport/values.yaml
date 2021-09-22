@@ -65,8 +65,6 @@ global:
   # - off-cluster: Run PostgreSQL outside the Kubernetes cluster (configure in database section)
   database_location: "on-cluster"
 
-  # Role-Based Access Control for Kubernetes >= 1.5
-  use_rbac: false
   # Please check `kubernetes.io/ingress.class`
   ingress_class: ""
   # A domain name consists of one or more parts.
