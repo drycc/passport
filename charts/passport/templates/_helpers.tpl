@@ -44,7 +44,11 @@ env:
   value: {{ .Values.admin_email | default "admin@email.com" | quote }}
 {{- if eq .Values.global.grafana_location "on-cluster" }}
 - name: "DRYCC_MONITOR_GRAFANA_DOMAIN"
+{{- if .Values.global.cert_manager_enabled }}
+  value: https://drycc-monitor-grafana.{{ .Values.global.platform_domain }}
+{{- else }}
   value: http://drycc-monitor-grafana.{{ .Values.global.platform_domain }}
+{{- end }}
 - name: GRAFANA_ON_CLUSTER
   value: "true"
 - name: SOCIAL_AUTH_DRYCC_GRAFANA_KEY
