@@ -136,6 +136,10 @@ class ActivateAccountFailView(TemplateView):
 
 
 class UserLoginView(views.LoginView):
+    extra_context = {
+        "registration_enabled": settings.REGISTRATION_ENABLED,
+        "password_reset_enabled": True if settings.EMAIL_HOST else False,
+    }
     template_name = 'user/login.html'
 
 

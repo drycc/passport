@@ -26,8 +26,12 @@
                 <button class="btn btn-primary btn-lg btn-block" name="commit" type="submit">Log In</button>
                 <input type="hidden" name="next" value={{ next }}>
             </form>
+            {% if registration_enabled %}
             <a class="panel-footer" href="/user/registration/"><span>Sign Up</span></a>
+            {% endif %}
         </div>
+        {% if password_reset_enabled %}
         <a href="/user/password_reset/" class="white-link">Forgot your password?</a>
+        {% endif %}
     </div>
 </div>
