@@ -19,6 +19,7 @@ RUN apk add --update --virtual .build-deps \
     openssl-dev \
     cargo \
     rust \
+  && ln /usr/lib/libldap.so /usr/lib/libldap_r.so \
   && python3 -m venv /app/.venv \
   && source /app/.venv/bin/activate \
   && pip3 install --disable-pip-version-check --no-cache-dir -r /app/requirements.txt \

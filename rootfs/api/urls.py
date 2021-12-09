@@ -3,8 +3,6 @@ from django.urls import re_path
 from rest_framework.routers import DefaultRouter
 
 from api import views
-from api.views import RegistrationView, ActivateAccount, RegistrationDoneView, \
-    ActivateAccountDoneView, ActivateAccountFailView, LoginDoneView
 
 router = DefaultRouter(trailing_slash=False)
 
@@ -12,14 +10,18 @@ urlpatterns = [
     re_path(r'^', include(router.urls)),
     re_path(r'^info/?$',
             views.UserDetailView.as_view({'get': 'retrieve', 'put': 'update'})),
-    re_path(r'registration/?$', RegistrationView.as_view(), name='registration'),
+    re_path(r'update/(?P<uidb64>.+)/(?P<token>.+)/?$',
+            views.UpdateAccount.as_view(), name='user_update_account'),
+    re_path(r'^avatar/(?P<username>[-_\w]+)/?$',
+        views.UserAvatarViewSet.as_view({'get': 'avatar'})),
+    re_path(r'registration/?$', views.RegistrationView.as_view(), name='registration'),
     re_path(r'activate/(?P<uidb64>.+)/(?P<token>.+)/?$',
-            ActivateAccount.as_view(), name='user_activate_account'),
-    re_path(r'registration/done/?$', RegistrationDoneView.as_view(),
+            views.ActivateAccount.as_view(), name='user_activate_account'),
+    re_path(r'registration/done/?$', views.RegistrationDoneView.as_view(),
             name='user_registration_done'),
-    re_path(r'activate/done/?$', ActivateAccountDoneView.as_view(),
+    re_path(r'activate/done/?$', views.ActivateAccountDoneView.as_view(),
             name='user_activate_account_done'),
-    re_path(r'activate/fail/?$', ActivateAccountFailView.as_view(),
+    re_path(r'activate/fail/?$', views.ActivateAccountFailView.as_view(),
             name='user_activate_account_done'),
     re_path(r'password_reset/?$', views.UserPasswordResetView.as_view(),
             name='user_password_reset'),
@@ -33,7 +35,7 @@ urlpatterns = [
             views.UserPasswordResetCompleteView.as_view(),
             name='user_password_reset_complete'),
     re_path(r'login/?$', views.UserLoginView.as_view(), name='user_login'),
-    re_path(r'login/done/?$', LoginDoneView.as_view(), name='login_done'),
+    re_path(r'login/done/?$', views.LoginDoneView.as_view(), name='login_done'),
     re_path(r'logout/?$', views.UserLogoutView.as_view(), name='user_logout'),
 
     re_path(r'tokens/?$',

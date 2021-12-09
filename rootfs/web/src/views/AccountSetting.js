@@ -27,6 +27,8 @@ export default {
             originUser: Object,
             emailBTN: hiddenBTN,
             nameBTN: hiddenBTN,
+            firstNameBTN: hiddenBTN,
+            lastNameBTN: hiddenBTN,
             updateBTN: hiddenUpdateBTN
         })
 
@@ -40,7 +42,7 @@ export default {
             state.originUser = state.user
         }
 
-        const emailInputChage = (event) => {
+        const emailInputChange = (event) => {
             let newEmail = event.currentTarget.value
             if (newEmail != state.originUser.email) {
                 state.emailBTN = showBTN
@@ -50,17 +52,27 @@ export default {
             state.user.email = newEmail
         }
 
-        const nameInputChage = (event) => {
-            let newName = event.currentTarget.value
-            if (newName != state.originUser.username) {
-                state.nameBTN = showBTN
+        const firstNameInputChange = (event) => {
+            let newFirstName = event.currentTarget.value
+            if (newFirstName != state.originUser.first_name) {
+                state.firstNameBTN = showBTN
             } else {
-                state.nameBTN = hiddenBTN
+                state.firstNameBTN = hiddenBTN
             }
-            state.user.username = newName
+            state.user.first_name = newFirstName
         }
 
-        const currentPasswordChage = (event) => {
+        const lastNameInputChange = (event) => {
+            let newLastName = event.currentTarget.value
+            if (newLastName != state.originUser.last_name) {
+                state.lastNameBTN = showBTN
+            } else {
+                state.lastNameBTN = hiddenBTN
+            }
+            state.user.last_name = newLastName
+        }
+
+        const currentPasswordChange = (event) => {
             currentPassword = event.currentTarget.value
             if (currentPassword && newPassword && confirmNewPassword) {
                 state.updateBTN = showUpdateBTN
@@ -68,7 +80,7 @@ export default {
                 state.updateBTN = hiddenUpdateBTN
             }
         }
-        const newPasswordChage = (event) => {
+        const newPasswordChange = (event) => {
             newPassword = event.currentTarget.value
             if (currentPassword && newPassword && confirmNewPassword) {
                 state.updateBTN = showUpdateBTN
@@ -76,7 +88,7 @@ export default {
                 state.updateBTN = hiddenUpdateBTN
             }
         }
-        const confirmNewPasswordChage = (event) => {
+        const confirmNewPasswordChange = (event) => {
             confirmNewPassword = event.currentTarget.value
             if (currentPassword && newPassword && confirmNewPassword) {
                 state.updateBTN = showUpdateBTN
@@ -90,19 +102,28 @@ export default {
                 Toast.fail("this email is not valid.")
             } else {
                 putAccount({email: state.user.email}).then(res=>{
-                if (res.status == 204) {
-                    updateUser()
-                    state.emailBTN = hiddenBTN
-                }
-            })
+                    if (res.status == 204) {
+                        updateUser()
+                        state.emailBTN = hiddenBTN
+                    }
+                })
             }
         }
 
-        const submitName = () => {
-            putAccount({username: state.user.username}).then(res=>{
+        const submitFirstName = () => {
+            putAccount({first_name: state.user.first_name}).then(res=>{
                 if (res.status == 204) {
                     updateUser()
-                    state.nameBTN = hiddenBTN
+                    state.firstNameBTN = hiddenBTN
+                }
+            })
+        }
+
+        const submitLastName = () => {
+            putAccount({last_name: state.user.last_name}).then(res=>{
+                if (res.status == 204) {
+                    updateUser()
+                    state.lastNameBTN = hiddenBTN
                 }
             })
         }
@@ -128,21 +149,30 @@ export default {
             state.user.email = state.originUser.email
         }
 
-        const cancelName = () => {
-            state.nameBTN = hiddenBTN
-            state.user.username = state.originUser.username
+        const cancelFirstName = () => {
+            state.firstNameBTN = hiddenBTN
+            state.user.first_name = state.originUser.first_name
         }
+
+        const cancelLastName = () => {
+            state.lastNameBTN = hiddenBTN
+            state.user.last_name = state.originUser.last_name
+        }
+
         return {
             ...toRefs(state),
-            emailInputChage,
-            nameInputChage,
+            emailInputChange,
+            firstNameInputChange,
+            lastNameInputChange,
             submitEmail,
             cancelEmail,
-            submitName,
-            cancelName,
-            currentPasswordChage,
-            newPasswordChage,
-            confirmNewPasswordChage,
+            submitFirstName,
+            cancelFirstName,
+            submitLastName,
+            cancelLastName,
+            currentPasswordChange,
+            newPasswordChange,
+            confirmNewPasswordChange,
             submitPassowrd
         }
     },

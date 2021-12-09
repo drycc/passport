@@ -6,9 +6,15 @@ axios.defaults.baseURL = import.meta.env.VITE_APP_BASE_API
 axios.defaults.withCredentials = true
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 axios.defaults.headers.post['Content-Type'] = 'application/json'
+const loadingToast = [];
 
 axios.interceptors.request.use(
     (config)=>{
+        loadingToast.push(Toast.loading({
+            duration: 0,
+            forbidClick: true,
+            message: "Loading..."
+        }));
         let csrftoken = getCookie('csrftoken')
         if(csrftoken){
             config.headers['X-CSRFToken'] = csrftoken;
@@ -19,6 +25,9 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
     response => {
+      if (loadingToast.length > 0) {
+        loadingToast.pop().clear();
+      }
       if ([200, 201, 204].indexOf(response.status) >= 0) {
         return Promise.resolve(response);
       } else {
@@ -26,6 +35,9 @@ axios.interceptors.response.use(
       }
     },
     error => {
+      if (loadingToast.length > 0) {
+        loadingToast.pop().clear();
+      }
       if (error.response.status) {
         switch (error.response.status) {
           case 401:

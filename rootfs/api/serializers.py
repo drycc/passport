@@ -3,7 +3,6 @@ Classes to serialize the RESTful representation of Drycc API models.
 """
 import logging
 
-from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -11,7 +10,6 @@ from oauth2_provider.models import Grant, AccessToken
 from oauth2_provider.oauth2_validators import OAuth2Validator
 from rest_framework import serializers
 
-from api.exceptions import DryccException
 from api.utils import timestamp2datetime
 
 logger = logging.getLogger(__name__)
@@ -24,28 +22,12 @@ class RegistrationForm(UserCreationForm):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=150, required=False)
-    email = serializers.CharField(max_length=254, required=False)
-
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', "first_name", "last_name",
-                  "is_staff", "is_active", "is_superuser")
-
-    def update(self, instance, validated_data):
-        if settings.LDAP_ENDPOINT:
-            raise DryccException(
-                "You cannot change user info when ldap is enabled.")
-        if validated_data.get('username'):
-            qs = User.objects.filter(username=validated_data.get('username')).\
-                exclude(username=instance.username)
-            if qs:
-                raise DryccException("new username already exists.")
-            instance.username = validated_data.get('username')
-        if validated_data.get('email'):
-            instance.email = validated_data.get('email')
-        instance.save()
-        return instance
+        fields = ('id', 'username', 'email', 'first_name', 'last_name',
+                  'is_staff', 'is_active', 'is_superuser')
+        read_only_fields = ('id', 'username', 'is_staff', 'is_active',
+                            'is_superuser')
 
 
 class UserEmailSerializer(serializers.ModelSerializer):

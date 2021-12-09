@@ -21,10 +21,10 @@ DEBUG = bool(os.environ.get('DRYCC_DEBUG', False))
 # https://docs.djangoproject.com/en/2.2/ref/settings/#debug-propagate-exceptions
 DEBUG_PROPAGATE_EXCEPTIONS = True
 # Enable Django admin
-ADMIN_ENABLED = bool(os.environ.get('ADMIN_ENABLED', False))
+ADMIN_ENABLED = os.environ.get('ADMIN_ENABLED', 'false') != 'false'
 # Enable Registration
 # If this function is enabled, please set Django email related parameters
-REGISTRATION_ENABLED = bool(os.environ.get('REGISTRATION_ENABLED', False))
+REGISTRATION_ENABLED = os.environ.get('REGISTRATION_ENABLED', 'false') != 'false'
 # Silence two security messages around SSL as router takes care of them
 # https://docs.djangoproject.com/en/2.2/ref/checks/#security
 SILENCED_SYSTEM_CHECKS = [
@@ -267,6 +267,8 @@ STATIC_URL = '/assets/'
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'web', 'dist', 'assets'))
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Avatar URL
+AVATAR_URL = "https://cravatar.cn/avatar/"
 # see: https://django-oauth-toolkit.readthedocs.io/en/latest/oidc.html?highlight=oidc.key#creating-rsa-private-key  # noqa
 with open('/var/run/secrets/drycc/passport/oidc-rsa-private-key') as f:
     OIDC_RSA_PRIVATE_KEY = f.read()
@@ -294,6 +296,22 @@ REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = (
     'rest_framework.authentication.SessionAuthentication',
     'rest_framework.authentication.BasicAuthentication',
 )
+
+# Redis Configuration
+DRYCC_REDIS_ADDRS = os.environ.get('DRYCC_REDIS_ADDRS', '127.0.0.1:6379').split(",")
+DRYCC_REDIS_PASSWORD = os.environ.get('DRYCC_REDIS_PASSWORD', '')
+
+# Cache Configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": ['redis://:{}@{}'.format(DRYCC_REDIS_PASSWORD, DRYCC_REDIS_ADDR) \
+                     for DRYCC_REDIS_ADDR in DRYCC_REDIS_ADDRS],  # noqa
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.ShardClient",
+        }
+    }
+}
 
 # LDAP settings taken from environment variables.
 LDAP_ENDPOINT = os.environ.get('LDAP_ENDPOINT', '')
@@ -354,5 +372,5 @@ EMAIL_PORT = os.environ.get('EMAIL_PORT', '')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', '')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', True)
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'false').lower() != 'false'
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'false').lower() != 'false'

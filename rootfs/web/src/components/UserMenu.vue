@@ -10,9 +10,12 @@
         <li class="glostick__menu__listitem">
             <a class="glostick__menu__item glostick__menu__item--account-details" href="/account-setting">
                 <div class="glostick__user__avatar--container">
-                    <img class="glostick__account-details__avatar" src="../../src/assets/style/avatar.png" >
+                    <img class="glostick__account-details__avatar" :src="'/user/avatar/'+user.username" >
                 </div>
-                <div class="glostick__account-details__name">
+                <div v-if="user.first_name || user.last_name" class="glostick__account-details__name">
+                  {{user.first_name}} {{user.last_name}}
+                </div>
+                <div v-else class="glostick__account-details__name">
                   {{user.username}}
                 </div>
                 <div class="glostick__account-details__email">

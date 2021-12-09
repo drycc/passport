@@ -117,8 +117,9 @@
 
 .glostick__property__name span {
     position: absolute;
-    left: 52px;
-    top: 1px;
+    left: 60px;
+    top: 6px;
+    font-weight: bold;
     line-height: 48px;
 }
 
@@ -419,7 +420,7 @@
     }
 
     .glostick__property__name span {
-        left: 45px;
+        left: 60px;
     }
 
     .glostick__menu {

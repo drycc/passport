@@ -1,6 +1,9 @@
 import logging
-
+import hashlib
 from django.conf import settings
+from django.core.cache import cache
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.contrib import messages, auth
 from django.contrib.auth import login
 from django.contrib.auth.models import User
@@ -8,7 +11,7 @@ from django.contrib.auth import views
 from django.db.models import Q
 from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import render_to_string
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import View
@@ -24,7 +27,7 @@ from rest_framework.viewsets import ModelViewSet
 from api import serializers
 from api.exceptions import ServiceUnavailable, DryccException
 from api.serializers import RegistrationForm
-from api.utils import account_activation_token, get_local_host
+from api.utils import token_generator, get_local_host
 from api.viewset import NormalUserViewSet
 
 logger = logging.getLogger(__name__)
@@ -87,7 +90,7 @@ class RegistrationView(CreateView):
                     'user': user,
                     'domain': domain,
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': account_activation_token.make_token(user),
+                    'token': token_generator.make_token(user),
                 })
             user.email_user(mail_subject, message)
             messages.success(request, (
@@ -110,13 +113,12 @@ class ActivateAccount(View):
             user = User.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
-        if user is not None and account_activation_token.check_token(
+        if user is not None and token_generator.check_token(
                 user, token):
             user.is_active = True
             user.is_staff = True
             user.save()
-            login(request, user,
-                  backend='django.contrib.auth.backends.ModelBackend')
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'Your account have been confirmed.')
             return redirect('/user/activate/done/')
         else:
@@ -151,12 +153,58 @@ class UserDetailView(NormalUserViewSet):
         return self.request.user
 
     def update(self, request, *args, **kwargs):
-        user = serializers.UserSerializer(data=request.data,
+        user_serializer = self.serializer_class(data=request.data,
                                           instance=request.user,
                                           partial=True)
-        if user.is_valid():
-            user.save()
+        if user_serializer.is_valid():
+            if settings.EMAIL_HOST:
+                user = self.get_object()
+                mail_subject = 'Update your account.'
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                token = token_generator.make_token(user)
+                message = render_to_string(
+                    'user/account_update_email.html', {
+                        'uid': uid,
+                        'user': user,
+                        'token': token,
+                        'domain': get_local_host(request)
+                    })
+                cache_key = "user:serializer:%s" % user.pk
+                cache.set(cache_key, request.data, 60 * 30)
+                user.email_user(mail_subject, message)
+            else:
+                user_serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UpdateAccount(View):
+
+    def get(self, request, uidb64, token, *args, **kwargs):
+        user = get_object_or_404(User, pk=force_text(urlsafe_base64_decode(uidb64)))
+        if user is not None and token_generator.check_token(user, token):
+            cache_key = "user:serializer:%s" % user.pk
+            data = cache.get(cache_key, None)
+            if data:
+                user_serializer = serializers.UserSerializer(
+                    data=data, instance=user, partial=True)
+                if user_serializer.is_valid():
+                    user_serializer.save()
+                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    cache.delete(cache_key)
+                    return render(request, template_name='user/account_update_done.html')
+        return render(request, template_name='user/account_update_fail.html')
+
+
+class UserAvatarViewSet(NormalUserViewSet):
+
+    @method_decorator(cache_page(60 * 5))
+    def avatar(self, request, *args, **kwargs):
+        user = User.objects.filter(username=kwargs["username"]).first()
+        size = request.GET.get("s", "80")
+        md5 = hashlib.md5()
+        if user:
+            md5.update(user.email.encode("utf8"))
+        return HttpResponseRedirect(settings.AVATAR_URL + md5.hexdigest() + "?s=" + size)  
 
 
 class UserEmailView(NormalUserViewSet):

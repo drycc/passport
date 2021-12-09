@@ -8,6 +8,8 @@ export function dealUser(obj) {
     return {
         username: obj.data.username,
         email: obj.data.email,
+        first_name: obj.data.first_name,
+        last_name: obj.data.last_name,
     }
 }
 
