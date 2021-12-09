@@ -197,6 +197,11 @@
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.2.1.tgz#1f1fe26fe0334404cce10740b5ffb2654f1281aa"
   integrity sha512-INN92dVBNgd0TW9BqfQQKx/HWGCHhUUbAV5EZ5FgSCiEdwuZsJbGt1mdnaD9IxGhpiyOjP2ClxGG8SFp7ELcWg==
 
+"@icon-park/vue-next@^1.3.5":
+  version "1.3.5"
+  resolved "https://registry.nlark.com/@icon-park/vue-next/download/@icon-park/vue-next-1.3.5.tgz#4c9cbe6c77c4f4dadbe60fd26b86b10ed4ad186b"
+  integrity sha1-TJy+bHfE9Nrb5g/Sa4axDtStGGs=
+
 axios@^0.21.1:
   version "0.21.1"
   resolved "https://registry.npm.taobao.org/axios/download/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"

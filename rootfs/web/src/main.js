@@ -4,6 +4,7 @@ import { createApp } from 'vue'
 import { Toast } from 'vant';
 import { i18n, setLang, getUAgentLang } from './lang'
 import 'vant/lib/index.css';
+import {install} from '@icon-park/vue-next/es/all';
 
 /**
  * 时间对象的格式化;
@@ -45,6 +46,7 @@ function init () {
 init()
 
 const app = createApp(App)
+install(app);
 app.use(router)
 app.use(i18n)
 app.use(Toast);
