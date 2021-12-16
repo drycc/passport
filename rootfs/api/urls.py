@@ -13,7 +13,7 @@ urlpatterns = [
     re_path(r'update/(?P<uidb64>.+)/(?P<token>.+)/?$',
             views.UpdateAccount.as_view(), name='user_update_account'),
     re_path(r'^avatar/(?P<username>[-_\w]+)/?$',
-        views.UserAvatarViewSet.as_view({'get': 'avatar'})),
+            views.UserAvatarViewSet.as_view({'get': 'avatar'})),
     re_path(r'registration/?$', views.RegistrationView.as_view(), name='registration'),
     re_path(r'activate/(?P<uidb64>.+)/(?P<token>.+)/?$',
             views.ActivateAccount.as_view(), name='user_activate_account'),

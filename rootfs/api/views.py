@@ -6,8 +6,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.contrib import messages, auth
 from django.contrib.auth import login
-from django.contrib.auth.models import User
 from django.contrib.auth import views
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import render_to_string
@@ -30,6 +30,7 @@ from api.serializers import RegistrationForm
 from api.utils import token_generator, get_local_host
 from api.viewset import NormalUserViewSet
 
+User = get_user_model()
 logger = logging.getLogger(__name__)
 
 
@@ -153,9 +154,11 @@ class UserDetailView(NormalUserViewSet):
         return self.request.user
 
     def update(self, request, *args, **kwargs):
-        user_serializer = self.serializer_class(data=request.data,
-                                          instance=request.user,
-                                          partial=True)
+        user_serializer = self.serializer_class(
+            data=request.data,
+            instance=request.user,
+            partial=True
+        )
         if user_serializer.is_valid():
             if settings.EMAIL_HOST:
                 user = self.get_object()
@@ -204,7 +207,7 @@ class UserAvatarViewSet(NormalUserViewSet):
         md5 = hashlib.md5()
         if user:
             md5.update(user.email.encode("utf8"))
-        return HttpResponseRedirect(settings.AVATAR_URL + md5.hexdigest() + "?s=" + size)  
+        return HttpResponseRedirect(settings.AVATAR_URL + md5.hexdigest() + "?s=" + size)
 
 
 class UserEmailView(NormalUserViewSet):

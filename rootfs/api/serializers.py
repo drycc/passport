@@ -5,13 +5,14 @@ import logging
 
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from oauth2_provider.models import Grant, AccessToken
 from oauth2_provider.oauth2_validators import OAuth2Validator
 from rest_framework import serializers
 
 from api.utils import timestamp2datetime
 
+User = get_user_model()
 logger = logging.getLogger(__name__)
 
 

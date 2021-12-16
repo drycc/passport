@@ -14,7 +14,7 @@ from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DRYCC_DEBUG', False))
+DEBUG = os.environ.get('DRYCC_DEBUG', 'false').lower() != 'false'
 
 # If set to True, Django's normal exception handling of view functions
 # will be suppressed, and exceptions will propagate upwards
@@ -29,7 +29,8 @@ REGISTRATION_ENABLED = os.environ.get('REGISTRATION_ENABLED', 'false') != 'false
 # https://docs.djangoproject.com/en/2.2/ref/checks/#security
 SILENCED_SYSTEM_CHECKS = [
     'security.W004',
-    'security.W008'
+    'security.W008',
+    'security.W012',
 ]
 
 CONN_MAX_AGE = 60 * 3
@@ -111,6 +112,9 @@ INSTALLED_APPS = (
     'api'
 )
 
+AUTH_USER_MODEL = "api.User"
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "guardian.backends.ObjectPermissionBackend",
@@ -155,8 +159,8 @@ CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = None
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
-CSRF_COOKIE_SECURE = bool(os.environ.get('CSRF_COOKIE_SECURE', False))
-SESSION_COOKIE_SECURE = bool(os.environ.get('SESSION_COOKIE_SECURE', False))
+CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'true').lower() != 'false'
+SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'false').lower() != 'false'
 
 # Honor HTTPS from a trusted proxy
 # see https://docs.djangoproject.com/en/2.2/ref/settings/#secure-proxy-ssl-header
@@ -255,7 +259,7 @@ random_secret = ')u_jckp95wule8#wxd8sm!0tj2j&aveozu!nnpgl)2x&&16gfj'
 SECRET_KEY = os.environ.get('DRYCC_SECRET_KEY', random_secret)
 
 # database setting
-DRYCC_DATABASE_URL = os.environ.get('DRYCC_DATABASE_URL', 'postgres://:@:5432/passport')  # noqa
+DRYCC_DATABASE_URL = os.environ.get('DRYCC_DATABASE_URL', 'postgres://postgres:123456@49.232.207.93:5432/drycc_passport')  # noqa
 DATABASES = {
     'default': dj_database_url.config(default=DRYCC_DATABASE_URL,
                                       conn_max_age=600)
@@ -269,9 +273,16 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Avatar URL
 AVATAR_URL = "https://cravatar.cn/avatar/"
+
 # see: https://django-oauth-toolkit.readthedocs.io/en/latest/oidc.html?highlight=oidc.key#creating-rsa-private-key  # noqa
-with open('/var/run/secrets/drycc/passport/oidc-rsa-private-key') as f:
-    OIDC_RSA_PRIVATE_KEY = f.read()
+OIDC_ENABLED = False
+OIDC_RSA_PRIVATE_KEY = None
+OIDC_RSA_PRIVATE_KEY_FILE = '/var/run/secrets/drycc/passport/oidc-rsa-private-key'
+if os.path.exists(OIDC_RSA_PRIVATE_KEY_FILE):
+    with open('/var/run/secrets/drycc/passport/oidc-rsa-private-key') as f:
+        OIDC_RSA_PRIVATE_KEY = f.read()
+        OIDC_ENABLED = True
+
 OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
     "OIDC_RSA_PRIVATE_KEY": OIDC_RSA_PRIVATE_KEY,
