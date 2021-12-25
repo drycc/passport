@@ -58,6 +58,10 @@ h1.logo a:before {
     border-image: initial;
 }
 
+.panel div {
+    margin-top: 30px
+}
+
 .panel .h3 {
     margin: 40px 20px 0;
     line-height: 1.5;
@@ -71,7 +75,7 @@ h2 {
     color: #664986;
 }
 .panel form {
-    padding: 40px
+    padding: 30px
 }
 
 form {
