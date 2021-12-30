@@ -46,6 +46,9 @@ admin_username: "admin"
 admin_password: "admin"
 admin_email: "admin@email.com"
 
+redis:
+  replicas: 1
+
 global:
   # Set the location of Workflow's grafana instance
   #

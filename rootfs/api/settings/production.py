@@ -9,22 +9,22 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os.path
 import ldap
 import dj_database_url
-
+from distutils.util import strtobool
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DRYCC_DEBUG', 'false').lower() != 'false'
+DEBUG = bool(strtobool(os.environ.get('DRYCC_DEBUG', 'false')))
 
 # If set to True, Django's normal exception handling of view functions
 # will be suppressed, and exceptions will propagate upwards
 # https://docs.djangoproject.com/en/2.2/ref/settings/#debug-propagate-exceptions
 DEBUG_PROPAGATE_EXCEPTIONS = True
 # Enable Django admin
-ADMIN_ENABLED = os.environ.get('ADMIN_ENABLED', 'false') != 'false'
+ADMIN_ENABLED = bool(strtobool(os.environ.get('ADMIN_ENABLED', 'false')))
 # Enable Registration
 # If this function is enabled, please set Django email related parameters
-REGISTRATION_ENABLED = os.environ.get('REGISTRATION_ENABLED', 'false') != 'false'
+REGISTRATION_ENABLED = bool(strtobool(os.environ.get('REGISTRATION_ENABLED', 'false')))
 # Silence two security messages around SSL as router takes care of them
 # https://docs.djangoproject.com/en/2.2/ref/checks/#security
 SILENCED_SYSTEM_CHECKS = [
@@ -159,8 +159,8 @@ CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = None
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
-CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'true').lower() != 'false'
-SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'false').lower() != 'false'
+CSRF_COOKIE_SECURE = bool(strtobool(os.environ.get('CSRF_COOKIE_SECURE', 'true')))
+SESSION_COOKIE_SECURE = bool(strtobool(os.environ.get('SESSION_COOKIE_SECURE', 'false')))
 
 # Honor HTTPS from a trusted proxy
 # see https://docs.djangoproject.com/en/2.2/ref/settings/#secure-proxy-ssl-header
@@ -383,5 +383,5 @@ EMAIL_PORT = os.environ.get('EMAIL_PORT', '')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', '')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'false').lower() != 'false'
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'false').lower() != 'false'
+EMAIL_USE_TLS = bool(strtobool(os.environ.get('EMAIL_USE_TLS', 'false')))
+EMAIL_USE_SSL = bool(strtobool(os.environ.get('EMAIL_USE_SSL', 'false')))
