@@ -3,7 +3,7 @@ FROM node:16-alpine3.14 as build-app
 ADD web /app
 WORKDIR /app
 
-RUN npm install \
+RUN yarn install \
   && yarn build
 
 FROM docker.io/library/python:3.9-alpine
