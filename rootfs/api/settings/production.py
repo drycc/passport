@@ -31,6 +31,7 @@ SILENCED_SYSTEM_CHECKS = [
     'security.W004',
     'security.W008',
     'security.W012',
+    'security.W016',
 ]
 
 CONN_MAX_AGE = 60 * 3
@@ -159,7 +160,7 @@ CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = None
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
-CSRF_COOKIE_SECURE = bool(strtobool(os.environ.get('CSRF_COOKIE_SECURE', 'true')))
+CSRF_COOKIE_SECURE = bool(strtobool(os.environ.get('CSRF_COOKIE_SECURE', 'false')))
 SESSION_COOKIE_SECURE = bool(strtobool(os.environ.get('SESSION_COOKIE_SECURE', 'false')))
 
 # Honor HTTPS from a trusted proxy
