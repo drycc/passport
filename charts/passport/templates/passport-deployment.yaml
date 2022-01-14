@@ -1,4 +1,4 @@
-{{- if eq .Values.global.passport_location "on-cluster" }}
+{{- if eq .Values.global.passportLocation "on-cluster" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,7 +6,7 @@ metadata:
   labels:
     heritage: drycc
   annotations:
-    component.drycc.cc/version: {{ .Values.image_tag }}
+    component.drycc.cc/version: {{ .Values.imageTag }}
 spec:
   replicas: {{ .Values.replicas }}
   strategy:
@@ -26,7 +26,7 @@ spec:
       initContainers:
       - name: drycc-passport-init
         image: docker.io/drycc/python-dev:latest
-        imagePullPolicy: {{.Values.image_pull_policy}}
+        imagePullPolicy: {{.Values.imagePullPolicy}}
         command:
           - netcat
           - -v
@@ -35,8 +35,8 @@ spec:
         {{- include "passport.envs" . | indent 8 }}
       containers:
       - name: drycc-passport
-        image: {{.Values.image_registry}}/{{.Values.image_org}}/passport:{{.Values.image_tag}}
-        imagePullPolicy: {{.Values.image_pull_policy}}
+        image: {{.Values.imageRegistry}}/{{.Values.imageOrg}}/passport:{{.Values.imageTag}}
+        imagePullPolicy: {{.Values.imagePullPolicy}}
         livenessProbe:
           httpGet:
             path: /healthz

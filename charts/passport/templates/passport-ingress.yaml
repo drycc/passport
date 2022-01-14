@@ -1,4 +1,4 @@
-{{- if eq .Values.global.passport_location "on-cluster" }}
+{{- if eq .Values.global.passportLocation "on-cluster" }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -10,16 +10,16 @@ metadata:
     heritage: "{{ .Release.Service }}"
   annotations:
     kubernetes.io/tls-acme: "true"
-    {{- if not (eq .Values.global.ingress_class "") }}
-    kubernetes.io/ingress.class: "{{ .Values.global.ingress_class }}"
+    {{- if not (eq .Values.global.ingressClass "") }}
+    kubernetes.io/ingress.class: "{{ .Values.global.ingressClass }}"
     {{ end }}
 spec:
   rules:
-  - host: drycc-passport.{{ .Values.global.platform_domain }}
+  - host: drycc-passport.{{ .Values.global.platformDomain }}
     http:
       paths:
       - pathType: Prefix
-        {{- if eq .Values.global.ingress_class "gce" "alb" }}
+        {{- if eq .Values.global.ingressClass "gce" "alb" }}
         path: /*
         {{- else }}{{/* Has annotations but ingress class is not "gce" nor "alb" */}}
         path: /
@@ -29,10 +29,10 @@ spec:
             name: drycc-passport
             port:
               number: 80
-  {{ if .Values.global.cert_manager_enabled }}
+  {{ if .Values.global.certManagerEnabled }}
   tls:
     - secretName: drycc-passport-certificate-auto
       hosts:
-        - drycc-passport.{{ .Values.global.platform_domain }}
+        - drycc-passport.{{ .Values.global.platformDomain }}
   {{- end }}
 {{- end }}

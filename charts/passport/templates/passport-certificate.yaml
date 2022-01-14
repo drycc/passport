@@ -1,5 +1,5 @@
-{{- if eq .Values.global.passport_location "on-cluster" }}
-{{- if .Values.global.cert_manager_enabled }}
+{{- if eq .Values.global.passportLocation "on-cluster" }}
+{{- if .Values.global.certManagerEnabled }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -10,7 +10,7 @@ spec:
     name: drycc-cluster-issuer
     kind: ClusterIssuer
   dnsNames:
-  - drycc-passport.{{ .Values.global.platform_domain }}
+  - drycc-passport.{{ .Values.global.platformDomain }}
   privateKey:
     rotationPolicy: Always
 {{- end }}
