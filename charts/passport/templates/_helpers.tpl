@@ -18,10 +18,10 @@ env:
 - name: "TZ"
   value: {{ .Values.time_zone | default "UTC" | quote }}
 - name: "DRYCC_CONTROLLER_DOMAIN"
-{{- if .Values.global.cert_manager_enabled }}
-  value: https://drycc.{{ .Values.global.platform_domain }}
+{{- if .Values.global.certManagerEnabled }}
+  value: https://drycc.{{ .Values.global.platformDomain }}
 {{- else }}
-  value: http://drycc.{{ .Values.global.platform_domain }}
+  value: http://drycc.{{ .Values.global.platformDomain }}
 {{- end }}
 - name: DRYCC_SECRET_KEY
   valueFrom:
@@ -43,17 +43,17 @@ env:
     fieldRef:
       fieldPath: metadata.namespace
 - name: ADMIN_USERNAME
-  value: {{ .Values.admin_username | default "admin" | quote }}
+  value: {{ .Values.adminUsername | default "admin" | quote }}
 - name: ADMIN_PASSWORD
-  value: {{ .Values.admin_password | default "admin" | quote }}
+  value: {{ .Values.adminPassword | default "admin" | quote }}
 - name: ADMIN_EMAIL
-  value: {{ .Values.admin_email | default "admin@email.com" | quote }}
-{{- if eq .Values.global.grafana_location "on-cluster" }}
+  value: {{ .Values.adminEmail | default "admin@email.com" | quote }}
+{{- if eq .Values.global.grafanaLocation "on-cluster" }}
 - name: "DRYCC_MONITOR_GRAFANA_DOMAIN"
-{{- if .Values.global.cert_manager_enabled }}
-  value: https://drycc-monitor-grafana.{{ .Values.global.platform_domain }}
+{{- if .Values.global.certManagerEnabled }}
+  value: https://drycc-monitor-grafana.{{ .Values.global.platformDomain }}
 {{- else }}
-  value: http://drycc-monitor-grafana.{{ .Values.global.platform_domain }}
+  value: http://drycc-monitor-grafana.{{ .Values.global.platformDomain }}
 {{- end }}
 - name: GRAFANA_ON_CLUSTER
   value: "true"
@@ -68,13 +68,13 @@ env:
       name: passport-creds
       key: social-auth-drycc-grafana-secret
 {{- end }}
-{{- if (.Values.database_url) }}
+{{- if (.Values.databaseUrl) }}
 - name: DRYCC_DATABASE_URL
   valueFrom:
     secretKeyRef:
       name: passport-creds
       key: database-url
-{{- else if eq .Values.global.database_location "on-cluster" }}
+{{- else if eq .Values.global.databaseLocation "on-cluster" }}
 - name: DRYCC_DATABASE_USER
   valueFrom:
     secretKeyRef:
@@ -93,10 +93,10 @@ env:
 - name: DRYCC_DATABASE_URL
   value: "postgres://$(DRYCC_DATABASE_USER):$(DRYCC_DATABASE_PASSWORD)@$(DRYCC_DATABASE_SERVICE_HOST):$(DRYCC_DATABASE_SERVICE_PORT)/$(DRYCC_DATABASE_NAME)"
 {{- end }}
-{{- if eq .Values.global.redis_location "on-cluster"}}
+{{- if eq .Values.global.redisLocation "on-cluster"}}
 - name: DRYCC_REDIS_ADDRS
-  value: "{{range $i := until $redisNodeCount}}drycc-redis-{{$i}}.drycc-redis.{{$.Release.Namespace}}.svc.{{$.Values.global.cluster_domain}}:6379{{if lt (add 1 $i) $redisNodeCount}},{{end}}{{end}}"
-{{- else if eq .Values.global.redis_location "off-cluster" }}
+  value: "{{range $i := until $redisNodeCount}}drycc-redis-{{$i}}.drycc-redis.{{$.Release.Namespace}}.svc.{{$.Values.global.clusterDomain}}:6379{{if lt (add 1 $i) $redisNodeCount}},{{end}}{{end}}"
+{{- else if eq .Values.global.redisLocation "off-cluster" }}
 - name: DRYCC_REDIS_ADDRS
   valueFrom:
     secretKeyRef:
@@ -117,14 +117,14 @@ env:
 
 {{/* Generate passport deployment limits */}}
 {{- define "passport.limits" -}}
-{{- if or (.Values.limits_cpu) (.Values.limits_memory) }}
+{{- if or (.Values.limitsCpu) (.Values.limitsMemory) }}
 resources:
   limits:
-{{- if (.Values.limits_cpu) }}
-    cpu: {{.Values.limits_cpu}}
+{{- if (.Values.limitsCpu) }}
+    cpu: {{.Values.limitsCpu}}
 {{- end }}
-{{- if (.Values.limits_memory) }}
-    memory: {{.Values.limits_memory}}
+{{- if (.Values.limitsMemory) }}
+    memory: {{.Values.limitsMemory}}
 {{- end }}
 {{- end }}
 {{- end }}
