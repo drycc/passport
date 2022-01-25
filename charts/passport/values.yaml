@@ -46,6 +46,11 @@ adminUsername: "admin"
 adminPassword: "admin"
 adminEmail: "admin@email.com"
 
+# Service
+service:
+  # Provide any additional service annotations
+  annotations: {}
+
 redis:
   replicas: 1
 
