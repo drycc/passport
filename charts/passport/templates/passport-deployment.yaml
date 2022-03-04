@@ -27,7 +27,7 @@ spec:
       - name: drycc-passport-init
         image: docker.io/drycc/python-dev:latest
         imagePullPolicy: {{.Values.imagePullPolicy}}
-        command:
+        args:
           - netcat
           - -v
           - -u
