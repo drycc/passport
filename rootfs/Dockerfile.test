@@ -1,14 +1,13 @@
 FROM docker.io/drycc/base:bullseye
 
-ARG DRYCC_HOME_DIR=/workspace
-
-COPY requirements.txt ${DRYCC_HOME_DIR}/requirements.txt
-COPY dev_requirements.txt ${DRYCC_HOME_DIR}/dev_requirements.txt
-
-ENV PGDATA="/var/lib/postgresql/data" \
+ENV DRYCC_HOME_DIR=/workspace \
+  PGDATA="/var/lib/postgresql/data" \
   PYTHON_VERSION="3.10.2" \
   POSTGRES_VERSION="14.2" \
   GOSU_VERSION="1.14"
+
+COPY requirements.txt ${DRYCC_HOME_DIR}/requirements.txt
+COPY dev_requirements.txt ${DRYCC_HOME_DIR}/dev_requirements.txt
 
 RUN buildDeps='gcc rustc cargo libffi-dev musl-dev libldap2-dev libsasl2-dev'; \
   install-packages ldap-utils mercurial ca-certificates openssl git $buildDeps \
