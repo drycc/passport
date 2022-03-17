@@ -22,9 +22,7 @@ spec:
       labels:
         app: drycc-passport
     spec:
-      {{- if .Values.global.common }}
-      {{- include "common.affinity" (dict "key" "app" "values" (list "drycc-passport")) | indent 6 }}
-      {{- end }}
+      {{- include "common.affinities.nodes.soft" (dict "key" "app" "values" (list "drycc-passport")) | indent 6 }}
       serviceAccount: drycc-passport
       initContainers:
       - name: drycc-passport-init

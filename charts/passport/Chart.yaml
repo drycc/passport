@@ -1,7 +1,12 @@
 name: passport
 home: https://github.com/drycc/passport
-version: v1.0.0
+apiVersion: v2
+dependencies:
+  - name: common
+    repository: https://charts.drycc.cc/stable
+    version: 1.x.x
 description: Drycc Workflow passport (API).
 maintainers:
   - name: Drycc Team
     email: engineering@drycc.com
+version: v1.0.0
