@@ -67,7 +67,7 @@ class LivenessCheckView(View):
 class RegistrationView(CreateView):
     form_class = RegistrationForm
     template_name = 'user/registration.html'
-    success_url = reverse_lazy('registration_done')
+    success_url = reverse_lazy('user_registration_done')
 
     def get(self, request, *args, **kwargs):
         if settings.LDAP_ENDPOINT or not settings.REGISTRATION_ENABLED:
@@ -93,7 +93,7 @@ class RegistrationView(CreateView):
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                     'token': token_generator.make_token(user),
                 })
-            user.email_user(mail_subject, message)
+            user.email_user(mail_subject, message, fail_silently=True)
             messages.success(request, (
                 'Please Confirm your email to complete registration.'))
             return self.form_valid(form)
@@ -174,7 +174,7 @@ class UserDetailView(NormalUserViewSet):
                     })
                 cache_key = "user:serializer:%s" % user.pk
                 cache.set(cache_key, request.data, 60 * 30)
-                user.email_user(mail_subject, message)
+                user.email_user(mail_subject, message, fail_silently=True)
             else:
                 user_serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
