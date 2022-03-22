@@ -25,9 +25,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from api import serializers
+from api.forms import AuthenticationForm
 from api.exceptions import ServiceUnavailable, DryccException
 from api.serializers import RegistrationForm
-from api.utils import token_generator, get_local_host
+from api.utils import token_generator, get_local_host, send_activation_email
 from api.viewset import NormalUserViewSet
 
 User = get_user_model()
@@ -81,19 +82,9 @@ class RegistrationView(CreateView):
         self.object = None
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_staff = False
             user.is_active = False
             user.save()
-            domain = get_local_host(request)
-            mail_subject = 'Activate your account.'
-            message = render_to_string(
-                'user/account_activation_email.html', {
-                    'user': user,
-                    'domain': domain,
-                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': token_generator.make_token(user),
-                })
-            user.email_user(mail_subject, message, fail_silently=True)
+            send_activation_email(request, user)
             messages.success(request, (
                 'Please Confirm your email to complete registration.'))
             return self.form_valid(form)
@@ -117,7 +108,6 @@ class ActivateAccount(View):
         if user is not None and token_generator.check_token(
                 user, token):
             user.is_active = True
-            user.is_staff = True
             user.save()
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'Your account have been confirmed.')
@@ -139,6 +129,7 @@ class ActivateAccountFailView(TemplateView):
 
 
 class UserLoginView(views.LoginView):
+    form_class = AuthenticationForm
     extra_context = {
         "registration_enabled": settings.REGISTRATION_ENABLED,
         "password_reset_enabled": True if settings.EMAIL_HOST else False,

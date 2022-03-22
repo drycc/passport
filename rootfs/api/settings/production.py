@@ -105,7 +105,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     # Third-party apps
     'corsheaders',
-    'guardian',
     'gunicorn',
     'rest_framework',
     'oauth2_provider',
@@ -117,8 +116,7 @@ AUTH_USER_MODEL = "api.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
-    "guardian.backends.ObjectPermissionBackend",
+    "django.contrib.auth.backends.AllowAllUsersModelBackend",
 )
 
 ANONYMOUS_USER_ID = -1

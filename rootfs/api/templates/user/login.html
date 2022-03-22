@@ -1,5 +1,4 @@
 {% load static %}
-
 <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
 <head>
     <meta charset="UTF-8">
@@ -13,7 +12,11 @@
             <form method="post" action="{% url 'user_login' %}">
                 {% csrf_token %}
                 {% if form.errors %}
-                <div class="alert alert-danger">There was a problem with your login.</div>
+                {% for error in form.non_field_errors %} 
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+                {% endfor %}
                 {% endif %}
                 <div class="form-group">
                     <label for="username">{{ form.username.label_tag }}</label>
