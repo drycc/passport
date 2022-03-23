@@ -1,0 +1,17 @@
+<footer class="logo-sfdc">
+    <ul class="legal">
+        {% if LEGAL_ENABLED %}
+        <li><a href="https://drycc.cc" rel="nofollow">Drycc Documents</a></li>
+        <li><a href="https://legal.doopai.com/#/cloud-services-terms" rel="nofollow">Terms of Service</a></li>
+        <li><a href="https://legal.doopai.com/#/doopai-privacy-policy" rel="nofollow">Privacy</a></li>
+        <li><a href="https://legal.doopai.com/#/doopai-cookie-policy" rel="nofollow">Cookies</a></li>
+        <li>© {% now 'Y' %} drycc.com</li>
+        {% else %}
+        <li><a href="https://drycc.cc" rel="nofollow">Drycc Documents</a></li>
+        <li><a href="https://github.com/drycc" rel="nofollow">Open Source</a></li>
+        <li><a href="https://drycc.slack.com/" rel="nofollow">Community</a></li>
+        <li><a href="https://github.com/drycc/workflow/issues" rel="nofollow">Support</a></li>
+        <li>© {% now 'Y' %} drycc.cc</li>
+        {% endif %}
+    </ul>
+</footer>

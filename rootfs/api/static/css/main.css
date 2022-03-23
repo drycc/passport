@@ -27,7 +27,7 @@ body {
     position: relative;
     height: 100%;
     text-align: center;
-    padding-top: 10%;
+    padding-top: 2%;
 }
 
 h1.logo {
@@ -60,10 +60,6 @@ h1.logo a:before {
     border-style: solid;
     border-color: transparent;
     border-image: initial;
-}
-
-.panel div {
-    margin-top: 30px
 }
 
 .panel .h3 {

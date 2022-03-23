@@ -4,22 +4,14 @@ Classes to serialize the RESTful representation of Drycc API models.
 import logging
 
 from django.contrib.admin.models import LogEntry
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from oauth2_provider.models import Grant, AccessToken
-from oauth2_provider.oauth2_validators import OAuth2Validator
 from rest_framework import serializers
 
 from api.utils import timestamp2datetime
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
-
-
-class RegistrationForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = ('username', 'email', 'password1', 'password2')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -81,19 +73,3 @@ class UserLogsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['action_time', 'user', 'content_type', 'object_id',
                             'object_repr', 'action_flag', 'change_message']
-
-
-class CustomOAuth2Validator(OAuth2Validator):
-
-    def get_additional_claims(self, request):
-        claims = super().get_additional_claims(request)
-        claims["id"] = request.user.id
-        claims["name"] = request.user.username
-        claims["username"] = request.user.username
-        claims["email"] = request.user.email
-        claims["first_name"] = request.user.first_name
-        claims["last_name"] = request.user.last_name
-        claims["is_staff"] = request.user.is_staff
-        claims["is_active"] = request.user.is_active
-        claims["is_superuser"] = request.user.is_superuser
-        return claims

@@ -25,9 +25,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from api import serializers
-from api.forms import AuthenticationForm
+from api.forms import AuthenticationForm, RegistrationForm
 from api.exceptions import ServiceUnavailable, DryccException
-from api.serializers import RegistrationForm
 from api.utils import token_generator, get_local_host, send_activation_email
 from api.viewset import NormalUserViewSet
 
@@ -82,11 +81,15 @@ class RegistrationView(CreateView):
         self.object = None
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = False
-            user.save()
-            send_activation_email(request, user)
-            messages.success(request, (
-                'Please Confirm your email to complete registration.'))
+            if settings.EMAIL_HOST:
+                user.is_active = False
+                user.save()
+                send_activation_email(request, user)
+                messages.success(request, (
+                    'Please Confirm your email to complete registration.'))
+            else:
+                user.is_active = True
+                user.save()
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -104,7 +107,7 @@ class RegistrationDoneView(TemplateView):
 
 class ActivateAccount(View):
 
-    def get(self, request, uid, token, *args, **kwargs):
+    def get(self, request, uidb64, token, *args, **kwargs):
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=uid)

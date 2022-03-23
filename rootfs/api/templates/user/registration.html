@@ -45,17 +45,26 @@
                     <div class="error">{{ form.email.errors }}</div>
                 </div>
                 {% if google_re_captcha_key %}
+                <style>
+                    .g-recaptcha iframe {
+                        transform: scaleX(1.22);
+                        transform-origin: 0 0;
+                    }
+                </style>
                 <div class="form-group">
                     <script src="https://www.recaptcha.net/recaptcha/api.js" async defer></script>
                     <div class="g-recaptcha" data-sitekey="6LfNBv8eAAAAAHCmD0cXDDB_a3vjxxVx_iNK3iyp"></div>
+                    <div class="error">{{ form.recaptcha_token.errors }}</div>
                 </div>
                 {% endif %}
                 <button class="btn btn-primary btn-lg btn-block" id="submit" type="submit">Submit</button>
+                {% if LEGAL_ENABLED %}
                 <div class="form-group">
                     <p class="privacy">
                         Signing up signifies that you have read and agree to the <a target="_blank" href="https://legal.doopai.com/#/cloud-services-terms">Terms of Service</a> and our <a target="_blank" href="https://legal.doopai.com/#/doopai-privacy-policy/">Privacy Policy</a>.
                     </p>
                 </div>
+                {% endif %}
             </form>
         </div>
     </div>

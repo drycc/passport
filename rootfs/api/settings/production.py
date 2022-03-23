@@ -20,6 +20,9 @@ DEBUG = bool(strtobool(os.environ.get('DRYCC_DEBUG', 'false')))
 # will be suppressed, and exceptions will propagate upwards
 # https://docs.djangoproject.com/en/2.2/ref/settings/#debug-propagate-exceptions
 DEBUG_PROPAGATE_EXCEPTIONS = True
+
+# Enable Legal
+LEGAL_ENABLED = bool(strtobool(os.environ.get('LEGAL_ENABLED', 'false')))
 # Enable Django admin
 ADMIN_ENABLED = bool(strtobool(os.environ.get('ADMIN_ENABLED', 'false')))
 # Enable Registration
@@ -64,6 +67,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                "api.context_processors.legal",
                 "django.contrib.auth.context_processors.auth",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.i18n",
@@ -285,7 +289,7 @@ if os.path.exists(OIDC_RSA_PRIVATE_KEY_FILE):
 OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
     "OIDC_RSA_PRIVATE_KEY": OIDC_RSA_PRIVATE_KEY,
-    "OAUTH2_VALIDATOR_CLASS": "api.serializers.CustomOAuth2Validator",
+    "OAUTH2_VALIDATOR_CLASS": "api.oauth2_validators.CustomOAuth2Validator",
     "PKCE_REQUIRED": False,
     "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
     "ACCESS_TOKEN_EXPIRE_SECONDS": int(os.environ.get('ACCESS_TOKEN_EXPIRE_SECONDS', 30 * 86400)),  # noqa

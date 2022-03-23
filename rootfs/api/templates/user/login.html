@@ -29,12 +29,14 @@
                 <input type="hidden" name="next" value={{ next }}>
             </form>
             {% if registration_enabled %}
-            <a class="panel-footer" href="/user/registration/"><span>Sign Up</span></a>
+            <a class="panel-footer" href="/user/registration/">New to Drycc?  <span>Sign Up</span></a>
             {% endif %}
         </div>
         {% if password_reset_enabled %}
-        <a href="/user/password_reset/" class="white-link">Forgot your password?</a>
+        <div>
+            <a href="/user/password_reset/" class="white-link">Forgot your password?</a>
+        </div>
         {% endif %}
     </div>
-    {% include "user/footer.html" %}
+    {% include "base/footer.html" %}
 </div>

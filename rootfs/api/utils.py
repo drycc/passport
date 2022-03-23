@@ -63,6 +63,7 @@ def send_activation_email(request, user):
         })
     user.email_user(mail_subject, message, fail_silently=True)
 
+
 if __name__ == "__main__":
     import doctest
 
