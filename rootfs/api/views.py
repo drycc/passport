@@ -73,7 +73,7 @@ class RegistrationView(CreateView):
     def get(self, request, *args, **kwargs):
         if settings.LDAP_ENDPOINT or not settings.REGISTRATION_ENABLED:
             return render(request, template_name='user/registration_disable.html')
-        return CreateView.get(self, request, *args, **kwargs)
+        return super().get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         if settings.LDAP_ENDPOINT or not settings.REGISTRATION_ENABLED:
@@ -91,6 +91,11 @@ class RegistrationView(CreateView):
         else:
             return self.form_invalid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["google_re_captcha_key"] = settings.GOOGLE_RE_CAPTCHA_KEY
+        return context
+
 
 class RegistrationDoneView(TemplateView):
     template_name = 'user/registration_done.html'
@@ -99,7 +104,7 @@ class RegistrationDoneView(TemplateView):
 
 class ActivateAccount(View):
 
-    def get(self, request, uidb64, token, *args, **kwargs):
+    def get(self, request, uid, token, *args, **kwargs):
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=uid)

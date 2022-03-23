@@ -384,3 +384,6 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = bool(strtobool(os.environ.get('EMAIL_USE_TLS', 'false')))
 EMAIL_USE_SSL = bool(strtobool(os.environ.get('EMAIL_USE_SSL', 'false')))
+
+GOOGLE_RE_CAPTCHA_KEY = os.environ.get("GOOGLE_RE_CAPTCHA_KEY")
+GOOGLE_RE_CAPTCHA_SECRET = os.environ.get("GOOGLE_RE_CAPTCHA_SECRET")

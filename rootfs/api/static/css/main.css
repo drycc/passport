@@ -7,6 +7,10 @@ body {
     margin: 0;
 }
 
+.privacy {
+    text-align: justify!important;
+}
+
 .page-wrap {
     min-height: 100%;
     display: flex;
@@ -256,4 +260,47 @@ form li {
 .white-link {
     margin-left: 25px;
     color: #fff
+}
+
+.logo-sfdc {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 430px;
+    padding: 26.6666666667px 0;
+    text-align: center;
+    background: -webkit-linear-gradient(-360deg,rgba(255,255,255,0) 0,rgba(255,255,255,0.2) 50%,rgba(255,255,255,0) 100%);
+    background: linear-gradient(90deg,rgba(255,255,255,0) 0,rgba(255,255,255,0.2) 50%,rgba(255,255,255,0) 100%);
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+}
+
+.logo-sfdc a {
+    display: block;
+    color: #dcdae9;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.legal {
+    list-style: none;
+    margin-top: 40px;
+    padding: 0;
+    text-align: center;
+}
+
+.legal li, .legal a {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #dcdae9;
+}
+
+.legal li {
+    display: inline-block;
+    margin: 5px;
 }

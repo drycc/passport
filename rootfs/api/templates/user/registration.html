@@ -15,7 +15,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="username">{{ form.username.label_tag }}</label>
-                    <input autofocus="off" class="form-control" id="username" name="username" :placeholder="Username" type="text" >
+                    <input autofocus="off" class="form-control" id="username" name="username" :placeholder="Username" type="text" required>
                     <div class="error">{{ form.username.errors }}</div>
                 </div>
                 <div class="form-group">
@@ -24,8 +24,8 @@
                         class="form-control"
                         id="password1"
                         name="password1"
-                        placeholder="{% if form.password1.help_text %}{{ form.password1.help_text|safe }}{% endif %}"
-                        type="password">
+                        placeholder="Password"
+                        type="password" required>
                     <div class="error">{{ form.password1.errors }}</div>
                 </div>
 
@@ -33,19 +33,29 @@
                     <label for="password2">{{ form.password2.label_tag }}</label>
                     <input autofocus="off"
                         class="form-control" id="password2" name="password2"
-                        placeholder="{% if form.password2.help_text %}{{ form.password2.help_text|safe }}{% endif %}"
-                        type="password">
+                        placeholder="Confirm password"
+                        type="password" required>
                     <div class="error">{{ form.password2.errors }}</div>
                 </div>
 
                 <div class="form-group">
                     <label for="email">{{ form.email.label_tag }}</label>
                     <input autofocus="off" class="form-control" id="email" name="email"
-                           :placeholder="Email" type="email">
+                           :placeholder="Email" type="email" required>
                     <div class="error">{{ form.email.errors }}</div>
                 </div>
+                {% if google_re_captcha_key %}
+                <div class="form-group">
+                    <script src="https://www.recaptcha.net/recaptcha/api.js" async defer></script>
+                    <div class="g-recaptcha" data-sitekey="6LfNBv8eAAAAAHCmD0cXDDB_a3vjxxVx_iNK3iyp"></div>
+                </div>
+                {% endif %}
                 <button class="btn btn-primary btn-lg btn-block" id="submit" type="submit">Submit</button>
-
+                <div class="form-group">
+                    <p class="privacy">
+                        Signing up signifies that you have read and agree to the <a target="_blank" href="https://legal.doopai.com/#/cloud-services-terms">Terms of Service</a> and our <a target="_blank" href="https://legal.doopai.com/#/doopai-privacy-policy/">Privacy Policy</a>.
+                    </p>
+                </div>
             </form>
         </div>
     </div>
