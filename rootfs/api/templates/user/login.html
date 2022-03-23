@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <title>Login</title>
 </head>
-<div class="page-wrap gradient-primary">
+<div class="page-wrap gradient-primary"> 
     <div class="container">
-        <h1 class="logo"><a href="https://www.drycc.cc" title="Drycc">Drycc</a></h1>
         <div class="panel">
             <h2 class="h3">Log in to your account</h2>
             <form method="post" action="{% url 'user_login' %}">
@@ -20,13 +19,13 @@
                 {% endif %}
                 <div class="form-group">
                     <label for="username">{{ form.username.label_tag }}</label>
-                    <input autofocus="off" class="form-control" id="username" name="username" :placeholder="Username" type="text" >
+                    <input autofocus="off" class="form-control" id="username" name="username" :placeholder="Username" type="text" required>
                 </div>
                 <div class="form-group">
                     <label for="password">{{ form.password.label_tag }}</label>
-                    <input autocomplete="off" class="form-control password" id="password" name="password" :placeholder="Password" type="password"/>
+                    <input autocomplete="off" class="form-control password" id="password" name="password" :placeholder="Password" type="password" required>
                 </div>
-                <button class="btn btn-primary btn-lg btn-block" name="commit" type="submit">Log In</button>
+                <button class="btn btn-primary btn-lg btn-block" id="commit" type="submit">Log In</button>
                 <input type="hidden" name="next" value={{ next }}>
             </form>
             {% if registration_enabled %}

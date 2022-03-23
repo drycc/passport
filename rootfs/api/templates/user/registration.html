@@ -18,36 +18,33 @@
                     <input autofocus="off" class="form-control" id="username" name="username" :placeholder="Username" type="text" >
                     <div class="error">{{ form.username.errors }}</div>
                 </div>
-
                 <div class="form-group">
-
                     <label for="password1">{{ form.password1.label_tag }}</label>
-                    <input autofocus="off" class="form-control" id="password1" name="password1"
-                           :placeholder="Password" type="password" style="padding-left: 20px;">
+                    <input autofocus="off"
+                        class="form-control"
+                        id="password1"
+                        name="password1"
+                        placeholder="{% if form.password1.help_text %}{{ form.password1.help_text|safe }}{% endif %}"
+                        type="password">
                     <div class="error">{{ form.password1.errors }}</div>
-                    {% if form.password1.help_text %}
-                        <div class="help">{{ form.password1.help_text|safe }}</div>
-                    {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label for="password2">{{ form.password2.label_tag }}</label>
-                    <input autofocus="off" class="form-control" id="password2" name="password2"
-                           :placeholder="Confirm Password" type="password" style="padding-left: 20px;">
+                    <input autofocus="off"
+                        class="form-control" id="password2" name="password2"
+                        placeholder="{% if form.password2.help_text %}{{ form.password2.help_text|safe }}{% endif %}"
+                        type="password">
                     <div class="error">{{ form.password2.errors }}</div>
-                    {% if form.password2.help_text %}
-                    <div class="help">{{ form.password2.help_text|safe }}</div>
-                    {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label for="email">{{ form.email.label_tag }}</label>
                     <input autofocus="off" class="form-control" id="email" name="email"
-                           :placeholder="Email" type="email" style="padding-left: 20px;">
+                           :placeholder="Email" type="email">
                     <div class="error">{{ form.email.errors }}</div>
-
                 </div>
-                <button class="btn btn-primary btn-lg btn-block" name="commit" type="submit">Submit</button>
+                <button class="btn btn-primary btn-lg btn-block" id="submit" type="submit">Submit</button>
 
             </form>
         </div>
