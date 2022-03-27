@@ -44,17 +44,16 @@
                            :placeholder="Email" type="email" required>
                     <div class="error">{{ form.email.errors }}</div>
                 </div>
-                {% if google_re_captcha_key %}
+                {% if h_captcha_key %}
                 <style>
-                    .g-recaptcha iframe {
+                    .h-captcha iframe {
                         transform: scaleX(1.22);
-                        transform-origin: 0 0;
                     }
                 </style>
                 <div class="form-group">
-                    <script src="https://www.recaptcha.net/recaptcha/api.js" async defer></script>
-                    <div class="g-recaptcha" data-sitekey="6LfNBv8eAAAAAHCmD0cXDDB_a3vjxxVx_iNK3iyp"></div>
-                    <div class="error">{{ form.recaptcha_token.errors }}</div>
+                    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+                    <div class="h-captcha" data-sitekey="{{ h_captcha_key }}"></div>
+                    <div class="error">{{ form.h_captcha_token.errors }}</div>
                 </div>
                 {% endif %}
                 <button class="btn btn-primary btn-lg btn-block" id="submit" type="submit">Submit</button>

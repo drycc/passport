@@ -96,7 +96,7 @@ class RegistrationView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["google_re_captcha_key"] = settings.GOOGLE_RE_CAPTCHA_KEY
+        context["h_captcha_key"] = settings.H_CAPTCHA_KEY
         return context
 
 
