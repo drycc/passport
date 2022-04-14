@@ -26,7 +26,7 @@ spec:
       serviceAccount: drycc-passport
       initContainers:
       - name: drycc-passport-init
-        image: docker.io/drycc/python-dev:latest
+        image: registry.drycc.cc/drycc/python-dev:latest
         imagePullPolicy: {{.Values.imagePullPolicy}}
         args:
           - netcat

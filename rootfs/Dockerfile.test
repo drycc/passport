@@ -1,4 +1,4 @@
-FROM docker.io/drycc/base:bullseye
+FROM registry.drycc.cc/drycc/base:bullseye
 
 ENV DRYCC_HOME_DIR=/workspace \
   PGDATA="/var/lib/postgresql/data" \
