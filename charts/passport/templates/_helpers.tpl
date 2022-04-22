@@ -13,7 +13,6 @@ rbac.authorization.k8s.io/v1
 
 {{/* Generate passport deployment envs */}}
 {{- define "passport.envs" }}
-{{ $redisNodeCount := .Values.redis.replicas | int }}
 env:
 - name: "TZ"
   value: {{ .Values.time_zone | default "UTC" | quote }}
@@ -88,16 +87,11 @@ env:
 - name: DRYCC_DATABASE_URL
   value: "postgres://$(DRYCC_DATABASE_USER):$(DRYCC_DATABASE_PASSWORD)@$(DRYCC_DATABASE_SERVICE_HOST):$(DRYCC_DATABASE_SERVICE_PORT)/passport"
 {{- end }}
-{{- if eq .Values.global.redisLocation "on-cluster"}}
-- name: DRYCC_REDIS_ADDRS
-  value: "{{range $i := until $redisNodeCount}}drycc-redis-{{$i}}.drycc-redis.{{$.Release.Namespace}}.svc.{{$.Values.global.clusterDomain}}:6379{{if lt (add 1 $i) $redisNodeCount}},{{end}}{{end}}"
-{{- else if eq .Values.global.redisLocation "off-cluster" }}
 - name: DRYCC_REDIS_ADDRS
   valueFrom:
     secretKeyRef:
       name: redis-creds
       key: addrs
-{{- end }}
 - name: DRYCC_REDIS_PASSWORD
   valueFrom:
     secretKeyRef:
