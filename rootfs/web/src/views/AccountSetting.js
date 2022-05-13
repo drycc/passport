@@ -2,6 +2,7 @@ import NavBar from "../components/NavBar.vue";
 import NavBox from "../components/NavBox.vue";
 import {onBeforeMount, reactive, toRefs} from 'vue'
 import MainNav from "../components/MainNav.vue";
+import MainFooter from "../components/MainFooter.vue";
 import { useRouter } from 'vue-router'
 import { putAccount, putAccountPassword } from "../services/user";
 import { Toast } from "vant"
@@ -12,6 +13,7 @@ export default {
         'nav-bar': NavBar,
         'nav-box': NavBox,
         'main-nav': MainNav,
+        'main-footer': MainFooter,
     },
     setup() {
         const showBTN = "flex items-center mb2"

@@ -47,6 +47,7 @@
             </div>
         </div>
     </div>
+    <main-footer />
 </div>
 </template>
 

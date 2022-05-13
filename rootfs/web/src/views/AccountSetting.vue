@@ -173,6 +173,7 @@
         </ul>
       </div>
   </div>
+  <main-footer />
 </div>
 </template>
 

@@ -2,9 +2,8 @@ import axios from 'axios'
 import { Toast } from 'vant'
 import {getCookie} from "./array";
 
-axios.defaults.baseURL = import.meta.env.VITE_APP_BASE_API
+axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 axios.defaults.withCredentials = true
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 const loadingToast = [];
 
