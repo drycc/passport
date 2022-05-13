@@ -20,7 +20,3 @@
 import NavBar from "./NavBar"
 export default NavBar
 </script>
-
-<style scoped>
-  @import "../assets/home.css";
-</style>

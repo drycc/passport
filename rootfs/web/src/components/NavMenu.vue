@@ -15,8 +15,7 @@ export default NavMenu
 </script>
 
 <style scoped>
-    @import "../assets/home.css";
-    .glostick__menu--navigator {
-        top: 42px
-    }
+.glostick__menu--navigator {
+    top: 42px
+}
 </style>

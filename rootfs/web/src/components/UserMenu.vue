@@ -2,7 +2,7 @@
 <template>
     <a class="glostick__menu-icon glostick__menu-icon--account" @click="openOrCloseMenu">
         <div class="glostick__user__avatar--container">
-            <img class="glostick__user__avatar" src="../../src/assets/style/avatar.png" id="menu-account">
+            <img class="glostick__user__avatar" src="../../src/assets/images/avatar.png" id="menu-account">
         </div>
         <div class="glostick__user__notification "></div>
     </a>
@@ -39,8 +39,7 @@ export default UserMenu
 </script>
 
 <style scoped>
-    @import "../assets/home.css";
-    .glostick__menu--account {
-        top: 42px
-    }
+.glostick__menu--account {
+    top: 42px
+}
 </style>

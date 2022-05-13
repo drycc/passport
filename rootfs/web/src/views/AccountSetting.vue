@@ -1,12 +1,13 @@
 <!--app列表页-->
 <template>
+<div :id="'vue-content-'+Math.random().toString(36).substring(2)">
     <nav-bar />
-    <div class="limit-width top-nav flex flex-column justify-center">
+    <div class="main-panel bg-lightest-silver relative mt5">
         <div class="main-content">
             <main-nav :is-account-setting-active="true"/>
-        <ul>
-            <li id="profile">
-                <div class="panel-section ">
+        <ul class="list-group list-group-lg">
+            <li class="list-group-item ember-view">
+                <div class="panel-section">
                     <div class="section-description">
                         <div class="section-title f3 purple" role="heading" aria-level="3">
                             Profile
@@ -110,8 +111,8 @@
                     </div>
                 </div>
             </li>
-            <li id="password" style="padding-top: 40px;margin-top: 40px; border-top: 1px solid #e7ebf3;">
-                <div class="panel-section ">
+            <li class="list-group-item ember-view">
+                <div class="panel-section">
                     <div class="section-description">
                         <div class="section-title f3 purple" role="heading" aria-level="3">
                             Password
@@ -131,7 +132,7 @@
                                         <input name="password" @input="currentPasswordChange($event)"
                                                placeholder="enter your current password"
                                                id="current-password"
-                                               class="form-control ember-text-field ember-view"
+                                               class="mr2 mb2 w-100 mw6 form-control ember-text-field ember-view"
                                                type="password">
                                     </div>
 
@@ -140,7 +141,7 @@
                                             Password</label>
                                         <input placeholder="enter a new password" @input="newPasswordChange($event)"
                                                id="new-password"
-                                               class="form-control ember-text-field ember-view"
+                                               class="mr2 mb2 w-100 mw6 form-control ember-text-field ember-view"
                                                type="password">
                                         <p class="f5 dark-gray pt2">
                                             Password must be 8 or more characters.
@@ -152,7 +153,7 @@
                                             New Password</label>
                                         <input placeholder="enter the password again"  @input="confirmNewPasswordChange($event)"
                                                id="confirm-new-password"
-                                               class="form-control ember-text-field ember-view"
+                                               class="mr2 mb2 w-100 mw6 form-control ember-text-field ember-view"
                                                type="password">
                                     </div>
 
@@ -172,15 +173,10 @@
         </ul>
       </div>
   </div>
+</div>
 </template>
 
 <script>
 import AccountSetting from  "./AccountSetting"
 export default AccountSetting
 </script>
-
-<style scoped>
-    .pr1 {
-        padding-right: 15px;
-    }
-</style>

@@ -1,14 +1,15 @@
 <!--app列表页-->
 <template>
+<div :id="'vue-content-'+Math.random().toString(36).substring(2)">
     <nav-bar />
-    <div class="limit-width top-nav flex flex-column justify-center">
+    <div class="main-panel bg-lightest-silver relative mt5">
         <div class="main-content">
             <main-nav :is-access-token-active="true"/>
             <access-token-delete ref="accessTokenDelete" v-if="isShowDelete"
               :token="token"
               @closeDelete="closeDelete"
             />
-            <div class="account-nav nav-tabs sub-nav ember-view" style="margin-top: 0px">
+            <div class="w-100 mt4 ml2 mb2 mr2 limit-width" style="margin-top: 0px">
                 <table class="w-100">
                     <tbody>
                         <tr class="w-100 f5">
@@ -46,6 +47,7 @@
             </div>
         </div>
     </div>
+</div>
 </template>
 
 <script>
