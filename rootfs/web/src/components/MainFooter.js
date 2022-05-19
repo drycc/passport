@@ -1,4 +1,6 @@
-import {toRefs, reactive} from 'vue'
+import {toRefs, reactive, onMounted} from 'vue'
+
+import { getSettings } from '../services/settings'
 
 export default {
     name: "Footer",
@@ -7,7 +9,10 @@ export default {
             year: new Date().getFullYear(),
             legalEnabled: false,
         })
-        state.legalEnabled = process.env.VUE_APP_LEGAL_ENABLED == "true" ? true : false;
+        onMounted(async () => {
+            var res =  await getSettings()
+            state.legalEnabled = res.data.legal
+        })
         return {
             ...toRefs(state),
         }

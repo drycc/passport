@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 VUE_APP_BASE_URL = process.env.VUE_APP_BASE_URL ? process.env.VUE_APP_BASE_URL : ''
-VUE_APP_LEGAL_ENABLED = process.env.VUE_APP_LEGAL_ENABLED ? process.env.VUE_APP_LEGAL_ENABLED : "false"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -24,13 +23,16 @@ export default defineConfig({
       '/assets': {
         target: VUE_APP_BASE_URL,
         changeOrigin: true,
-      }
+      },
+      '/settings': {
+        target: VUE_APP_BASE_URL,
+        changeOrigin: true,
+      },
     },
   },
   define: {
     'process.env': {
       VUE_APP_BASE_URL: VUE_APP_BASE_URL,
-      VUE_APP_LEGAL_ENABLED: VUE_APP_LEGAL_ENABLED,
     },
   }
 })

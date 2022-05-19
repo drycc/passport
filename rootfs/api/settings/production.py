@@ -177,12 +177,16 @@ DATETIME_FORMAT = "Y-m-d H:i:s e"
 REST_FRAMEWORK = {
     'DATETIME_FORMAT': DRYCC_DATETIME_FORMAT,
     'DEFAULT_MODEL_SERIALIZER_CLASS': 'rest_framework.serializers.ModelSerializer',
-    'DEFAULT_PERMISSION_CLASSES': (
+    'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_RENDERER_CLASSES': (
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-    ),
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 30,
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
@@ -305,12 +309,6 @@ OAUTH2_PROVIDER = {
     "DEFAULT_SCOPES": ['openid', ],
     "DEFAULT_CODE_CHALLENGE_METHOD": 'S256',
 }
-REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = (
-    'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-    'rest_framework.authentication.SessionAuthentication',
-    'rest_framework.authentication.BasicAuthentication',
-)
-
 # Redis Configuration
 DRYCC_REDIS_ADDRS = os.environ.get('DRYCC_REDIS_ADDRS', '127.0.0.1:6379').split(",")
 DRYCC_REDIS_PASSWORD = os.environ.get('DRYCC_REDIS_PASSWORD', '')
