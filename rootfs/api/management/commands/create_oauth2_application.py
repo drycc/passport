@@ -22,11 +22,11 @@ class Command(BaseCommand):
 
         for app in app_list:
             client_id = os.environ.get(
-                f'SOCIAL_AUTH_DRYCC_{app["name"]}_KEY') if os.environ.get(
-                f'SOCIAL_AUTH_DRYCC_{app["name"]}_KEY') else None
+                f'DRYCC_PASSPORT_{app["name"]}_KEY') if os.environ.get(
+                f'DRYCC_PASSPORT_{app["name"]}_KEY') else None
             client_secret = os.environ.get(
-                f'SOCIAL_AUTH_DRYCC_{app["name"]}_SECRET') if os.environ.get(
-                f'SOCIAL_AUTH_DRYCC_{app["name"]}_SECRET') else None
+                f'DRYCC_PASSPORT_{app["name"]}_SECRET') if os.environ.get(
+                f'DRYCC_PASSPORT_{app["name"]}_SECRET') else None
             if not all([client_id, client_secret]):
                 self.stdout.write('client_id or client_secret non-existent')
                 return

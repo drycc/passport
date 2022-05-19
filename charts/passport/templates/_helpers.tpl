@@ -27,16 +27,16 @@ env:
     secretKeyRef:
       name: passport-creds
       key: django-secret-key
-- name: SOCIAL_AUTH_DRYCC_CONTROLLER_KEY
+- name: DRYCC_PASSPORT_CONTROLLER_KEY
   valueFrom:
     secretKeyRef:
       name: passport-creds
-      key: social-auth-drycc-controller-key
-- name: SOCIAL_AUTH_DRYCC_CONTROLLER_SECRET
+      key: drycc-passport-controller-key
+- name: DRYCC_PASSPORT_CONTROLLER_SECRET
   valueFrom:
     secretKeyRef:
       name: passport-creds
-      key: social-auth-drycc-controller-secret
+      key: drycc-passport-controller-secret
 - name: WORKFLOW_NAMESPACE
   valueFrom:
     fieldRef:
@@ -56,16 +56,16 @@ env:
 {{- end }}
 - name: GRAFANA_ON_CLUSTER
   value: "true"
-- name: SOCIAL_AUTH_DRYCC_GRAFANA_KEY
+- name: DRYCC_PASSPORT_GRAFANA_KEY
   valueFrom:
     secretKeyRef:
       name: passport-creds
-      key: social-auth-drycc-grafana-key
-- name: SOCIAL_AUTH_DRYCC_GRAFANA_SECRET
+      key: drycc-passport-grafana-key
+- name: DRYCC_PASSPORT_GRAFANA_SECRET
   valueFrom:
     secretKeyRef:
       name: passport-creds
-      key: social-auth-drycc-grafana-secret
+      key: drycc-passport-grafana-secret
 {{- end }}
 {{- if (.Values.databaseUrl) }}
 - name: DRYCC_DATABASE_URL
