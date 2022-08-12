@@ -73,6 +73,13 @@ env:
     secretKeyRef:
       name: passport-creds
       key: database-url
+{{- if (.Values.databaseUrl) }}
+- name: DRYCC_DATABASE_REPLICA_URL
+  valueFrom:
+    secretKeyRef:
+      name: passport-creds
+      key: database-replica-url
+{{- end }}
 {{- else if eq .Values.global.databaseLocation "on-cluster" }}
 - name: DRYCC_DATABASE_USER
   valueFrom:
@@ -85,7 +92,9 @@ env:
       name: database-creds
       key: password
 - name: DRYCC_DATABASE_URL
-  value: "postgres://$(DRYCC_DATABASE_USER):$(DRYCC_DATABASE_PASSWORD)@$(DRYCC_DATABASE_SERVICE_HOST):$(DRYCC_DATABASE_SERVICE_PORT)/passport"
+  value: "postgres://$(DRYCC_DATABASE_USER):$(DRYCC_DATABASE_PASSWORD)@drycc-database.{{.Release.Namespace}}.svc.{{.Values.global.clusterDomain}}:5432/passport"
+- name: DRYCC_DATABASE_REPLICA_URL
+  value: "postgres://$(DRYCC_DATABASE_USER):$(DRYCC_DATABASE_PASSWORD)@drycc-database-replica.{{.Release.Namespace}}.svc.{{.Values.global.clusterDomain}}:5432/passport"
 {{- end }}
 - name: DRYCC_REDIS_ADDRS
   valueFrom:

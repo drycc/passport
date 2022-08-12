@@ -25,8 +25,9 @@ podAntiAffinityPreset:
 replicas: 1
 # limitsCpu: "100m"
 # limitsMemory: "50Mi"
-## Configuring this will no longer use the built-in database component
+## databaseUrl and databaseReplicaUrl are will no longer use the built-in database component
 databaseUrl: ""
+databaseReplicaUrl: ""
 # Any custom controller environment variables
 # can be specified as key-value pairs under environment
 # this is usually a non required setting.
