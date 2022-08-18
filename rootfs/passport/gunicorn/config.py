@@ -6,6 +6,7 @@ faulthandler.enable()
 
 bind = '0.0.0.0'
 workers = int(os.environ.get('GUNICORN_WORKERS', 4))
+worker_class = "uvicorn.workers.UvicornWorker"
 
 pythonpath = dirname(dirname(dirname(realpath(__file__))))
 timeout = 1200

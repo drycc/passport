@@ -13,9 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+from django.urls import path, re_path, include
 from django.conf import settings
-from django.conf.urls import include, url, re_path
 from django.contrib import admin
 from django.views.generic.base import TemplateView
 from api.views import LivenessCheckView, ReadinessCheckView
@@ -27,8 +26,8 @@ else:
     urlpatterns = []
 
 urlpatterns += [
-    url(r'^healthz$', LivenessCheckView.as_view()),
-    url(r'^readiness$', ReadinessCheckView.as_view()),
+    re_path(r'^healthz$', LivenessCheckView.as_view()),
+    re_path(r'^readiness$', ReadinessCheckView.as_view()),
     re_path(r"settings/?$", views.SettingsViewSet.as_view({'get': 'retrieve'})),
     re_path(r"^user/", include('api.urls')),
     re_path(r'^oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),

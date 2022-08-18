@@ -284,7 +284,7 @@ DATABASE_ROUTERS = ['api.routers.DefaultReplicaRouter', ]
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_URL = '/assets/'
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'web', 'dist', 'assets'))
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Avatar URL
 AVATAR_URL = "https://cravatar.cn/avatar/"

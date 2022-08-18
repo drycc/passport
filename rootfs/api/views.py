@@ -12,7 +12,7 @@ from django.db.models import Q
 from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseRedirect
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import View
 from django.views.generic.edit import CreateView
@@ -109,7 +109,7 @@ class ActivateAccount(View):
 
     def get(self, request, uidb64, token, *args, **kwargs):
         try:
-            uid = force_text(urlsafe_base64_decode(uidb64))
+            uid = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
@@ -182,7 +182,7 @@ class UserDetailView(NormalUserViewSet):
 class UpdateAccount(View):
 
     def get(self, request, uidb64, token, *args, **kwargs):
-        user = get_object_or_404(User, pk=force_text(urlsafe_base64_decode(uidb64)))
+        user = get_object_or_404(User, pk=force_str(urlsafe_base64_decode(uidb64)))
         if user is not None and token_generator.check_token(user, token):
             cache_key = "user:serializer:%s" % user.pk
             data = cache.get(cache_key, None)

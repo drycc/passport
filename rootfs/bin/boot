@@ -43,7 +43,7 @@ python /workspace/manage.py create_oauth2_application
 # spawn a gunicorn server in the background
 echo ""
 echo "Starting up Gunicorn"
-gunicorn -c /workspace/passport/gunicorn/config.py api.wsgi &
+gunicorn -c /workspace/passport/gunicorn/config.py api.asgi &
 
 # smart shutdown on SIGTERM (SIGINT is handled by gunicorn)
 function on_exit() {
