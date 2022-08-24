@@ -268,14 +268,12 @@ SECRET_KEY = os.environ.get('DRYCC_SECRET_KEY', random_secret)
 # database default setting
 DRYCC_DATABASE_URL = os.environ.get('DRYCC_DATABASE_URL', 'postgres://postgres:123456@49.232.207.93:5432/drycc_passport')  # noqa
 DATABASES = {
-    'default': dj_database_url.config(
-        default=DRYCC_DATABASE_URL, conn_max_age=600)
+    'default': dj_database_url.config(default=DRYCC_DATABASE_URL)
 }
 # database replica setting
 DRYCC_DATABASE_REPLICA_URL = os.environ.get('DRYCC_DATABASE_REPLICA_URL', None)
 if DRYCC_DATABASE_REPLICA_URL is not None:
-    DATABASES["replica"] = dj_database_url.config(
-        default=DRYCC_DATABASE_REPLICA_URL, conn_max_age=600)
+    DATABASES["replica"] = dj_database_url.config(default=DRYCC_DATABASE_REPLICA_URL)
 
 # database routers
 DATABASE_ROUTERS = ['api.routers.DefaultReplicaRouter', ]
