@@ -73,7 +73,7 @@ env:
     secretKeyRef:
       name: passport-creds
       key: database-url
-{{- if (.Values.databaseUrl) }}
+{{- if (.Values.databaseReplicaUrl) }}
 - name: DRYCC_DATABASE_REPLICA_URL
   valueFrom:
     secretKeyRef:
