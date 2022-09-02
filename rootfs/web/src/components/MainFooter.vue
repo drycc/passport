@@ -14,7 +14,7 @@
                             <a class="hk-link no-underline gray" href="https://drycc.slack.com/">Community</a>
                         </li>
                         <li class="">
-                            <a class="hk-link no-underline gray" href="https://drycc.cc/">Documentation</a>
+                            <a class="hk-link no-underline gray" href="https://www.drycc.cc/">Documentation</a>
                         </li>
                     </ul>
 
@@ -52,7 +52,7 @@
                             <a class="hk-link no-underline gray" href="https://drycc.slack.com/">Community</a>
                         </li>
                         <li class="">
-                            <a class="hk-link no-underline gray" href="https://drycc.cc/">Documentation</a>
+                            <a class="hk-link no-underline gray" href="https://www.drycc.cc/">Documentation</a>
                         </li>
                     </ul>
 
