@@ -1,5 +1,5 @@
 # Drycc passport requirements
-django==4.1
+django==4.1.2
 pytz==2022.2.1
 django-auth-ldap==3.0.0
 django-cors-headers==3.7.0

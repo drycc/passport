@@ -10,16 +10,22 @@ class Command(BaseCommand):
     """Management command for create Oauth2 application"""
 
     def handle(self, *args, **options):
-        app_list = [{
-            "name": "CONTROLLER",
-            "redirect_uri": f"{os.environ.get('DRYCC_CONTROLLER_DOMAIN')}/v2/complete/drycc/"  # noqa
-        }]
-        if os.environ.get('GRAFANA_ON_CLUSTER') == "true":
+        app_list = []
+        if os.environ.get('DRYCC_GRAFANA_DOMAIN'):
             app_list.append({
                 "name": "GRAFANA",
-                 "redirect_uri": f"{os.environ.get('DRYCC_MONITOR_GRAFANA_DOMAIN')}/login/generic_oauth"  # noqa
+                 "redirect_uri": f"{os.environ.get('DRYCC_GRAFANA_DOMAIN')}/login/generic_oauth"  # noqa
             })
-
+        if os.environ.get('DRYCC_MANAGER_DOMAIN'):
+            app_list.append({
+                "name": "MANAGER",
+                 "redirect_uri": f"{os.environ.get('DRYCC_MANAGER_DOMAIN')}/v1/complete/drycc/"  # noqa
+            })
+        if os.environ.get('DRYCC_CONTROLLER_DOMAIN'):
+            app_list.append({
+                "name": "CONTROLLER",
+                "redirect_uri": f"{os.environ.get('DRYCC_CONTROLLER_DOMAIN')}/v2/complete/drycc/"  # noqa
+            })
         for app in app_list:
             client_id = os.environ.get(
                 f'DRYCC_PASSPORT_{app["name"]}_KEY') if os.environ.get(
@@ -33,7 +39,7 @@ class Command(BaseCommand):
             user = User.objects.filter(is_superuser=True).first()
             if not user:
                 self.stdout.write("Cannot create because there is no superuser")
-            application, updated = Application.objects.update_or_create(
+            _, updated = Application.objects.update_or_create(
                 name='Drycc ' + app["name"].title(),
                 defaults={
                     'client_id': client_id,

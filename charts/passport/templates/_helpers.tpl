@@ -16,6 +16,43 @@ rbac.authorization.k8s.io/v1
 env:
 - name: "TZ"
   value: {{ .Values.time_zone | default "UTC" | quote }}
+{{- if (.Values.initGrafanaKey) }}
+- name: "DRYCC_GRAFANA_DOMAIN"
+{{- if .Values.global.certManagerEnabled }}
+  value: https://drycc-monitor-grafana.{{ .Values.global.platformDomain }}
+{{- else }}
+  value: http://drycc-monitor-grafana.{{ .Values.global.platformDomain }}
+{{- end }}
+- name: DRYCC_PASSPORT_GRAFANA_KEY
+  valueFrom:
+    secretKeyRef:
+      name: passport-creds
+      key: drycc-passport-grafana-key
+- name: DRYCC_PASSPORT_GRAFANA_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: passport-creds
+      key: drycc-passport-grafana-secret
+{{- end }}
+{{- if (.Values.initManagerKey) }}
+- name: "DRYCC_MONITOR_MANAGER_DOMAIN"
+{{- if .Values.global.certManagerEnabled }}
+  value: https://drycc-manager.{{ .Values.global.platformDomain }}
+{{- else }}
+  value: http://drycc-manager.{{ .Values.global.platformDomain }}
+{{- end }}
+- name: DRYCC_PASSPORT_MANAGER_KEY
+  valueFrom:
+    secretKeyRef:
+      name: passport-creds
+      key: drycc-passport-manager-key
+- name: DRYCC_PASSPORT_MANAGER_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: passport-creds
+      key: drycc-passport-manager-secret
+{{- end }}
+{{- if (.Values.initControllerKey) }}
 - name: "DRYCC_CONTROLLER_DOMAIN"
 {{- if .Values.global.certManagerEnabled }}
   value: https://drycc.{{ .Values.global.platformDomain }}
@@ -37,6 +74,7 @@ env:
     secretKeyRef:
       name: passport-creds
       key: drycc-passport-controller-secret
+{{- end }}
 - name: WORKFLOW_NAMESPACE
   valueFrom:
     fieldRef:
@@ -47,26 +85,6 @@ env:
   value: {{ .Values.adminPassword | default "admin" | quote }}
 - name: ADMIN_EMAIL
   value: {{ .Values.adminEmail | default "admin@email.com" | quote }}
-{{- if eq .Values.global.grafanaLocation "on-cluster" }}
-- name: "DRYCC_MONITOR_GRAFANA_DOMAIN"
-{{- if .Values.global.certManagerEnabled }}
-  value: https://drycc-monitor-grafana.{{ .Values.global.platformDomain }}
-{{- else }}
-  value: http://drycc-monitor-grafana.{{ .Values.global.platformDomain }}
-{{- end }}
-- name: GRAFANA_ON_CLUSTER
-  value: "true"
-- name: DRYCC_PASSPORT_GRAFANA_KEY
-  valueFrom:
-    secretKeyRef:
-      name: passport-creds
-      key: drycc-passport-grafana-key
-- name: DRYCC_PASSPORT_GRAFANA_SECRET
-  valueFrom:
-    secretKeyRef:
-      name: passport-creds
-      key: drycc-passport-grafana-secret
-{{- end }}
 {{- if (.Values.databaseUrl) }}
 - name: DRYCC_DATABASE_URL
   valueFrom:

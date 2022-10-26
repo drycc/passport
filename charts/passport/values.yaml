@@ -66,6 +66,11 @@ adminUsername: "admin"
 adminPassword: "admin"
 adminEmail: "admin@email.com"
 
+# The following configurations represent whether to initialize oauth2 application key
+initGrafanaKey: true
+initManagerKey: false
+initControllerKey: true
+
 # Service
 service:
   # Provide any additional service annotations
