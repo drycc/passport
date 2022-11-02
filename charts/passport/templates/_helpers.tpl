@@ -35,7 +35,7 @@ env:
       key: drycc-passport-grafana-secret
 {{- end }}
 {{- if (.Values.initManagerKey) }}
-- name: "DRYCC_MONITOR_MANAGER_DOMAIN"
+- name: "DRYCC_MANAGER_DOMAIN"
 {{- if .Values.global.certManagerEnabled }}
   value: https://drycc-manager.{{ .Values.global.platformDomain }}
 {{- else }}
