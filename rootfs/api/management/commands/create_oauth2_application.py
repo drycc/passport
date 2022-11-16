@@ -1,57 +1,70 @@
 import os
+import json
+import random
+import string
+import pathlib
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from oauth2_provider.models import Application
 
+
 User = get_user_model()
+secrets_path = "/var/run/secrets/drycc/passport"
 
 
 class Command(BaseCommand):
     """Management command for create Oauth2 application"""
 
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument(
+            '--path', dest='path', default=None,
+            help='Specifies the path for the secret.',
+        )
+
     def handle(self, *args, **options):
-        app_list = []
-        if os.environ.get('DRYCC_GRAFANA_DOMAIN'):
-            app_list.append({
-                "name": "GRAFANA",
-                 "redirect_uri": f"{os.environ.get('DRYCC_GRAFANA_DOMAIN')}/login/generic_oauth"  # noqa
-            })
-        if os.environ.get('DRYCC_MANAGER_DOMAIN'):
-            app_list.append({
-                "name": "MANAGER",
-                 "redirect_uri": f"{os.environ.get('DRYCC_MANAGER_DOMAIN')}/v1/complete/drycc/"  # noqa
-            })
-        if os.environ.get('DRYCC_CONTROLLER_DOMAIN'):
-            app_list.append({
-                "name": "CONTROLLER",
-                "redirect_uri": f"{os.environ.get('DRYCC_CONTROLLER_DOMAIN')}/v2/complete/drycc/"  # noqa
-            })
-        for app in app_list:
-            client_id = os.environ.get(
-                f'DRYCC_PASSPORT_{app["name"]}_KEY') if os.environ.get(
-                f'DRYCC_PASSPORT_{app["name"]}_KEY') else None
-            client_secret = os.environ.get(
-                f'DRYCC_PASSPORT_{app["name"]}_SECRET') if os.environ.get(
-                f'DRYCC_PASSPORT_{app["name"]}_SECRET') else None
-            if not all([client_id, client_secret]):
-                self.stdout.write('client_id or client_secret non-existent')
-                return
-            user = User.objects.filter(is_superuser=True).first()
-            if not user:
-                self.stdout.write("Cannot create because there is no superuser")
+        base_path = options.get('path', '')
+        user = User.objects.filter(is_superuser=True).first()
+        for item in json.loads(pathlib.Path(base_path).read_text()):
+            name = item["name"]
+            key = self._get_creds(item, "key", 40)
+            secret = self._get_creds(item, "secret", 60)
+            redirect_uri = self._get_redirect_uri(item)
             _, updated = Application.objects.update_or_create(
-                name='Drycc ' + app["name"].title(),
+                name=name.lower(),
                 defaults={
-                    'client_id': client_id,
-                    'client_secret': client_secret,
+                    'client_id': key,
+                    'client_secret': secret,
                     'user': user,
-                    'redirect_uris': app["redirect_uri"],
+                    'redirect_uris': redirect_uri,
                     'authorization_grant_type': 'authorization-code',
-                    'client_type': 'Public',
+                    'client_type': 'public',
                     'algorithm': 'RS256'
                 }
             )
             if updated:
-                self.stdout.write(f'Drycc {app["name"]} app created')
+                self.stdout.write('Drycc % app created' % name)
             else:
-                self.stdout.write(f'Drycc {app["name"]} app updated')
+                self.stdout.write('Drycc % app updated' % name)
+
+    def _get_creds(self, item, suffix, size):
+        name, secret, prefix = item["name"], item[suffix], item["prefix"]
+        if not secret:
+            default_secret_path = os.path.join(
+                secrets_path, "drycc-passport-%s-%s" % (name, suffix))
+            if prefix and os.path.exists(default_secret_path):
+                secret = pathlib.Path(default_secret_path).read_text()
+            else:
+                secret = ''.join([random.choice(string.ascii_letters) for _ in range(size)])
+        return secret
+
+    def _get_redirect_uri(self, item):
+        prefix = item["prefix"]
+        domain = os.environ.get("PLATFORM_DOMAIN")
+        redirect_uri = item["redirect_uri"]
+        if prefix:
+            if os.environ.get("CERT_MANAGER_ENABLED") == "true":
+                redirect_uri = f"https://{prefix}.{domain}{redirect_uri}"
+            else:
+                redirect_uri = f"http://{prefix}.{domain}{redirect_uri}"
+        return redirect_uri

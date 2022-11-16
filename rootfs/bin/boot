@@ -38,7 +38,7 @@ fi
 
 echo ""
 echo "Create application for drycc controller "
-python /workspace/manage.py create_oauth2_application
+python /workspace/manage.py create_oauth2_application --path /etc/drycc/passport/init-applications.json
 
 # spawn a gunicorn server in the background
 echo ""

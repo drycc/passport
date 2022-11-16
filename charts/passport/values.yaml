@@ -66,10 +66,22 @@ adminUsername: "admin"
 adminPassword: "admin"
 adminEmail: "admin@email.com"
 
-# The following configurations represent whether to initialize oauth2 application key
-initGrafanaKey: true
-initManagerKey: false
-initControllerKey: true
+# The following configurations to initialize oauth2 application
+# Names are all lowercase letters
+# The key and secret are generated automatically if they are empty
+# If prefix is not empty, it represents internal application.
+#
+initApplications:
+- name: "controller"
+  key: ""
+  secret: ""
+  prefix: "drycc"
+  redirect_uri: "/v2/complete/drycc/"
+- name: "grafana"
+  key: ""
+  secret: ""
+  prefix: "drycc-monitor-grafana"
+  redirect_uri: "/login/generic_oauth"
 
 # Service
 service:
