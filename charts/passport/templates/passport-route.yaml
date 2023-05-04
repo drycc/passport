@@ -1,0 +1,33 @@
+{{- if eq .Values.global.passportLocation "on-cluster" }}
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: passport-api-server
+  labels:
+    app: "passport"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  hostnames:
+  - drycc-passport.{{ .Values.global.platformDomain }}
+  parentRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: drycc-gateway
+    sectionName: drycc-gateway-listener-http
+{{- if .Values.global.certManagerEnabled }}
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: drycc-gateway
+    sectionName: drycc-gateway-listener-https
+{{- end }}
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: drycc-passport
+      port: 80
+{{- end }}
