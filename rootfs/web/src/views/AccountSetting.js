@@ -133,16 +133,16 @@ export default {
         const submitPassowrd = () => {
             if (currentPassword == newPassword){
                 Toast.fail("Current Password and New Password are the same.")
-            } else if( newPassword.length >= 8){
+            } else if( newPassword.length < 8){
                 Toast.fail("this New Password is not valid.")
             } else if (newPassword != confirmNewPassword){
                 Toast.fail("New Password Confirm and New Password are different.")
             }else {
                 putAccountPassword({password: currentPassword, new_password: newPassword}).then(res=>{
-                if (res.status == 204) {
-                    router.push({ path: `/` })
-                }
-            })
+                    if (res.status == 204) {
+                        router.push({ path: `/` })
+                    }
+                })
             }
         }
 
