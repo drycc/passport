@@ -5,7 +5,7 @@ import faulthandler
 faulthandler.enable()
 
 bind = '0.0.0.0'
-workers = int(os.environ.get('GUNICORN_WORKERS', 4))
+workers = int(os.environ.get('GUNICORN_WORKERS', 2))
 worker_class = "uvicorn.workers.UvicornWorker"
 
 pythonpath = dirname(dirname(dirname(realpath(__file__))))

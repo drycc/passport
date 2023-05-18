@@ -3,7 +3,7 @@ FROM registry.drycc.cc/drycc/base:bullseye as build-app
 ADD web /web
 WORKDIR /web
 
-ENV NODE_VERSION="16.14.2"
+ENV NODE_VERSION="16.20.0"
 
 RUN install-stack node $NODE_VERSION && . init-stack \
   && npm install --global yarn \
@@ -15,7 +15,7 @@ FROM registry.drycc.cc/drycc/base:bullseye
 ENV DRYCC_UID=1001 \
   DRYCC_GID=1001 \
   DRYCC_HOME_DIR=/workspace \
-  PYTHON_VERSION="3.10.4"
+  PYTHON_VERSION="3.10.11"
 
 RUN groupadd drycc --gid ${DRYCC_GID} \
   && useradd drycc -u ${DRYCC_UID} -g ${DRYCC_GID} -s /bin/bash -m -d ${DRYCC_HOME_DIR}
