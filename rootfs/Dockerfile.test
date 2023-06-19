@@ -1,9 +1,9 @@
-FROM registry.drycc.cc/drycc/base:bullseye
+FROM registry.drycc.cc/drycc/base:bookworm
 
 ENV DRYCC_HOME_DIR=/workspace \
   PGDATA="/var/lib/postgresql/data" \
-  PYTHON_VERSION="3.10.11" \
-  POSTGRES_VERSION="14.5" \
+  PYTHON_VERSION="3.11" \
+  POSTGRES_VERSION="15.3" \
   GOSU_VERSION="1.16"
 
 COPY requirements.txt ${DRYCC_HOME_DIR}/requirements.txt
