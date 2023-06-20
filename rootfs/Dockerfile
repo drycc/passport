@@ -1,4 +1,5 @@
-FROM registry.drycc.cc/drycc/base:bookworm as build-app
+ARG CODENAME
+FROM registry.drycc.cc/drycc/base:${CODENAME} as build-app
 
 ADD web /web
 WORKDIR /web
@@ -10,7 +11,7 @@ RUN install-stack node $NODE_VERSION && . init-stack \
   && yarn install \
   && yarn build
 
-FROM registry.drycc.cc/drycc/base:bookworm
+FROM registry.drycc.cc/drycc/base:${CODENAME}
 
 ENV DRYCC_UID=1001 \
   DRYCC_GID=1001 \
