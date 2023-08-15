@@ -10,16 +10,14 @@ nodeAffinityPreset:
   - "true"
 
 podAffinityPreset:
-  key: "security"
   type: ""
-  values:
-  - "drycc-security"
+  extraMatchLabels:
+    security: "drycc-security"
 
 podAntiAffinityPreset:
-  key: "app"
   type: "soft"
-  values:
-  - "drycc-passport"
+  extraMatchLabels:
+    app: "drycc-passport"
 
 # Set passport deployment replicas
 replicas: 1
