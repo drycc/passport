@@ -259,6 +259,10 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': True,
         },
+        'oauth2_provider': {
+            'handlers': ['console'],
+            'propagate': True,
+        },
     }
 }
 # security keys and auth tokens
