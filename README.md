@@ -13,4 +13,3 @@ If you'd like to participate in development, please read the "Development" secti
 # About
 
 The Passport is the Oauth2.0 API server for [Drycc Workflow](https://www.drycc.cc).
-
