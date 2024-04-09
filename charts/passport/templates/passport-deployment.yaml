@@ -37,6 +37,18 @@ spec:
           - -u
           - $(DRYCC_DATABASE_URL),$(DRYCC_DATABASE_REPLICA_URL)
         {{- include "passport.envs" . | indent 8 }}
+      - name: drycc-passport-waitting
+        image: {{.Values.imageRegistry}}/{{.Values.imageOrg}}/passport:{{.Values.imageTag}}
+        imagePullPolicy: {{.Values.imagePullPolicy}}
+        args:
+        - /usr/bin/env
+        - bash
+        - -ec
+        - |
+          python -u /workspace/manage.py cluster_lock waitting
+        {{- include "passport.limits" . | indent 8 }}
+        {{- include "passport.envs" . | indent 8 }}
+        {{- include "passport.volumeMounts" . | indent 8 }}
       containers:
       - name: drycc-passport
         image: {{.Values.imageRegistry}}/{{.Values.imageOrg}}/passport:{{.Values.imageTag}}

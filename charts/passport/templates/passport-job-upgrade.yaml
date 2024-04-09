@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: drycc-passport-job-upgrade-{{ now | date "20060102150405" }}
+  labels:
+    heritage: drycc
+  annotations:
+    component.drycc.cc/version: {{ .Values.imageTag }}
+spec:
+  template:
+    metadata:
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app: drycc-passport-job-upgrade
+    spec:
+      initContainers:
+      - name: drycc-passport-init
+        image: {{.Values.imageRegistry}}/{{.Values.imageOrg}}/python-dev:latest
+        imagePullPolicy: {{.Values.imagePullPolicy}}
+        args:
+          - netcat
+          - -v
+          - -u
+          - $(DRYCC_DATABASE_URL),$(DRYCC_DATABASE_REPLICA_URL)
+        {{- include "passport.envs" . | indent 8 }}
+      containers:
+      - name: drycc-passport-job-upgrade
+        image: {{.Values.imageRegistry}}/{{.Values.imageOrg}}/passport:{{.Values.imageTag}}
+        imagePullPolicy: {{.Values.imagePullPolicy}}
+        {{- if .Values.diagnosticMode.enabled }}
+        command: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.command "context" $) | nindent 8 }}
+        args: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.args "context" $) | nindent 8 }}
+        {{- else }}
+        args:
+        - /usr/bin/env
+        - bash
+        - -ec
+        - |
+          python -u /workspace/manage.py cluster_lock lock
+          python -u /workspace/manage.py migrate --noinput
+          python -u /workspace/manage.py cluster_lock unlock
+        {{- end }}
+        {{- include "passport.limits" . | indent 8 }}
+        {{- include "passport.envs" . | indent 8 }}
+        {{- include "passport.volumeMounts" . | indent 8 }}
+      {{- include "passport.volumes" . | indent 6 }}
+      restartPolicy: Never
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 3600

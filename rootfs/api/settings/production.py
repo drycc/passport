@@ -6,12 +6,17 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
+import uuid
 import os.path
 import ldap
 import dj_database_url
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# drycc passport app version.
+VERSION = os.environ.get('VERSION', uuid.uuid1().hex[:8])
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DRYCC_DEBUG', 'false').lower() == "true"
 

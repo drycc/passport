@@ -14,8 +14,10 @@ rbac.authorization.k8s.io/v1
 {{/* Generate passport deployment envs */}}
 {{- define "passport.envs" }}
 env:
-- name: "TZ"
+- name: TZ
   value: {{ .Values.time_zone | default "UTC" | quote }}
+- name: VERSION
+  value: {{ .Chart.AppVersion }}
 - name: ADMIN_USERNAME
   value: {{ .Values.adminUsername | default "admin" | quote }}
 - name: ADMIN_PASSWORD

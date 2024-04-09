@@ -23,10 +23,6 @@ echo "Health Checks:"
 python /workspace/manage.py healthchecks
 
 echo ""
-echo "Database Migrations:"
-python /workspace/manage.py cluster_migrate --noinput
-
-echo ""
 echo "Collect static files in a single location:"
 python manage.py collectstatic --noinput
 
