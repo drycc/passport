@@ -23,6 +23,7 @@ from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from oauth2_provider.models import AccessToken
 
 from api import serializers
 from api.forms import AuthenticationForm, RegistrationForm
@@ -261,7 +262,6 @@ class ListViewSet(ModelViewSet):
 
 
 class UserTokensTemplateView(ListViewSet):
-    from oauth2_provider.models import AccessToken
     model = AccessToken
     serializer_class = serializers.UserTokensSerializer
     order_by = '-created'
@@ -273,7 +273,6 @@ class UserTokensTemplateView(ListViewSet):
 
 
 class UserTokenDeleteView(ListViewSet):
-    from oauth2_provider.models import AccessToken
     model = AccessToken
 
     def destroy(self, request, *args, **kwargs):

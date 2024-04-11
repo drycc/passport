@@ -5,10 +5,11 @@ import string
 import pathlib
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
-from oauth2_provider.models import Application
+from oauth2_provider.models import get_application_model
 
 
 User = get_user_model()
+Application = get_application_model()
 secrets_path = "/var/run/secrets/drycc/passport"
 
 

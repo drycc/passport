@@ -37,6 +37,11 @@ spec:
         - |
           python -u /workspace/manage.py cluster_lock lock
           python -u /workspace/manage.py migrate --noinput
+          if [ "${ADMIN_USERNAME}" ] && [ "${ADMIN_PASSWORD}" ] && [ "${ADMIN_EMAIL}" ]; then
+            echo "Create administrator"
+            python /workspace/manage.py createadminuser --username "${ADMIN_USERNAME}" --password "${ADMIN_PASSWORD}" --noinput --email "${ADMIN_EMAIL}"
+          fi
+          python /workspace/manage.py create_oauth2_application --path /etc/drycc/passport/init-applications.json
           python -u /workspace/manage.py cluster_lock unlock
         {{- end }}
         {{- include "passport.limits" . | indent 8 }}

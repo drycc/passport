@@ -323,6 +323,7 @@ OAUTH2_PROVIDER = {
     "DEFAULT_SCOPES": ['openid', ],
     "DEFAULT_CODE_CHALLENGE_METHOD": 'S256',
 }
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'api.Application'
 # Redis Configuration
 DRYCC_REDIS_ADDRS = os.environ.get('DRYCC_REDIS_ADDRS', '127.0.0.1:6379').split(",")
 DRYCC_REDIS_PASSWORD = os.environ.get('DRYCC_REDIS_PASSWORD', '')
