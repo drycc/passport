@@ -13,6 +13,10 @@ class Migration(migrations.Migration):
         ('api', '0001_initial'),
     ]
 
+    run_before = [
+        ('oauth2_provider', '0001_initial'),
+    ]
+
     operations = [
         migrations.CreateModel(
             name='Application',
