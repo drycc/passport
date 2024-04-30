@@ -28,17 +28,14 @@ class Command(BaseCommand):
         user = User.objects.filter(is_superuser=True).first()
         for item in json.loads(pathlib.Path(base_path).read_text()):
             name = item["name"]
-            key = self._get_creds(item, "key", 40)
-            secret = self._get_creds(item, "secret", 60)
-            redirect_uri = self._get_redirect_uri(item)
             _, updated = Application.objects.update_or_create(
                 name=name.lower(),
                 defaults={
-                    'client_id': key,
-                    'client_secret': secret,
+                    'client_id': self._get_creds(item, "key", 40),
+                    'client_secret': self._get_creds(item, "secret", 60),
                     'user': user,
-                    'redirect_uris': redirect_uri,
-                    'authorization_grant_type': 'authorization-code',
+                    'redirect_uris': self._get_redirect_uri(item),
+                    'authorization_grant_type': item['grant_type'],
                     'client_type': 'public',
                     'algorithm': 'RS256'
                 }

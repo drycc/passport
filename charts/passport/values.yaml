@@ -89,11 +89,13 @@ initApplications:
   key: ""
   secret: ""
   prefix: "drycc"
+  grant_type: "password"
   redirect_uri: "/v2/complete/drycc/"
 - name: "grafana"
   key: ""
   secret: ""
   prefix: "drycc-monitor-grafana"
+  grant_type: "authorization-code"
   redirect_uri: "/login/generic_oauth"
 
 # Service
