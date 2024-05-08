@@ -1,3 +1,4 @@
+{{- if eq .Values.global.passportLocation "on-cluster" }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -51,3 +52,4 @@ spec:
       restartPolicy: Never
   backoffLimit: 0
   ttlSecondsAfterFinished: 3600
+{{- end }}
