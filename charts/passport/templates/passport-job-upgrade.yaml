@@ -2,16 +2,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: drycc-passport-job-upgrade-{{ now | date "20060102150405" }}
-  labels:
-    heritage: drycc
+  name: drycc-passport-job-upgrade
   annotations:
     component.drycc.cc/version: {{ .Values.imageTag }}
+    helm.sh/hook: post-install,pre-upgrade,pre-rollback
+    helm.sh/hook-delete-policy: before-hook-creation
 spec:
   template:
-    metadata:
-      labels: {{- include "common.labels.standard" . | nindent 8 }}
-        app: drycc-passport-job-upgrade
     spec:
       initContainers:
       - name: drycc-passport-init
@@ -36,20 +33,16 @@ spec:
         - bash
         - -ec
         - |
-          python -u /workspace/manage.py cluster_lock lock
           python -u /workspace/manage.py migrate --noinput
           if [ "${ADMIN_USERNAME}" ] && [ "${ADMIN_PASSWORD}" ] && [ "${ADMIN_EMAIL}" ]; then
             echo "Create administrator"
             python /workspace/manage.py createadminuser --username "${ADMIN_USERNAME}" --password "${ADMIN_PASSWORD}" --noinput --email "${ADMIN_EMAIL}"
           fi
           python /workspace/manage.py create_oauth2_application --path /etc/drycc/passport/init-applications.json
-          python -u /workspace/manage.py cluster_lock unlock
         {{- end }}
         {{- include "passport.limits" . | indent 8 }}
         {{- include "passport.envs" . | indent 8 }}
         {{- include "passport.volumeMounts" . | indent 8 }}
       {{- include "passport.volumes" . | indent 6 }}
       restartPolicy: Never
-  backoffLimit: 0
-  ttlSecondsAfterFinished: 3600
 {{- end }}
