@@ -12,6 +12,8 @@ COPY dev_requirements.txt ${DRYCC_HOME_DIR}/dev_requirements.txt
 
 RUN buildDeps='gcc rustc cargo libffi-dev musl-dev libldap2-dev libsasl2-dev'; \
   install-packages ldap-utils mercurial ca-certificates openssl git $buildDeps \
+  && curl -SsL https://cli.codecov.io/latest/$([ $(dpkg --print-architecture) == "arm64" ] && echo linux-arm64 || echo linux)/codecov -o /usr/local/bin/codecov \
+  && chmod +x /usr/local/bin/codecov \
   && install-stack python $PYTHON_VERSION \
   && install-stack postgresql $POSTGRES_VERSION \
   && install-stack gosu $GOSU_VERSION && . init-stack \

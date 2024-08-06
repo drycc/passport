@@ -15,4 +15,3 @@ gosu postgres pg_ctl -D "$PGDATA" start && ln -s /tmp/.s.PGSQL.5432 /var/run/pos
 creating_rsa_key
 python3 manage.py check
 coverage run manage.py test --settings=api.settings.testing --noinput api
-coverage report -m
