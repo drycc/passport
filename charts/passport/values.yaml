@@ -94,7 +94,7 @@ initApplications:
 - name: "grafana"
   key: ""
   secret: ""
-  prefix: "drycc-monitor-grafana"
+  prefix: "drycc-grafana"
   grant_type: "authorization-code"
   redirect_uri: "/login/generic_oauth"
 
