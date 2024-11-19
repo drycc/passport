@@ -28,6 +28,21 @@ env:
   value: {{ .Values.global.platformDomain }}
 - name: CERT_MANAGER_ENABLED
   value: "{{ .Values.global.certManagerEnabled }}"
+{{- if (.Values.valkeyUrl) }}
+- name: DRYCC_VALKEY_URL
+  valueFrom:
+    secretKeyRef:
+      name: passport-creds
+      key: valkey-url
+{{- else if eq .Values.global.valkeyLocation "on-cluster"  }}
+- name: VALKEY_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: valkey-creds
+      key: password
+- name: DRYCC_VALKEY_URL
+  value: "redis://:$(VALKEY_PASSWORD)@drycc-valkey.{{.Release.Namespace}}.svc.{{.Values.global.clusterDomain}}:16379/1"
+{{- end }}
 {{- if (.Values.databaseUrl) }}
 - name: DRYCC_DATABASE_URL
   valueFrom:
@@ -57,16 +72,6 @@ env:
 - name: DRYCC_DATABASE_REPLICA_URL
   value: "postgres://$(DRYCC_DATABASE_USER):$(DRYCC_DATABASE_PASSWORD)@drycc-database-replica.{{.Release.Namespace}}.svc.{{.Values.global.clusterDomain}}:5432/passport"
 {{- end }}
-- name: DRYCC_REDIS_ADDRS
-  valueFrom:
-    secretKeyRef:
-      name: redis-creds
-      key: addrs
-- name: DRYCC_REDIS_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: redis-creds
-      key: password
 {{- range $key, $value := .Values.environment }}
 - name: {{ $key }}
   value: {{ $value | quote }}

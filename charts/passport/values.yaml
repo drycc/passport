@@ -38,6 +38,9 @@ podAntiAffinityPreset:
 replicas: 1
 # limitsCpu: "100m"
 # limitsMemory: "50Mi"
+
+## valkeyUrl is will no longer use the built-in valkey component
+valkeyUrl: ""
 ## databaseUrl and databaseReplicaUrl are will no longer use the built-in database component
 databaseUrl: ""
 databaseReplicaUrl: ""
@@ -102,9 +105,6 @@ initApplications:
 service:
   # Provide any additional service annotations
   annotations: {}
-
-redis:
-  replicas: 1
 
 global:
   # Set the location of Workflow's grafana instance

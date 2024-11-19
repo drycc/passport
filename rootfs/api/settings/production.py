@@ -324,18 +324,29 @@ OAUTH2_PROVIDER = {
     "DEFAULT_CODE_CHALLENGE_METHOD": 'S256',
 }
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'api.Application'
-# Redis Configuration
-DRYCC_REDIS_ADDRS = os.environ.get('DRYCC_REDIS_ADDRS', '127.0.0.1:6379').split(",")
-DRYCC_REDIS_PASSWORD = os.environ.get('DRYCC_REDIS_PASSWORD', '')
+# Valkey Configuration
+DRYCC_VALKEY_ADDRS = os.environ.get('DRYCC_VALKEY_ADDRS', '127.0.0.1:6379').split(",")
+DRYCC_VALKEY_PASSWORD = os.environ.get('DRYCC_VALKEY_PASSWORD', '')
 
 # Cache Configuration
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": ['redis://:{}@{}'.format(DRYCC_REDIS_PASSWORD, DRYCC_REDIS_ADDR) \
-                     for DRYCC_REDIS_ADDR in DRYCC_REDIS_ADDRS],  # noqa
+        "LOCATION": ['redis://:{}@{}'.format(DRYCC_VALKEY_PASSWORD, DRYCC_VALKEY_ADDR) \
+                     for DRYCC_VALKEY_ADDR in DRYCC_VALKEY_ADDRS],  # noqa
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.ShardClient",
+        }
+    }
+}
+
+# Cache Valkey Configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get('DRYCC_VALKEY_URL', 'redis://:@127.0.0.1:6379'),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
