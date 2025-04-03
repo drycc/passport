@@ -3,8 +3,8 @@ FROM registry.drycc.cc/drycc/base:${CODENAME}
 
 ENV DRYCC_HOME_DIR=/workspace \
   PGDATA="/var/lib/postgresql/data" \
-  PYTHON_VERSION="3.12" \
-  POSTGRES_VERSION="15.5" \
+  PYTHON_VERSION="3.13" \
+  POSTGRES_VERSION="15.12" \
   GOSU_VERSION="1.17"
 
 COPY requirements.txt ${DRYCC_HOME_DIR}/requirements.txt
