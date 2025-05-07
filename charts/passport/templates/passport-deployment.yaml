@@ -1,4 +1,3 @@
-{{- if eq .Values.global.passportLocation "on-cluster" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -67,4 +66,3 @@ spec:
         {{- include "passport.envs" . | indent 8 }}
         {{- include "passport.volumeMounts" . | indent 8 }}
       {{- include "passport.volumes" . | indent 6 }}
-{{- end }}

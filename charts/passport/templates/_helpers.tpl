@@ -34,7 +34,7 @@ env:
     secretKeyRef:
       name: passport-creds
       key: valkey-url
-{{- else if eq .Values.global.valkeyLocation "on-cluster"  }}
+{{- else if .Values.valkey.enabled  }}
 - name: VALKEY_PASSWORD
   valueFrom:
     secretKeyRef:
@@ -56,7 +56,7 @@ env:
       name: passport-creds
       key: database-replica-url
 {{- end }}
-{{- else if eq .Values.global.databaseLocation "on-cluster" }}
+{{- else if .Values.database.enabled }}
 - name: DRYCC_DATABASE_USER
   valueFrom:
     secretKeyRef:

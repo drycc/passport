@@ -1,4 +1,3 @@
-{{- if eq .Values.global.passportLocation "on-cluster" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,4 +8,3 @@ data:
 data:
   init-applications.json: |-
 {{ toPrettyJson .Values.initApplications | indent 4 }}
-{{- end }}
