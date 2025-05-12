@@ -39,7 +39,10 @@ spec:
           fi
           python /workspace/manage.py create_oauth2_application --path /etc/drycc/passport/init-applications.json
         {{- end }}
-        {{- include "passport.limits" . | indent 8 }}
+        {{- with index .Values "resources" }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- include "passport.envs" . | indent 8 }}
         {{- include "passport.volumeMounts" . | indent 8 }}
       {{- include "passport.volumes" . | indent 6 }}

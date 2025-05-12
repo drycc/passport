@@ -79,21 +79,6 @@ env:
 {{- end }}
 
 
-{{/* Generate passport deployment limits */}}
-{{- define "passport.limits" -}}
-{{- if or (.Values.limitsCpu) (.Values.limitsMemory) }}
-resources:
-  limits:
-{{- if (.Values.limitsCpu) }}
-    cpu: {{.Values.limitsCpu}}
-{{- end }}
-{{- if (.Values.limitsMemory) }}
-    memory: {{.Values.limitsMemory}}
-{{- end }}
-{{- end }}
-{{- end }}
-
-
 {{/* Generate passport deployment volumeMounts */}}
 {{- define "passport.volumeMounts" }}
 volumeMounts:
