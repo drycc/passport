@@ -9,14 +9,14 @@ class User(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
 
     @property
-    def organizations(self) -> list[str]:
+    def roles(self) -> list[str]:
         results = []
         if self.is_superuser:
             results.append("admin")
         if self.is_staff:
             results.append("staff")
         if self.is_active:
-            results.append(self.username)
+            results.append("users")
         return results
 
 

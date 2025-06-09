@@ -317,10 +317,11 @@ OAUTH2_PROVIDER = {
     "REFRESH_TOKEN_EXPIRE_SECONDS": int(os.environ.get('REFRESH_TOKEN_EXPIRE_SECONDS', 60 * 86400)),  # noqa
     "ROTATE_REFRESH_TOKEN": True,
     "SCOPES": {
+        "email": "Email",
         "profile": "Profile",
         "openid": "OpenID Connect scope",
     },
-    "DEFAULT_SCOPES": ['openid', ],
+    "DEFAULT_SCOPES": ['openid', 'email', 'profile'],
     "DEFAULT_CODE_CHALLENGE_METHOD": 'S256',
 }
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'api.Application'
