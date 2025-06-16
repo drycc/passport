@@ -399,5 +399,8 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'false').lower() == "true"
 EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'false').lower() == "true"
 
+# username regex
+USERNAME_REGEX = os.environ.get('USERNAME_REGEX', '^[a-z][a-z0-9]{4,}$')
+# hcaptcha config
 H_CAPTCHA_KEY = os.environ.get("H_CAPTCHA_KEY")
 H_CAPTCHA_SECRET = os.environ.get("H_CAPTCHA_SECRET")
