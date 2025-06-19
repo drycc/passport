@@ -86,7 +86,8 @@ environment:
 adminUsername: "admin"
 adminPassword: "admin"
 adminEmail: "admin@email.com"
-
+# Reserved usernames
+reservedUsernames: ""
 # The following configurations to initialize oauth2 application
 # Names are all lowercase letters
 # The key and secret are generated automatically if they are empty

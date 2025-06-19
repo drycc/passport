@@ -401,6 +401,16 @@ EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'false').lower() == "true"
 
 # username regex
 USERNAME_REGEX = os.environ.get('USERNAME_REGEX', '^[a-z][a-z0-9]{4,}$')
+
+# reserved username
+RESERVED_USERNAMES_PATH = os.environ.get(
+    'RESERVED_USERNAMES_PATH', '/etc/drycc/passport/reserved-usernames.txt')
+if os.path.exists(RESERVED_USERNAMES_PATH):
+    with open(RESERVED_USERNAMES_PATH) as f:
+        RESERVED_USERNAMES = [line.strip() for line in f if line]
+else:
+    RESERVED_USERNAMES = ["drycc", "admin", "doopai"]
+
 # hcaptcha config
 H_CAPTCHA_KEY = os.environ.get("H_CAPTCHA_KEY")
 H_CAPTCHA_SECRET = os.environ.get("H_CAPTCHA_SECRET")

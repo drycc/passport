@@ -9,7 +9,6 @@ class CustomOAuth2Validator(OAuth2Validator):
         "name": "profile",
         "username": "profile",
         "email": "email",
-        "roles": "profile",
         "first_name": "profile",
         "last_name": "profile",
         "is_staff": "profile",
@@ -24,7 +23,6 @@ class CustomOAuth2Validator(OAuth2Validator):
         claims["name"] = request.user.username
         claims["username"] = request.user.username
         claims["email"] = request.user.email
-        claims["roles"] = request.user.roles
         claims["first_name"] = request.user.first_name
         claims["last_name"] = request.user.last_name
         claims["is_staff"] = request.user.is_staff

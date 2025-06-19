@@ -90,7 +90,6 @@ volumeMounts:
     readOnly: true
 {{- end }}
 
-
 {{/* Generate passport deployment volumes */}}
 {{- define "passport.volumes" }}
 volumes:
@@ -100,4 +99,78 @@ volumes:
   - name: passport-config
     configMap:
       name: passport-config
+{{- end }}
+
+{{/* Generate passport default reserved usernames */}}
+{{- define "passport.defaultReservedUsernames" }}
+admin
+administrator
+anonymous
+asshole
+bastard
+billing
+callback
+cancer
+cocaine
+contact
+coronavirus
+cracker
+database
+developer
+doopai
+drycc
+email
+explore
+faggot
+feedback
+hacker
+helpdesk
+hentai
+heroin
+hitler
+homophobic
+horny
+idiot
+killer
+login
+logout
+moderator
+murder
+nigger
+nigga
+official
+payment
+pedophile
+pornhub
+profile
+racist
+rapist
+recovery
+register
+retard
+scammer
+security
+service
+settings
+sexist
+signup
+signin
+slave
+spammer
+staff
+suicide
+support
+system
+terrorism
+trending
+undefined
+update
+username
+verification
+verify
+webmaster
+webhook
+wetback
+whore
+xvideos
 {{- end }}
