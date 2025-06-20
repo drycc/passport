@@ -105,7 +105,7 @@ initApplications:
   secret: ""
   prefix: "drycc-grafana"
   grant_type: "authorization-code"
-  redirect_uri: "/login/generic_oauth"
+  redirect_uri: "/oauth2/callback"
 
 # Service
 service:
