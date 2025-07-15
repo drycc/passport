@@ -41,7 +41,7 @@ env:
       name: valkey-creds
       key: password
 - name: DRYCC_VALKEY_URL
-  value: "redis://:$(VALKEY_PASSWORD)@drycc-valkey.{{.Release.Namespace}}.svc.{{.Values.global.clusterDomain}}:16379/1"
+  value: "redis://:$(VALKEY_PASSWORD)@drycc-valkey:16379/1"
 {{- end }}
 {{- if (.Values.databaseUrl) }}
 - name: DRYCC_DATABASE_URL
@@ -68,9 +68,9 @@ env:
       name: database-creds
       key: password
 - name: DRYCC_DATABASE_URL
-  value: "postgres://$(DRYCC_DATABASE_USER):$(DRYCC_DATABASE_PASSWORD)@drycc-database.{{.Release.Namespace}}.svc.{{.Values.global.clusterDomain}}:5432/passport"
+  value: "postgres://$(DRYCC_DATABASE_USER):$(DRYCC_DATABASE_PASSWORD)@drycc-database:5432/passport"
 - name: DRYCC_DATABASE_REPLICA_URL
-  value: "postgres://$(DRYCC_DATABASE_USER):$(DRYCC_DATABASE_PASSWORD)@drycc-database-replica.{{.Release.Namespace}}.svc.{{.Values.global.clusterDomain}}:5432/passport"
+  value: "postgres://$(DRYCC_DATABASE_USER):$(DRYCC_DATABASE_PASSWORD)@drycc-database-replica:5432/passport"
 {{- end }}
 {{- range $key, $value := .Values.environment }}
 - name: {{ $key }}
