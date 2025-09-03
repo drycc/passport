@@ -5,7 +5,7 @@ export function getAccessTokenList() {
 }
 
 export function dealAccessTokenList(obj) {
-    return obj.data.map(item => {
+    return obj.data.results.map(item => {
         return {
             id: item.id,
             application: item.application,

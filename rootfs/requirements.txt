@@ -1,17 +1,17 @@
 # Drycc passport requirements
-django==4.2.20
+django==4.2.23
 pytz==2025.2
-django-auth-ldap==5.1.0
+django-auth-ldap==5.2.0
 django-cors-headers==4.7.0
-djangorestframework==3.16.0
+djangorestframework==3.16.1
 gunicorn==23.0.0
-uvicorn==0.34.0
-asgiref==3.8.1
-psycopg[binary]==3.2.6
-requests==2.32.3
+uvicorn==0.35.0
+asgiref==3.9.1
+psycopg[binary]==3.2.9
+requests==2.32.5
 requests-toolbelt==1.0.0
-redis==6.2.0
+redis==6.4.0
 hiredis==3.2.1
-dj-database-url==2.3.0
+dj-database-url==3.0.1
 django-oauth-toolkit==3.0.1
 whitenoise==6.9.0

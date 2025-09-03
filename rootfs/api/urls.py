@@ -38,14 +38,13 @@ urlpatterns = [
     re_path(r'logout/?$', views.UserLogoutView.as_view(), name='user_logout'),
 
     re_path(r'tokens/?$',
-            views.UserTokensTemplateView.as_view({'get': 'retrieve'}),
+            views.UserTokensView.as_view({'get': 'list'}),
             name='user_tokens'),
     re_path(r'tokens/(?P<pk>.+)/?$',
-            views.UserTokenDeleteView.as_view({'delete': 'destroy'}),
+            views.UserTokensView.as_view({'delete': 'destroy'}),
             name='user_grants'),
     re_path(r'email/?$', views.UserEmailView.as_view({'get': 'retrieve'})),
     re_path(r'password/?$',
             views.UserAccountPasswordView.as_view({'put': 'update'}),
             name='user_account_update_password'),
-
 ]

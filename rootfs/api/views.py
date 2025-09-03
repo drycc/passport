@@ -261,19 +261,10 @@ class ListViewSet(ModelViewSet):
             q, **serializer.validated_data).order_by(self.order_by)[0:100]
 
 
-class UserTokensTemplateView(ListViewSet):
+class UserTokensView(ListViewSet):
     model = AccessToken
     serializer_class = serializers.UserTokensSerializer
     order_by = '-created'
-
-    def retrieve(self, request, *args, **kwargs):
-        tokens = self.get_queryset(*args, **kwargs)
-        serializer = self.get_serializer(tokens, many=True)
-        return Response(serializer.data)
-
-
-class UserTokenDeleteView(ListViewSet):
-    model = AccessToken
 
     def destroy(self, request, *args, **kwargs):
         token = get_object_or_404(self.model,

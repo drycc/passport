@@ -56,6 +56,7 @@ class UserGrantsSerializer(serializers.ModelSerializer):
 class UserTokensSerializer(serializers.ModelSerializer):
     """Serialize user status for a AccessToken model."""
     application = serializers.ReadOnlyField(source='application.name')
+    token_checksum = serializers.ReadOnlyField(required=False)
 
     class Meta:
         model = AccessToken
