@@ -28,7 +28,7 @@
         </li>
 
         <li class="glostick__menu__listitem">
-          <a class="glostick__menu__item glostick__menu__item--docs" href="/user/logout">Sign out</a>
+            <a class="glostick__menu__item glostick__menu__item--docs" @click="logout">Sign out</a>
         </li>
     </ul>
 </template>
