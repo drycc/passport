@@ -10,54 +10,23 @@
   version "1.3.6"
   resolved "https://registry.npmjs.org/@icon-park/vue-next/-/vue-next-1.3.6.tgz"
 
-"@intlify/core-base@9.1.9":
-  version "9.1.9"
-  resolved "https://registry.npmjs.org/@intlify/core-base/-/core-base-9.1.9.tgz"
+"@intlify/core-base@9.14.5":
+  version "9.14.5"
+  resolved "https://registry.yarnpkg.com/@intlify/core-base/-/core-base-9.14.5.tgz#cfed631e98b34f4f6fe1312e6c02dd8ace180197"
   dependencies:
-    "@intlify/devtools-if" "9.1.9"
-    "@intlify/message-compiler" "9.1.9"
-    "@intlify/message-resolver" "9.1.9"
-    "@intlify/runtime" "9.1.9"
-    "@intlify/shared" "9.1.9"
-    "@intlify/vue-devtools" "9.1.9"
+    "@intlify/message-compiler" "9.14.5"
+    "@intlify/shared" "9.14.5"
 
-"@intlify/devtools-if@9.1.9":
-  version "9.1.9"
-  resolved "https://registry.npmjs.org/@intlify/devtools-if/-/devtools-if-9.1.9.tgz"
+"@intlify/message-compiler@9.14.5":
+  version "9.14.5"
+  resolved "https://registry.yarnpkg.com/@intlify/message-compiler/-/message-compiler-9.14.5.tgz#03b0a358c93cb2eed95936531c8a5871fd3841b0"
   dependencies:
-    "@intlify/shared" "9.1.9"
+    "@intlify/shared" "9.14.5"
+    source-map-js "^1.0.2"
 
-"@intlify/message-compiler@9.1.9":
-  version "9.1.9"
-  resolved "https://registry.npmjs.org/@intlify/message-compiler/-/message-compiler-9.1.9.tgz"
-  dependencies:
-    "@intlify/message-resolver" "9.1.9"
-    "@intlify/shared" "9.1.9"
-    source-map "0.6.1"
-
-"@intlify/message-resolver@9.1.9":
-  version "9.1.9"
-  resolved "https://registry.npmjs.org/@intlify/message-resolver/-/message-resolver-9.1.9.tgz"
-
-"@intlify/runtime@9.1.9":
-  version "9.1.9"
-  resolved "https://registry.npmjs.org/@intlify/runtime/-/runtime-9.1.9.tgz"
-  dependencies:
-    "@intlify/message-compiler" "9.1.9"
-    "@intlify/message-resolver" "9.1.9"
-    "@intlify/shared" "9.1.9"
-
-"@intlify/shared@9.1.9":
-  version "9.1.9"
-  resolved "https://registry.npmjs.org/@intlify/shared/-/shared-9.1.9.tgz"
-
-"@intlify/vue-devtools@9.1.9":
-  version "9.1.9"
-  resolved "https://registry.npmjs.org/@intlify/vue-devtools/-/vue-devtools-9.1.9.tgz"
-  dependencies:
-    "@intlify/message-resolver" "9.1.9"
-    "@intlify/runtime" "9.1.9"
-    "@intlify/shared" "9.1.9"
+"@intlify/shared@9.14.5":
+  version "9.14.5"
+  resolved "https://registry.yarnpkg.com/@intlify/shared/-/shared-9.14.5.tgz#2e42193b8356db20ee28c15d1ee6c8f0fda6c0b9"
 
 "@popperjs/core@^2.9.2":
   version "2.11.2"
@@ -119,9 +88,9 @@
     "@vue/compiler-dom" "3.2.31"
     "@vue/shared" "3.2.31"
 
-"@vue/devtools-api@^6.0.0", "@vue/devtools-api@^6.0.0-beta.7":
-  version "6.0.13"
-  resolved "https://registry.npmjs.org/@vue/devtools-api/-/devtools-api-6.0.13.tgz"
+"@vue/devtools-api@^6.0.0", "@vue/devtools-api@^6.5.0":
+  version "6.6.4"
+  resolved "https://registry.yarnpkg.com/@vue/devtools-api/-/devtools-api-6.6.4.tgz#cbe97fe0162b365edc1dba80e173f90492535343"
 
 "@vue/reactivity-transform@3.2.31":
   version "3.2.31"
@@ -480,7 +449,7 @@ source-map-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.0.2.tgz"
 
-source-map@0.6.1, source-map@^0.6.1:
+source-map@^0.6.1:
   version "0.6.1"
   resolved "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz"
 
@@ -511,14 +480,13 @@ vite@^2.8.6:
   optionalDependencies:
     fsevents "~2.3.2"
 
-vue-i18n@^9.1.9:
-  version "9.1.9"
-  resolved "https://registry.npmjs.org/vue-i18n/-/vue-i18n-9.1.9.tgz"
+vue-i18n@^9.14.5:
+  version "9.14.5"
+  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-9.14.5.tgz#72fbf4384b83a1c59ec9e01ff5d30224bd9150cf"
   dependencies:
-    "@intlify/core-base" "9.1.9"
-    "@intlify/shared" "9.1.9"
-    "@intlify/vue-devtools" "9.1.9"
-    "@vue/devtools-api" "^6.0.0-beta.7"
+    "@intlify/core-base" "9.14.5"
+    "@intlify/shared" "9.14.5"
+    "@vue/devtools-api" "^6.5.0"
 
 vue-router@^4.0.14:
   version "4.0.14"
