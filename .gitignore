@@ -15,6 +15,7 @@ lib
 lib64
 .env
 .vscode
+.venv
 
 # coverage reports
 .coverage
