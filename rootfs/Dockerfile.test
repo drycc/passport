@@ -1,11 +1,12 @@
 ARG CODENAME
 FROM registry.drycc.cc/drycc/base:${CODENAME}
 
-ENV DRYCC_HOME_DIR=/workspace \
-  PGDATA="/var/lib/postgresql/data" \
+ARG DRYCC_HOME_DIR=/workspace \
   PYTHON_VERSION="3.13" \
   POSTGRES_VERSION="17.6" \
   GOSU_VERSION="1.18"
+
+ENV PGDATA="/var/lib/postgresql/data"
 
 COPY requirements.txt ${DRYCC_HOME_DIR}/requirements.txt
 COPY dev_requirements.txt ${DRYCC_HOME_DIR}/dev_requirements.txt
