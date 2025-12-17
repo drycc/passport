@@ -1,0 +1,7 @@
+{% autoescape off %}
+Hi there,
+
+Please click on the link below to confirm joining {{ invitation.organization.name }} organization:
+
+{{ domain }}{% url 'organization_invitation_detail' name=invitation.organization.name uid=invitation.token %}
+{% endautoescape %}

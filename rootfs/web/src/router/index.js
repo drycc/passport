@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AccessTokenList from "../views/AccessTokenList.vue";
 import AccountSetting from "../views/AccountSetting.vue";
+import Organizations from "../views/Organizations.vue";
 
 
 const routes = [
@@ -17,6 +18,11 @@ const routes = [
         path: '/account-setting',
         name: 'AccountSetting',
         component: AccountSetting
+    },
+    {
+        path: '/organizations',
+        name: 'Organizations',
+        component: Organizations
     },
 ]
 

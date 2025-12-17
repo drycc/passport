@@ -168,6 +168,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'false').lower() == "true"
 SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'false').lower() == "true"
+CSRF_TRUSTED_ORIGINS = [r for r in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if r]
 
 # Honor HTTPS from a trusted proxy
 # see https://docs.djangoproject.com/en/2.2/ref/settings/#secure-proxy-ssl-header
@@ -274,7 +275,7 @@ random_secret = ')u_jckp95wule8#wxd8sm!0tj2j&aveozu!nnpgl)2x&&16gfj'
 SECRET_KEY = os.environ.get('DRYCC_SECRET_KEY', random_secret)
 
 # database default setting
-DRYCC_DATABASE_URL = os.environ.get('DRYCC_DATABASE_URL', 'postgres://postgres:123456@49.232.207.93:5432/drycc_passport')  # noqa
+DRYCC_DATABASE_URL = os.environ.get('DRYCC_DATABASE_URL', 'postgres://postgres:@:5432/passport')
 DATABASES = {
     'default': dj_database_url.config(default=DRYCC_DATABASE_URL)
 }
@@ -325,9 +326,6 @@ OAUTH2_PROVIDER = {
     "DEFAULT_CODE_CHALLENGE_METHOD": 'S256',
 }
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'api.Application'
-# Valkey Configuration
-DRYCC_VALKEY_ADDRS = os.environ.get('DRYCC_VALKEY_ADDRS', '127.0.0.1:6379').split(",")
-DRYCC_VALKEY_PASSWORD = os.environ.get('DRYCC_VALKEY_PASSWORD', '')
 
 # Cache Valkey Configuration
 CACHES = {
@@ -401,6 +399,9 @@ EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'false').lower() == "true"
 
 # username regex
 USERNAME_REGEX = os.environ.get('USERNAME_REGEX', '^[a-z][a-z0-9]{4,}$')
+
+# organization name regex
+ORGANIZATION_NAME_REGEX = os.environ.get('ORGANIZATION_NAME_REGEX', '^[0-9a-z]{5,255}$')
 
 # reserved username
 RESERVED_USERNAMES_PATH = os.environ.get(

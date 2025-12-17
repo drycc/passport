@@ -4,6 +4,7 @@ Helper functions used by the Drycc Passport server.
 import logging
 import datetime
 
+from django.core.mail import send_mail
 from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode
@@ -58,6 +59,16 @@ def send_activation_email(request, user):
             'token': token_generator.make_token(user),
         })
     user.email_user(mail_subject, message, fail_silently=True)
+
+
+def send_organization_invitation(request, invitation):
+    domain = get_local_host(request)
+    mail_subject = f'We Invite You to Join the {invitation.organization.name} Organization.'
+    message = render_to_string(
+        'user/organization_invitation.html',
+        {'domain': domain, 'invitation': invitation}
+    )
+    send_mail(mail_subject, message, None, [invitation.email], fail_silently=True)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 import logging
 import hashlib
+import secrets
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.decorators import method_decorator
@@ -8,6 +9,7 @@ from django.contrib import messages, auth
 from django.contrib.auth import login
 from django.contrib.auth import views
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 from django.db.models import Q
 from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import render_to_string
@@ -20,7 +22,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.urls import reverse_lazy
 from rest_framework import status
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from oauth2_provider.models import AccessToken
@@ -28,11 +30,21 @@ from oauth2_provider.models import AccessToken
 from api import serializers
 from api.forms import AuthenticationForm, RegistrationForm
 from api.exceptions import ServiceUnavailable, DryccException
-from api.utils import token_generator, get_local_host, send_activation_email
+from api.utils import (
+    token_generator, get_local_host, send_activation_email, send_organization_invitation
+)
 from api.viewset import NormalUserViewSet
+from api.models import Organization, OrganizationMember, OrganizationInvitation
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
+
+
+def is_organization_member(user, organization, role=None):
+    kwargs = {'user': user, 'organization': organization}
+    if role:
+        kwargs['role'] = role
+    return OrganizationMember.objects.filter(**kwargs).exists()
 
 
 class ReadinessCheckView(View):
@@ -118,6 +130,7 @@ class ActivateAccount(View):
                 user, token):
             user.is_active = True
             user.save()
+            OrganizationInvitation.bulk_accept_by_email(user.email)
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'Your account have been confirmed.')
             return redirect('/user/activate/done/')
@@ -176,7 +189,8 @@ class UserDetailView(NormalUserViewSet):
                 cache.set(cache_key, request.data, 60 * 30)
                 user.email_user(mail_subject, message, fail_silently=True)
             else:
-                user_serializer.save()
+                user = user_serializer.save()
+                OrganizationInvitation.bulk_accept_by_email(user.email)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -293,3 +307,198 @@ class UserAccountPasswordView(ListViewSet):
         request.user.save()
         auth.logout(request)
         return HttpResponse(status=204)
+
+
+class OrganizationViewSet(ModelViewSet):
+    """
+    ViewSet for Organization model.
+    """
+    serializer_class = serializers.OrganizationSerializer
+    lookup_field = 'name'
+
+    def get_queryset(self):
+        return Organization.objects.filter(
+            organizationmember__user=self.request.user
+        ).distinct()
+
+    def perform_create(self, serializer):
+        organization = serializer.save()
+        OrganizationMember.objects.create(
+            user=self.request.user, organization=organization, role='admin'
+        )
+
+    def get_object(self):
+        """Override to get organization by name instead of pk"""
+        return get_object_or_404(Organization, name=self.kwargs['name'])
+
+    def partial_update(self, request, *args, **kwargs):
+        """Only admins can update organizations"""
+        organization = self.get_object()
+        if not is_organization_member(request.user, organization, role='admin'):
+            return Response(
+                {"detail": "Only organization admins can update organizations"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """Only admins can delete organizations"""
+        organization = self.get_object()
+        if not is_organization_member(request.user, organization, role='admin'):
+            return Response(
+                {"detail": "Only organization admins can delete organizations"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().destroy(request, *args, **kwargs)
+
+
+class OrganizationMemberViewSet(ModelViewSet):
+    """
+    ViewSet for OrganizationMember model.
+    """
+    serializer_class = serializers.OrganizationMemberSerializer
+
+    def get_queryset(self):
+        organization = get_object_or_404(Organization, name=self.kwargs['name'])
+        # Check if user has access to this organization
+        if is_organization_member(self.request.user, organization):
+            return OrganizationMember.objects.filter(organization=organization)
+        return OrganizationMember.objects.none()
+
+    def get_object(self):
+        """Override to get member by username and organization name"""
+        organization = get_object_or_404(Organization, name=self.kwargs['name'])
+        return get_object_or_404(
+            OrganizationMember, organization=organization, user__username=self.kwargs['user']
+        )
+
+    def partial_update(self, request, *args, **kwargs):
+        """Update a member. Admins can update any member (role and alerts).
+        Non-admins can only update their own alerts field."""
+        member = self.get_object()
+        is_admin = is_organization_member(request.user, member.organization, role='admin')
+
+        # Check if organization has only one member
+        member_count = OrganizationMember.objects.filter(
+            organization=member.organization
+        ).count()
+        is_only_member = member_count == 1
+
+        # Only member cannot modify role
+        if is_only_member and 'role' in request.data:
+            return Response(
+                {"detail": "Cannot modify role: organization only has one member"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Non-admin users restrictions
+        if not is_admin:
+            # Cannot update other members
+            if request.user != member.user:
+                return Response(
+                    {"detail": "Only organization admins can update other members"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            # Cannot modify own role
+            if 'role' in request.data:
+                return Response(
+                    {"detail": "Cannot modify your own role"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """Delete a member. Admins can delete any member.
+        Non-admins can only delete themselves (leave organization)."""
+        member = self.get_object()
+        is_admin = is_organization_member(request.user, member.organization, role='admin')
+
+        # Check if organization has only one member
+        member_count = OrganizationMember.objects.filter(
+            organization=member.organization
+        ).count()
+        is_only_member = member_count == 1
+
+        # Only member cannot delete self
+        if is_only_member and request.user == member.user:
+            return Response(
+                {"detail": "Cannot delete: organization only has one member"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Non-admin can delete self
+        if request.user == member.user:
+            return super().destroy(request, *args, **kwargs)
+
+        # Admin can delete any member
+        if is_admin:
+            return super().destroy(request, *args, **kwargs)
+
+        # Other cases forbidden
+        return Response(
+            {"detail": "Only organization admins can remove other members"},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+
+class OrganizationInvitationViewSet(ModelViewSet):
+    """
+    ViewSet for OrganizationInvitation model.
+    """
+    serializer_class = serializers.OrganizationInvitationSerializer
+
+    def get_queryset(self):
+        organization = get_object_or_404(Organization, name=self.kwargs['name'])
+        if is_organization_member(self.request.user, organization):
+            return OrganizationInvitation.objects.filter(
+                organization=organization, accepted=False)
+        return OrganizationInvitation.objects.none()
+
+    def get_object(self):
+        """Override to get invitation by uid and organization name"""
+        return get_object_or_404(
+            OrganizationInvitation,
+            organization=get_object_or_404(Organization, name=self.kwargs['name']),
+            token=self.kwargs['uid'],
+            accepted=False,
+        )
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.accept()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        # Check if user has permission to create invitations for this organization
+        organization = get_object_or_404(Organization, name=self.kwargs['name'])
+        if not is_organization_member(self.request.user, organization, role='admin'):
+            raise ValidationError("Only organization admins can create invitations")
+        # Throw an error if the user is already a member
+        user = User.objects.filter(email=serializer.validated_data['email']).first()
+        if user and is_organization_member(user, organization):
+            raise ValidationError("User is already a member of the organization")
+        # Generate token and set inviter
+        token = secrets.token_hex(64)
+        try:
+            invitation = serializer.save(
+                token=token, inviter=self.request.user, organization=organization)
+            if settings.EMAIL_HOST:
+                send_organization_invitation(self.request, invitation)
+            else:
+                invitation.accept()
+        except IntegrityError:
+            raise ValidationError("User already has pending invitation")
+        except User.DoesNotExist:
+            raise ValidationError("No user with this email exists.")
+
+    def destroy(self, request, *args, **kwargs):
+        """Only admins can revoke invitations"""
+        invitation = self.get_object()
+        if not is_organization_member(request.user, invitation.organization, role='admin'):
+            return Response(
+                {"detail": "Only organization admins can revoke invitations"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().destroy(request, *args, **kwargs)

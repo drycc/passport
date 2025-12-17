@@ -1,4 +1,3 @@
-import { reactive, toRefs} from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -9,6 +8,10 @@ export default {
             default: false
         },
         isAccountSettingActive: {
+            type: Boolean,
+            default: false
+        },
+        isOrganizationsActive: {
             type: Boolean,
             default: false
         },

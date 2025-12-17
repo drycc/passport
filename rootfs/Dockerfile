@@ -4,7 +4,7 @@ FROM registry.drycc.cc/drycc/base:${CODENAME} as build-app
 ADD web /web
 WORKDIR /web
 
-ENV NODE_VERSION="22"
+ENV NODE_VERSION="24"
 
 RUN install-stack node $NODE_VERSION && . init-stack \
   && npm install --global yarn \
@@ -16,7 +16,7 @@ FROM registry.drycc.cc/drycc/base:${CODENAME}
 ARG DRYCC_UID=1001 \
   DRYCC_GID=1001 \
   DRYCC_HOME_DIR=/workspace \
-  PYTHON_VERSION="3.13"
+  PYTHON_VERSION="3.14"
 
 RUN groupadd drycc --gid ${DRYCC_GID} \
   && useradd drycc -u ${DRYCC_UID} -g ${DRYCC_GID} -s /bin/bash -m -d ${DRYCC_HOME_DIR}

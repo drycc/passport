@@ -9,6 +9,8 @@ from oauth2_provider.models import Grant, AccessToken
 from rest_framework import serializers
 
 from api.utils import timestamp2datetime
+from api.validators import OrganizationNameValidator
+from api.models import Organization, OrganizationMember, OrganizationInvitation
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -74,3 +76,38 @@ class UserLogsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['action_time', 'user', 'content_type', 'object_id',
                             'object_repr', 'action_flag', 'change_message']
+
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    """Serialize Organization model."""
+
+    class Meta:
+        model = Organization
+        fields = '__all__'
+        read_only_fields = ['id', 'created', 'updated']
+        extra_kwargs = {
+            'name': {'validators': [OrganizationNameValidator()]}
+        }
+
+
+class OrganizationMemberSerializer(serializers.ModelSerializer):
+    """Serialize OrganizationMember model."""
+    user = serializers.ReadOnlyField(source='user.username')
+    email = serializers.ReadOnlyField(source='user.email')
+    organization = serializers.ReadOnlyField(source='organization.name')
+
+    class Meta:
+        model = OrganizationMember
+        fields = '__all__'
+        read_only_fields = ['id', 'created', 'updated']
+
+
+class OrganizationInvitationSerializer(serializers.ModelSerializer):
+    """Serialize OrganizationInvitation model."""
+    inviter = serializers.ReadOnlyField(source='inviter.username')
+    organization = serializers.ReadOnlyField(source='organization.name')
+
+    class Meta:
+        model = OrganizationInvitation
+        fields = '__all__'
+        read_only_fields = ['id', 'token', 'created']

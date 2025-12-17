@@ -19,13 +19,59 @@
                     <span class="sub-nav-item-name gray">Account Setting</span>
                 </a>
             </div>
+            <div class="sub-nav-item ember-view">
+                <a @click="goToOrganizations" class="ember-view" :class="{'active': isOrganizationsActive}">
+                    <svg style="height: 24px; width: 24px;" class="icon malibu-icon fill-gray" >
+                        <title id="malibu-icon-ember490">Organizations</title>
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#group-28"></use>
+                    </svg>
+                    <span class="sub-nav-item-name gray">Organizations</span>
+                </a>
+            </div>
         </div>
     </nav>
 </template>
 
 <script>
-import MainNav from "./MainNav"
-export default MainNav
+import { useRouter } from 'vue-router'
+
+export default {
+    props: {
+        isAccessTokenActive: {
+            type: Boolean,
+            default: false
+        },
+        isAccountSettingActive: {
+            type: Boolean,
+            default: false
+        },
+        isOrganizationsActive: {
+            type: Boolean,
+            default: false
+        }
+    },
+    setup(props) {
+        const router = useRouter()
+
+        const goToAccessToken = () => {
+            router.push('/access-tokens')
+        }
+
+        const goToAccountSetting = () => {
+            router.push('/account-setting')
+        }
+
+        const goToOrganizations = () => {
+            router.push('/organizations')
+        }
+
+        return {
+            goToAccessToken,
+            goToAccountSetting,
+            goToOrganizations
+        }
+    }
+}
 </script>
 
 <style scoped>

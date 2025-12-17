@@ -1,38 +1,52 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 
-VUE_APP_BASE_URL = process.env.VUE_APP_BASE_URL ? process.env.VUE_APP_BASE_URL : ''
+VUE_APP_BASE_URL = process.env.VUE_APP_BASE_URL
+  ? process.env.VUE_APP_BASE_URL
+  : "";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
   build: {
     minify: true,
-    chunkSizeWarningLimit: 3000
+    chunkSizeWarningLimit: 3000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "element-plus": ["element-plus"],
+        },
+      },
+    },
   },
-  server:{
-    proxy: { // 代理配置
-      '/avatar': {
+  server: {
+    proxy: {
+      // 代理配置
+      "/avatar": {
         target: VUE_APP_BASE_URL,
         changeOrigin: true,
       },
-      '/user': {
+      "/orgs": {
         target: VUE_APP_BASE_URL,
         changeOrigin: true,
       },
-      '/assets': {
+      "/user": {
         target: VUE_APP_BASE_URL,
         changeOrigin: true,
       },
-      '/settings': {
+      "/assets": {
+        target: VUE_APP_BASE_URL,
+        changeOrigin: true,
+      },
+      "/settings": {
         target: VUE_APP_BASE_URL,
         changeOrigin: true,
       },
     },
   },
   define: {
-    'process.env': {
+    "process.env": {
       VUE_APP_BASE_URL: VUE_APP_BASE_URL,
     },
-  }
-})
+  },
+});
