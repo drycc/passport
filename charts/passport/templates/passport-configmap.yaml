@@ -5,11 +5,11 @@ metadata:
   labels:
     heritage: drycc
 data:
-  reserved-usernames.txt: |-
-{{- if .Values.reservedUsernames }}
-{{- (tpl .Values.reservedUsernames $) | nindent 4 }}
-{{- else}}
-{{- include "passport.defaultReservedUsernames" . | nindent 4 }}
-{{- end }}
   init-applications.json: |-
 {{ toPrettyJson .Values.initApplications | indent 4 }}
+  reserved-name-patterns.txt: |-
+    {{- if .Values.config.reservedNames }}
+    {{- (tpl .Values.config.reservedNames $)  | nindent 4 }}
+    {{- else}}
+    {{- .Files.Get "files/reserved-name-patterns.txt" | nindent 4 }}
+    {{- end }}

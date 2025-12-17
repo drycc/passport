@@ -116,6 +116,7 @@ INSTALLED_APPS = (
     'gunicorn',
     'rest_framework',
     'oauth2_provider',
+    'social_django',
     # passport apps
     'api'
 )
@@ -124,6 +125,10 @@ AUTH_USER_MODEL = "api.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTHENTICATION_BACKENDS = (
+    "api.apps_extra.social_core.backends.FeiShuOAuth2",
+    "api.apps_extra.social_core.backends.WeixinOAuth2",
+    "api.apps_extra.social_core.backends.GithubOAuth2",
+    "api.apps_extra.social_core.backends.GoogleOAuth2",
     "django.contrib.auth.backends.AllowAllUsersModelBackend",
 )
 
@@ -168,6 +173,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'false').lower() == "true"
 SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'false').lower() == "true"
+CSRF_TRUSTED_ORIGINS = [r for r in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if r]
 
 # Honor HTTPS from a trusted proxy
 # see https://docs.djangoproject.com/en/2.2/ref/settings/#secure-proxy-ssl-header
@@ -274,7 +280,7 @@ random_secret = ')u_jckp95wule8#wxd8sm!0tj2j&aveozu!nnpgl)2x&&16gfj'
 SECRET_KEY = os.environ.get('DRYCC_SECRET_KEY', random_secret)
 
 # database default setting
-DRYCC_DATABASE_URL = os.environ.get('DRYCC_DATABASE_URL', 'postgres://postgres:123456@49.232.207.93:5432/drycc_passport')  # noqa
+DRYCC_DATABASE_URL = os.environ.get('DRYCC_DATABASE_URL', 'postgres://postgres:@:5432/passport')
 DATABASES = {
     'default': dj_database_url.config(default=DRYCC_DATABASE_URL)
 }
@@ -325,9 +331,6 @@ OAUTH2_PROVIDER = {
     "DEFAULT_CODE_CHALLENGE_METHOD": 'S256',
 }
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'api.Application'
-# Valkey Configuration
-DRYCC_VALKEY_ADDRS = os.environ.get('DRYCC_VALKEY_ADDRS', '127.0.0.1:6379').split(",")
-DRYCC_VALKEY_PASSWORD = os.environ.get('DRYCC_VALKEY_PASSWORD', '')
 
 # Cache Valkey Configuration
 CACHES = {
@@ -348,6 +351,42 @@ LDAP_GROUP_FILTER = os.environ.get('LDAP_GROUP_FILTER', '')
 LDAP_ACTIVE_GROUP = os.environ.get('LDAP_ACTIVE_GROUP', '')
 LDAP_STAFF_GROUP = os.environ.get('LDAP_STAFF_GROUP', '')
 LDAP_SUPERUSER_GROUP = os.environ.get('LDAP_SUPERUSER_GROUP', '')
+
+# Social Auth settings for OAuth2 providers
+SOCIAL_AUTH_FEISHU_KEY = os.environ.get('SOCIAL_AUTH_FEISHU_KEY', '')
+SOCIAL_AUTH_FEISHU_SECRET = os.environ.get('SOCIAL_AUTH_FEISHU_SECRET', '')
+
+SOCIAL_AUTH_WEIXIN_KEY = os.environ.get('SOCIAL_AUTH_WEIXIN_KEY', '')
+SOCIAL_AUTH_WEIXIN_SECRET = os.environ.get('SOCIAL_AUTH_WEIXIN_SECRET', '')
+
+SOCIAL_AUTH_GITHUB_KEY = os.environ.get('SOCIAL_AUTH_GITHUB_KEY', '')
+SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('SOCIAL_AUTH_GITHUB_SECRET', '')
+
+SOCIAL_AUTH_GOOGLE_KEY = os.environ.get('SOCIAL_AUTH_GOOGLE_KEY', '')
+SOCIAL_AUTH_GOOGLE_SECRET = os.environ.get('SOCIAL_AUTH_GOOGLE_SECRET', '')
+
+# Social Auth Pipeline
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'api.apps_extra.social_core.pipelines.handle_authenticated_binding',
+    'social_core.pipeline.social_auth.social_user',
+    'api.apps_extra.social_core.pipelines.require_username_password',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
+# Social Auth settings
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/access-tokens'
+SOCIAL_AUTH_LOGIN_CALLBACK_URL = '/oauth/callback'
+SOCIAL_AUTH_LOGIN_ERROR_URL = f'{SOCIAL_AUTH_LOGIN_CALLBACK_URL}?status=error'
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = f'{SOCIAL_AUTH_LOGIN_CALLBACK_URL}?status=pending'
+SOCIAL_AUTH_USER_MODEL = 'api.User'
+SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
+SOCIAL_AUTH_PROTECTED_USER_FIELDS = ['email',]
 
 # Django LDAP backend configuration.
 # See https://pythonhosted.org/django-auth-ldap/reference.html
@@ -402,14 +441,14 @@ EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'false').lower() == "true"
 # username regex
 USERNAME_REGEX = os.environ.get('USERNAME_REGEX', '^[a-z][a-z0-9]{4,}$')
 
-# reserved username
-RESERVED_USERNAMES_PATH = os.environ.get(
-    'RESERVED_USERNAMES_PATH', '/etc/drycc/passport/reserved-usernames.txt')
-if os.path.exists(RESERVED_USERNAMES_PATH):
-    with open(RESERVED_USERNAMES_PATH) as f:
-        RESERVED_USERNAMES = [line.strip() for line in f if line]
+# names which apps cannot reserve for routing
+RESERVED_NAME_PATTERNS_PATH = os.environ.get(
+    'RESERVED_NAME_PATTERNS_PATH', '/etc/controller/reserved-name-patterns.txt')
+if os.path.exists(RESERVED_NAME_PATTERNS_PATH):
+    with open(RESERVED_NAME_PATTERNS_PATH) as f:
+        RESERVED_NAME_PATTERNS = [line.strip() for line in f if line.strip()]
 else:
-    RESERVED_USERNAMES = ["drycc", "admin", "doopai"]
+    RESERVED_NAME_PATTERNS = [r"^drycc(?:-[\w-]+)?$", r"^kube(?:-[\w-]+)?$", r"^default$"]
 
 # hcaptcha config
 H_CAPTCHA_KEY = os.environ.get("H_CAPTCHA_KEY")

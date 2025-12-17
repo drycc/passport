@@ -1,14 +1,20 @@
 """
 Helper functions used by the Drycc Passport server.
 """
+import re
 import logging
 import datetime
+
+from urllib.parse import urlencode
+from django.conf import settings
 
 from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.shortcuts import render
+
+from rest_framework.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +51,44 @@ token_generator = TokenGenerator()
 def get_local_host(request):
     uri = request.build_absolute_uri()
     return uri[0:uri.find(request.path)]
+
+
+def get_user_socials(user):
+    from api.apps_extra.social_core import backends
+    provider_map = {
+        backend_cls.name: backend_cls
+        for backend_cls in backends.__all__
+    }
+    results = []
+    for social in user.social_auth.all():
+        backend_cls = provider_map.get(social.provider)
+        email = None
+        if social.extra_data:
+            email = social.extra_data.get('email') or social.extra_data.get('user_email')
+        results.append({
+            'id': social.id,
+            'provider': social.provider,
+            'display_name': social.provider.title(),
+            'uid': social.uid,
+            'icon': backend_cls.icon if backend_cls else '',
+            'email': email or user.email,
+        })
+    return results
+
+
+def get_oauth_callback(request, status, provider=None):
+    query = {'status': status}
+    domain = get_local_host(request)
+    if provider:
+        query['provider'] = provider
+    return f"{domain}{settings.SOCIAL_AUTH_LOGIN_CALLBACK_URL}?{urlencode(query)}"
+
+
+def validate_reserved_names(value):
+    """A value cannot use some reserved names."""
+    for reserved_name_pattern in settings.RESERVED_NAME_PATTERNS:
+        if re.match(reserved_name_pattern, value):
+            raise ValidationError('{} is a reserved name.'.format(value))
 
 
 def send_activation_email(request, user):

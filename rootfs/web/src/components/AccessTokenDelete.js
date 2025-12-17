@@ -1,5 +1,5 @@
 import { reactive, toRefs } from 'vue'
-import { Toast } from "vant";
+import { showSuccessToast } from "vant";
 import {deleteAccessToken} from "../services/tokens";
 
 export default {
@@ -19,7 +19,7 @@ export default {
         const deleteToken = () => {
             deleteAccessToken(state.token.id).then(res=>{
                 if (res.status == 204) {
-                    Toast.success("OK")
+                    showSuccessToast("OK")
                     context.emit('closeDelete', { hasAccessTokenDeleted: true })
                 }
             })

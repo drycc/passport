@@ -6,12 +6,19 @@
 # fail hard and fast even on pipelines
 set -eou pipefail
 
+function start_valkey() {
+    cd /tmp
+    nohup valkey-server > /var/log/valkey.log 2>&1 &
+    cd -
+}
+
 function creating_rsa_key() {
     mkdir -p /var/run/secrets/drycc/passport/ \
       && openssl genrsa -out /var/run/secrets/drycc/passport/oidc-rsa-private-key 4096
 }
 
 gosu postgres pg_ctl -D "$PGDATA" start && ln -s /tmp/.s.PGSQL.5432 /var/run/postgresql/.s.PGSQL.5432
+start_valkey
 creating_rsa_key
 python3 manage.py check
 coverage run manage.py test --settings=api.settings.testing --noinput api

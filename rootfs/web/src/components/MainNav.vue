@@ -1,35 +1,82 @@
 <template>
-    <nav class="app-nav nav nav-tabs sub-nav ember-view">
-        <div class="limit-width">
-            <div class="sub-nav-item ember-view">
-                <a @click="goToAccessToken" class="ember-view" :class="{'active': isAccessTokenActive}">
-                    <svg style="height: 24px; width: 24px;"  class="icon malibu-icon fill-purple" >
-                        <title id="malibu-icon-ember486">Access Tokens</title>
-                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#overview-28"></use>
-                    </svg>
-                    <span class="sub-nav-item-name gray">Access Tokens</span>
-                </a>
-            </div>
-            <div class="sub-nav-item ember-view">
-                <a @click="goToAccountSetting" class="ember-view" :class="{'active': isAccountSettingActive}">
-                    <svg style="height: 24px; width: 24px;" class="icon malibu-icon fill-gray" >
-                        <title id="malibu-icon-ember489">Account Setting</title>
-                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#formation-28"></use>
-                    </svg>
-                    <span class="sub-nav-item-name gray">Account Setting</span>
-                </a>
-            </div>
+    <nav class="ui-subnav">
+        <div class="ui-subnav__inner">
+            <button @click="goToAccessToken" class="ui-subnav__item" :class="{'is-active': isAccessTokenActive}" type="button">
+                <span>Access Tokens</span>
+            </button>
+            <button @click="goToAccountSetting" class="ui-subnav__item" :class="{'is-active': isAccountSettingActive}" type="button">
+                <span>Account Setting</span>
+            </button>
         </div>
     </nav>
 </template>
 
 <script>
-import MainNav from "./MainNav"
-export default MainNav
+import { useRouter } from 'vue-router'
+
+export default {
+    props: {
+        isAccessTokenActive: {
+            type: Boolean,
+            default: false
+        },
+        isAccountSettingActive: {
+            type: Boolean,
+            default: false
+        },
+    },
+    setup(props) {
+        const router = useRouter()
+
+        const goToAccessToken = () => {
+            router.push('/access-tokens')
+        }
+
+        const goToAccountSetting = () => {
+            router.push('/account-setting')
+        }
+
+        return {
+            goToAccessToken,
+            goToAccountSetting
+        }
+    }
+}
 </script>
 
 <style scoped>
-    a:hover {
-        cursor: pointer;
-    }
+.ui-subnav {
+    padding: 14px 16px 8px;
+    border-bottom: 1px solid rgba(217, 226, 239, 0.75);
+    background: linear-gradient(180deg, rgba(247, 250, 255, 0.95) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+.ui-subnav__inner {
+    display: flex;
+    gap: 8px;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.ui-subnav__item {
+    border: none;
+    background: #edf2fa;
+    color: var(--ui-color-text-secondary);
+    padding: 9px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: var(--ui-font-weight-semibold);
+    transition: all 0.18s ease;
+}
+
+.ui-subnav__item:hover {
+    color: var(--ui-color-primary-hover);
+    background: var(--ui-color-primary-soft);
+}
+
+.ui-subnav__item.is-active {
+    color: #fff;
+    background: var(--ui-color-primary);
+    box-shadow: 0 8px 20px rgba(64, 158, 255, 0.34);
+}
 </style>

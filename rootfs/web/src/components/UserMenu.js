@@ -1,21 +1,37 @@
-import {onMounted, reactive, toRefs} from "vue";
+import { computed, markRaw, onBeforeMount, reactive, toRefs, watch } from "vue";
 import { useRouter } from 'vue-router'
 import {dealUser, getUser, postLogout} from "../services/user";
+import { Key, Setting, SwitchButton, UserFilled } from "@element-plus/icons-vue";
 
 export default {
     name: "UserMenu",
-    data() {
-        return {
-            isMenuActived: false
+    props: {
+        user: {
+            type: Object,
+            default: null
         }
     },
-    methods: {
-        openOrCloseMenu() {
-            this.isMenuActived = !this.isMenuActived;
-        }
-    },
-    setup() {
+    setup(props) {
         const router = useRouter()
+        const normalizeUser = (input) => {
+            if (!input) {
+                return {
+                    username: null,
+                    email: null,
+                    first_name: null,
+                    last_name: null
+                }
+            }
+            if (input.data) {
+                return dealUser(input)
+            }
+            return {
+                username: input.username ?? null,
+                email: input.email ?? null,
+                first_name: input.first_name ?? null,
+                last_name: input.last_name ?? null
+            }
+        }
         const state = reactive({
             user :{
                 username: null,
@@ -32,31 +48,58 @@ export default {
             })
             location.reload(true)
         }
-        onMounted(async () => {
-            let user = sessionStorage.getItem('user')
-            if (user){
-                state.user = JSON.parse(user)
-            }else {
-                const res = await getUser()
-                state.user = dealUser(res)
-                if (state.user){
-                    sessionStorage.setItem('user', JSON.stringify(state.user))
+
+        const accountTriggerIcon = markRaw(UserFilled)
+
+        const menuItems = computed(() => [
+            {
+                key: "settings",
+                label: "Settings",
+                href: "/account-setting",
+                icon: markRaw(Setting)
+            },
+            {
+                key: "access-tokens",
+                label: "Access Tokens",
+                href: "/access-tokens",
+                icon: markRaw(Key)
+            },
+            {
+                key: "sign-out",
+                label: "Sign Out",
+                actionKey: "logout",
+                icon: markRaw(SwitchButton)
+            }
+        ])
+
+        const handleMenuAction = (actionKey) => {
+            if (actionKey === "logout") {
+                logout()
+            }
+        }
+
+        watch(
+            () => props.user,
+            (newUser) => {
+                if (newUser) {
+                    state.user = normalizeUser(newUser)
                 }
+            },
+            { immediate: true }
+        )
+
+        onBeforeMount(async () => {
+            if (!props.user) {
+                const res = await getUser()
+                state.user = normalizeUser(res)
             }
         })
 
         return {
             ...toRefs(state),
-            logout
+            accountTriggerIcon,
+            menuItems,
+            handleMenuAction
         }
-    },
-    mounted() {
-        let _this = this
-        document.addEventListener('click', function (e) {
-            // 下面这句代码是获取 点击的区域是否包含你的菜单，如果包含，说明点击的是菜单以外，不包含则为菜单以内
-            if (e.target.id !== 'menu-account') {
-                _this.isMenuActived = false
-            }
-        })
     }
 }

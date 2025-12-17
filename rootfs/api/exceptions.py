@@ -43,7 +43,6 @@ def custom_exception_handler(exc, context):
 
     # No response means DRF couldn't handle it
     # Output a generic 500 in a JSON format
-    print(response)
     if response is None:
         logging.exception('Uncaught Exception', exc_info=exc)
         set_rollback()

@@ -11,6 +11,7 @@ const ENUM_LANG = {
 
 
 export const i18n = createI18n({
+  legacy: false,
   locale: ENUM_LANG.zhCN,
   messages: {
     [ENUM_LANG.enUS]: {
@@ -23,13 +24,11 @@ export const i18n = createI18n({
 })
 
 export const setLang = (lang) => {
-  // i18n.global.locale.value = lang
-  i18n.global.locale = lang
+  i18n.global.locale.value = lang
 }
 
 export const getLang = () => {
-  // return i18n && i18n.global.locale.value
-  return i18n && i18n.global.locale
+  return i18n && i18n.global.locale.value
 }
 
 // 获取UA语言类型

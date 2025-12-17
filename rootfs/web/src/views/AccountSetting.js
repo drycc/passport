@@ -1,11 +1,12 @@
 import NavBar from "../components/NavBar.vue";
 import NavBox from "../components/NavBox.vue";
-import {onBeforeMount, reactive, toRefs} from 'vue'
+import {onMounted, reactive, toRefs} from 'vue'
 import MainNav from "../components/MainNav.vue";
 import MainFooter from "../components/MainFooter.vue";
 import { useRouter } from 'vue-router'
-import { putAccount, putAccountPassword } from "../services/user";
-import { Toast } from "vant"
+import { dealUser, getUser, putAccount, putAccountPassword } from "../services/user";
+import { showFailToast, showSuccessToast } from "vant"
+import { getIdentityProviders, getLinkedIdentities, unlinkIdentity } from "../services/identities";
 
 export default {
     name: "AccountSetting",
@@ -16,32 +17,85 @@ export default {
         'main-footer': MainFooter,
     },
     setup() {
-        const showBTN = "flex items-center mb2"
-        const hiddenBTN = "flex items-center mb2 clip"
-        const hiddenUpdateBTN = "async-button default hk-button--disabled-primary ember-view"
-        const showUpdateBTN = "async-button default hk-button--primary ember-view"
+        const showBTN = "ui-inline-actions"
+        const hiddenBTN = "ui-inline-actions is-hidden"
+        const hiddenUpdateBTN = "ui-btn ui-btn--primary is-disabled"
+        const showUpdateBTN = "ui-btn ui-btn--primary"
 
         var currentPassword, newPassword, confirmNewPassword
 
         const router = useRouter()
         const state = reactive({
-            user: Object,
-            originUser: Object,
+            user: {
+                username: null,
+                email: null,
+                first_name: null,
+                last_name: null
+            },
+            originUser: {
+                username: null,
+                email: null,
+                first_name: null,
+                last_name: null
+            },
             emailBTN: hiddenBTN,
             nameBTN: hiddenBTN,
             firstNameBTN: hiddenBTN,
             lastNameBTN: hiddenBTN,
-            updateBTN: hiddenUpdateBTN
+            updateBTN: hiddenUpdateBTN,
+            providers: [],
+            identities: [],
+            loading: false,
         })
 
-        onBeforeMount(async () => {
-            state.user = JSON.parse(sessionStorage.getItem('user'))
-            state.originUser = JSON.parse(sessionStorage.getItem('user'))
+        onMounted(async () => {
+            const res = await getUser()
+            const userData = dealUser(res)
+            state.user = { ...userData }
+            state.originUser = { ...userData }
+            await fetchProviders()
+            await fetchIdentities()
         })
+
+        const fetchProviders = async () => {
+            state.loading = true
+            try {
+                const res = await getIdentityProviders()
+                state.providers = res.data?.results || []
+            } finally {
+                state.loading = false
+            }
+        }
+
+        const fetchIdentities = async () => {
+            state.loading = true
+            try {
+                const res = await getLinkedIdentities()
+                state.identities = res.data?.results || []
+            } finally {
+                state.loading = false
+            }
+        }
+
+        const handleLink = (provider) => {
+            if (!provider?.login_url) {
+                showFailToast("Provider login URL missing.")
+                return
+            }
+            window.location.href = provider.login_url
+        }
+
+        const handleUnlink = async (identity) => {
+            if (!identity?.id) {
+                return
+            }
+            await unlinkIdentity(identity.id)
+            showSuccessToast("Unlinked successfully.")
+            await fetchIdentities()
+        }
 
         const updateUser = () => {
-            sessionStorage.setItem('user', JSON.stringify(state.user))
-            state.originUser = state.user
+            state.originUser = { ...state.user }
         }
 
         const emailInputChange = (event) => {
@@ -101,7 +155,7 @@ export default {
         const submitEmail = () => {
             var re = /^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$/;
             if(!re.test(state.user.email)) {
-                Toast.fail("this email is not valid.")
+                showFailToast("this email is not valid.")
             } else {
                 putAccount({email: state.user.email}).then(res=>{
                     if (res.status == 204) {
@@ -132,11 +186,11 @@ export default {
 
         const submitPassowrd = () => {
             if (currentPassword == newPassword){
-                Toast.fail("Current Password and New Password are the same.")
+                showFailToast("Current Password and New Password are the same.")
             } else if( newPassword.length < 8){
-                Toast.fail("this New Password is not valid.")
+                showFailToast("this New Password is not valid.")
             } else if (newPassword != confirmNewPassword){
-                Toast.fail("New Password Confirm and New Password are different.")
+                showFailToast("New Password Confirm and New Password are different.")
             }else {
                 putAccountPassword({password: currentPassword, new_password: newPassword}).then(res=>{
                     if (res.status == 204) {
@@ -175,7 +229,9 @@ export default {
             currentPasswordChange,
             newPasswordChange,
             confirmNewPasswordChange,
-            submitPassowrd
+            submitPassowrd,
+            handleLink,
+            handleUnlink
         }
     },
 }

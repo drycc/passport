@@ -18,7 +18,6 @@ from django.conf import settings
 from django.contrib import admin
 from django.views.generic.base import TemplateView
 from api.views import LivenessCheckView, ReadinessCheckView
-from . import views
 
 if settings.ADMIN_ENABLED:
     urlpatterns = [path('admin/', admin.site.urls)]
@@ -28,9 +27,9 @@ else:
 urlpatterns += [
     re_path(r'^healthz$', LivenessCheckView.as_view()),
     re_path(r'^readiness$', ReadinessCheckView.as_view()),
-    re_path(r"settings/?$", views.SettingsViewSet.as_view({'get': 'retrieve'})),
-    re_path(r"^user/", include('api.urls')),
+    re_path(r"^", include('api.urls')),
     re_path(r'^oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     re_path(r'^accounts/', include('django.contrib.auth.urls')),
+    re_path(r'^auth/', include('social_django.urls', namespace='social')),
     re_path(r'.*', TemplateView.as_view(template_name="index.html")),
 ]

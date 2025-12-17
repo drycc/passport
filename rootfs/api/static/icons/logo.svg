@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px" viewBox="0 0 16 16" version="1.1">
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval" stroke="#FF2F57" fill="#FF2F57" cx="3" cy="3" r="2"/>
+        <circle id="Oval" stroke="#FF2F57" fill="#FF2F57" cx="3" cy="13" r="2"/>
+        <circle id="Oval" stroke="#FF2F57" fill="#FF2F57" cx="13" cy="13" r="2"/>
+        <circle id="Oval" stroke="#FF2F57" fill="#FF2F57" cx="13" cy="13" r="2"/>
+        <circle id="Oval" stroke="#FF2F57" fill="#FF2F57" cx="13" cy="3" r="2"/>
+        <rect id="Rectangle" stroke="#3FB1E5" fill="#3FB1E5" x="6.5" y="6.5" width="3" height="3"/>
+        <polygon id="Triangle" stroke="#38BB4C" fill="#38BB4C" stroke-linejoin="round" points="8 11 10 15 6 15"/>
+        <polygon id="Triangle" stroke="#38BB4C" fill="#38BB4C" stroke-linejoin="round" transform="translate(3.000000, 8.000000) rotate(90.000000) translate(-3.000000, -8.000000) " points="3 6 5 10 1 10"/>
+        <polygon id="Triangle" stroke="#38BB4C" fill="#38BB4C" stroke-linejoin="round" transform="translate(8.000000, 3.000000) rotate(180.000000) translate(-8.000000, -3.000000) " points="8 1 10 5 6 5"/>
+        <polygon id="Triangle" stroke="#38BB4C" fill="#38BB4C" stroke-linejoin="round" transform="translate(13.000000, 8.000000) rotate(270.000000) translate(-13.000000, -8.000000) " points="13 6 15 10 11 10"/>
+    </g>
+</svg>

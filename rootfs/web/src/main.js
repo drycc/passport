@@ -1,10 +1,12 @@
 import App from './App.vue'
 import router from './router'
 import { createApp } from 'vue'
-import { Toast } from 'vant';
 import { i18n, setLang, getUAgentLang } from './lang'
+import './styles/unified.css'
 import 'vant/lib/index.css';
-import {install} from '@icon-park/vue-next/es/all';
+import ElementPlus from "element-plus";
+import "element-plus/dist/index.css";
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 /**
  * 时间对象的格式化;
@@ -46,8 +48,11 @@ function init () {
 init()
 
 const app = createApp(App)
-install(app);
 app.use(router)
 app.use(i18n)
-app.use(Toast);
+app.use(ElementPlus);
+// registry global components for Element Plus icons
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
+}
 app.mount('#app')

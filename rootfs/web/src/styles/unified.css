@@ -1,0 +1,230 @@
+:root {
+    --ui-color-bg: #eff5ff;
+    --ui-color-surface: #ffffff;
+    --ui-color-text: #192539;
+    --ui-color-text-secondary: #5f6f86;
+    --ui-color-primary: #409eff;
+    --ui-color-primary-hover: #337ecc;
+    --ui-color-primary-soft: #eaf3ff;
+    --ui-color-primary-softer: #f4f9ff;
+    --ui-color-border: #d9e2ef;
+    --ui-color-muted-bg: #eef3fa;
+    --ui-color-accent: #337ecc;
+    --ui-shell-max-width: 1240px;
+    --ui-shell-gutter: 18px;
+
+    --ui-font-family-base: "Manrope", "IBM Plex Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+    --ui-font-size-base: 14px;
+    --ui-font-size-xs: 12px;
+    --ui-font-size-sm: 13px;
+    --ui-font-size-md: 14px;
+    --ui-font-size-lg: 15px;
+    --ui-font-size-xl: 16px;
+    --ui-font-size-2xl: 18px;
+    --ui-font-size-3xl: 20px;
+    --ui-font-size-4xl: 24px;
+    --ui-font-size-5xl: 30px;
+    --ui-line-height-base: 1.42857;
+    --ui-line-height-tight: 1.25;
+    --ui-line-height-normal: 1.4;
+    --ui-line-height-relaxed: 1.6;
+    --ui-font-weight-regular: 400;
+    --ui-font-weight-medium: 500;
+    --ui-font-weight-semibold: 600;
+    --ui-font-weight-bold: 700;
+
+    --ui-radius-sm: 6px;
+    --ui-radius-md: 12px;
+    --ui-radius-lg: 18px;
+
+    --ui-shadow-sm: 0 8px 18px rgba(64, 158, 255, 0.16);
+    --ui-shadow-md: 0 12px 28px rgba(64, 158, 255, 0.22);
+    --ui-shadow-card: 0 14px 32px rgba(64, 158, 255, 0.14);
+
+    /* Element Plus theme mapping */
+    --el-color-primary: var(--ui-color-primary);
+    --el-color-primary-light-3: #79bbff;
+    --el-color-primary-light-5: #a0cfff;
+    --el-color-primary-light-7: #c6e2ff;
+    --el-color-primary-light-8: #d9ecff;
+    --el-color-primary-light-9: #ecf5ff;
+    --el-color-primary-dark-2: var(--ui-color-primary-hover);
+    --el-text-color-primary: var(--ui-color-text);
+    --el-text-color-regular: var(--ui-color-text-secondary);
+    --el-border-color: var(--ui-color-border);
+    --el-border-color-light: var(--ui-color-border);
+    --el-fill-color-blank: var(--ui-color-surface);
+    --el-bg-color: var(--ui-color-surface);
+    --el-mask-color: rgba(15, 23, 42, 0.42);
+}
+
+html,
+body,
+#app {
+    min-height: 100%;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+}
+
+#app > div {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    margin: 0;
+    font-family: var(--ui-font-family-base);
+    font-size: var(--ui-font-size-base);
+    line-height: var(--ui-line-height-base);
+    color: var(--ui-color-text);
+    background-color: #eef2f8;
+    background-image:
+        radial-gradient(110% 68% at -8% 44%, rgba(181, 164, 232, 0.24) 0%, rgba(181, 164, 232, 0.14) 34%, rgba(181, 164, 232, 0) 72%),
+        radial-gradient(110% 68% at 108% 44%, rgba(164, 206, 241, 0.26) 0%, rgba(164, 206, 241, 0.14) 34%, rgba(164, 206, 241, 0) 72%),
+        radial-gradient(84% 36% at 50% -6%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 78%),
+        linear-gradient(180deg, #f1f4fa 0%, #f4f1fa 52%, #edf3f9 100%);
+    background-repeat: no-repeat;
+}
+
+a {
+    color: var(--ui-color-primary);
+}
+
+a:hover {
+    color: var(--ui-color-primary-hover);
+}
+
+.main-panel {
+    width: min(var(--ui-shell-max-width), calc(100% - (var(--ui-shell-gutter) * 2)));
+    max-width: none;
+    margin: 18px auto 0;
+    padding: 0 0 24px;
+    box-sizing: border-box;
+    background: transparent;
+    flex: 1;
+}
+
+.main-content {
+    background: var(--ui-color-surface);
+    border: 1px solid rgba(217, 226, 239, 0.9);
+    border-radius: var(--ui-radius-lg);
+    box-shadow: var(--ui-shadow-card);
+    overflow: hidden;
+    animation: ui-fade-up 0.34s ease;
+}
+
+@keyframes ui-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-control,
+.el-input__wrapper {
+    border-radius: var(--ui-radius-sm);
+}
+
+.el-button--primary {
+    --el-button-bg-color: var(--ui-color-primary);
+    --el-button-border-color: var(--ui-color-primary);
+    --el-button-hover-bg-color: var(--ui-color-primary-hover);
+    --el-button-hover-border-color: var(--ui-color-primary-hover);
+}
+
+.el-button {
+    border-radius: var(--ui-radius-sm);
+    font-weight: var(--ui-font-weight-semibold);
+}
+
+.el-button--danger.is-plain {
+    --el-button-text-color: #b42318;
+    --el-button-border-color: #fda29b;
+    --el-button-bg-color: #fff5f4;
+    --el-button-hover-text-color: #ffffff;
+    --el-button-hover-border-color: #d92d20;
+    --el-button-hover-bg-color: #d92d20;
+}
+
+.el-table {
+    --el-table-header-bg-color: var(--ui-color-primary-softer);
+    --el-table-header-text-color: var(--ui-color-text);
+    --el-table-row-hover-bg-color: var(--ui-color-primary-softer);
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-md);
+    overflow: hidden;
+}
+
+.el-table th.el-table__cell {
+    font-weight: var(--ui-font-weight-bold);
+}
+
+.el-empty__description p {
+    color: var(--ui-color-text-secondary);
+}
+
+.el-message {
+    border-radius: var(--ui-radius-sm);
+    box-shadow: var(--ui-shadow-card);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+.el-button:focus-visible,
+[role="button"]:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--ui-color-primary) 70%, #ffffff);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Keep Vant only for Toast usage and align its visual tone. */
+.van-toast {
+    border-radius: var(--ui-radius-sm);
+    background: rgba(15, 23, 42, 0.88);
+    color: #fff;
+    box-shadow: var(--ui-shadow-card);
+}
+
+.van-toast--loading {
+    padding: 12px;
+}
+
+@media (max-width: 576px) {
+    :root {
+        --ui-shell-gutter: 10px;
+    }
+
+    body {
+        font-size: var(--ui-font-size-sm);
+    }
+
+    .main-panel {
+        margin-top: 10px;
+        padding: 0 0 16px;
+    }
+
+    .main-content {
+        border-radius: var(--ui-radius-md);
+        box-shadow: var(--ui-shadow-sm);
+    }
+}

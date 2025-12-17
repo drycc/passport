@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Toast } from 'vant'
+import { closeToast, showLoadingToast, showToast } from 'vant'
 import {getCookie} from "./array";
 
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
@@ -9,7 +9,7 @@ const loadingToast = [];
 
 axios.interceptors.request.use(
     (config)=>{
-        loadingToast.push(Toast.loading({
+    loadingToast.push(showLoadingToast({
             duration: 0,
             forbidClick: true,
             message: "Loading..."
@@ -25,7 +25,12 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
     response => {
       if (loadingToast.length > 0) {
-        loadingToast.pop().clear();
+        const toast = loadingToast.pop();
+        if (toast && typeof toast.close === 'function') {
+          toast.close();
+        } else {
+          closeToast();
+        }
       }
       if ([200, 201, 204].indexOf(response.status) >= 0) {
         return Promise.resolve(response);
@@ -35,9 +40,14 @@ axios.interceptors.response.use(
     },
     error => {
       if (loadingToast.length > 0) {
-        loadingToast.pop().clear();
+        const toast = loadingToast.pop();
+        if (toast && typeof toast.close === 'function') {
+          toast.close();
+        } else {
+          closeToast();
+        }
       }
-      if (error.response.status) {
+      if (error.response && error.response.status) {
         switch (error.response.status) {
           case 401:
             window.location.replace("/user/login/");
@@ -54,16 +64,17 @@ axios.interceptors.response.use(
                       forbidClick: true
                   });
               }
+              break;
           case 404:
             console.log('error.response: ', error.response)
               if(error.response.data){
-                  Toast({
+                showToast({
                       message: error.response.data.replace("\"","").replace("\"",""),
                       duration: 1500,
                       forbidClick: true
                   });
               }else {
-                  Toast({
+                showToast({
                       message: 'The request does not exist.',
                       duration: 1500,
                       forbidClick: true
@@ -73,13 +84,13 @@ axios.interceptors.response.use(
           case 400:
             console.log('error.response: ', error.response)
               if(error.response.data.detail){
-                  Toast({
+                showToast({
                       message: error.response.data.detail.replace("\"","").replace("\"",""),
                       duration: 1500,
                       forbidClick: true
                   });
               }else {
-                  Toast({
+                showToast({
                       message: 'The request parameter error',
                       duration: 1500,
                       forbidClick: true
@@ -94,8 +105,9 @@ axios.interceptors.response.use(
               forbidClick: true
             });
         }
-        return Promise.reject(error.response);
+        return Promise.reject(error);
       }
+      return Promise.reject(error);
     }
 );
 
