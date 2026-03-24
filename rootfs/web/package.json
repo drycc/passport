@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
-    "axios": "^0.30.2",
+    "axios": "^0.30.3",
     "element-plus": "^2.10.7",
     "vant": "^3.4.5",
     "vue": "^3.2.31",
