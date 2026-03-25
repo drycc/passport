@@ -1,70 +1,52 @@
-{% load static %}
-
-<link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Registration</title>
-</head>
-
-<div class="page-wrap gradient-primary">
-    <div class="container">
-        <div class="panel">
-            <h2 class="h3">Registration</h2>
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="username">{{ form.username.label_tag }}</label>
-                    <input autofocus="off" class="form-control" id="username" name="username" :placeholder="Username" type="text" required>
-                    <div class="error">{{ form.username.errors }}</div>
-                </div>
-                <div class="form-group">
-                    <label for="password1">{{ form.password1.label_tag }}</label>
-                    <input autofocus="off"
-                        class="form-control"
-                        id="password1"
-                        name="password1"
-                        placeholder="Password"
-                        type="password" required>
-                    <div class="error">{{ form.password1.errors }}</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="password2">{{ form.password2.label_tag }}</label>
-                    <input autofocus="off"
-                        class="form-control" id="password2" name="password2"
-                        placeholder="Confirm password"
-                        type="password" required>
-                    <div class="error">{{ form.password2.errors }}</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">{{ form.email.label_tag }}</label>
-                    <input autofocus="off" class="form-control" id="email" name="email"
-                           :placeholder="Email" type="email" required>
-                    <div class="error">{{ form.email.errors }}</div>
-                </div>
-                {% if h_captcha_key %}
-                <style>
-                    .h-captcha iframe {
-                        transform: scaleX(1.22);
-                    }
-                </style>
-                <div class="form-group">
-                    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-                    <div class="h-captcha" data-sitekey="{{ h_captcha_key }}"></div>
-                    <div class="error">{{ form.h_captcha_token.errors }}</div>
-                </div>
-                {% endif %}
-                <button class="btn btn-primary btn-lg btn-block" id="submit" type="submit">Submit</button>
-                {% if LEGAL_ENABLED %}
-                <div class="form-group">
-                    <p class="privacy">
-                        Signing up signifies that you have read and agree to the <a target="_blank" href="https://legal.doopai.com/#/cloud-services-terms">Terms of Service</a> and our <a target="_blank" href="https://legal.doopai.com/#/doopai-privacy-policy">Privacy Policy</a>.
-                    </p>
-                </div>
-                {% endif %}
-            </form>
+{% extends 'base/layout.html' %}
+{% block title %}Registration{% endblock %}
+{% block content %}
+<div class="panel">
+    <h2 class="h3">Registration</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">{{ form.username.label_tag }}</label>
+            <input autocomplete="username" class="form-control" id="username" name="username" placeholder="Username" type="text" required>
+            <div class="error" role="alert">{{ form.username.errors }}</div>
         </div>
-    </div>
+        <div class="form-group">
+            <label for="password1">{{ form.password1.label_tag }}</label>
+            <input autocomplete="new-password" class="form-control" id="password1" name="password1"
+                placeholder="Password" type="password" required>
+            <div class="error" role="alert">{{ form.password1.errors }}</div>
+        </div>
+        <div class="form-group">
+            <label for="password2">{{ form.password2.label_tag }}</label>
+            <input autocomplete="new-password" class="form-control" id="password2" name="password2"
+                placeholder="Confirm password" type="password" required>
+            <div class="error" role="alert">{{ form.password2.errors }}</div>
+        </div>
+        <div class="form-group">
+            <label for="email">{{ form.email.label_tag }}</label>
+            <input autocomplete="email" class="form-control" id="email" name="email"
+                   placeholder="Email" type="email" required>
+            <div class="error" role="alert">{{ form.email.errors }}</div>
+        </div>
+        {% if h_captcha_key %}
+        <div class="form-group">
+            <div class="h-captcha" data-sitekey="{{ h_captcha_key }}"></div>
+            <div class="error" role="alert">{{ form.h_captcha_token.errors }}</div>
+        </div>
+        {% endif %}
+        <button class="btn btn-primary btn-lg btn-block" id="submit" type="submit">Submit</button>
+        {% if LEGAL_ENABLED %}
+        <div class="form-group">
+            <p class="privacy">
+                Signing up signifies that you have read and agree to the <a target="_blank" href="https://legal.doopai.com/#/cloud-services-terms">Terms of Service</a> and our <a target="_blank" href="https://legal.doopai.com/#/doopai-privacy-policy">Privacy Policy</a>.
+            </p>
+        </div>
+        {% endif %}
+    </form>
 </div>
+{% endblock %}
+{% block extra_head %}
+{% if h_captcha_key %}
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+{% endif %}
+{% endblock %}

@@ -1,91 +1,82 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
+{% extends 'base/layout.html' %}
+{% block title %}Identity Linking{% endblock %}
+{% block content %}
+<div class="panel">
+    <h2 class="h3">Identity Linking</h2>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Identity Linking</title>
-</head>
-
-<div class="page-wrap gradient-primary">
-    <div class="container">
-        <div class="panel">
-            <h2 class="h3">Identity Linking</h2>
-
-            {% if status == 'pending' %}
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <p class="gray-90">
-                        This {{ display_name|default:'OAuth' }} identity is not linked yet. Create a new account to continue.
-                    </p>
-                </div>
-                {% if error %}
-                <div class="form-group">
-                    <div class="error">{{ error }}</div>
-                </div>
-                {% endif %}
-                <div class="form-group">
-                    <label for="oauth-username">Username</label>
-                    <input autofocus="off" class="form-control" id="oauth-username" name="username" placeholder="Username" type="text" required>
-                </div>
-                <div class="form-group">
-                    <label for="oauth-password">Password</label>
-                    <input class="form-control" id="oauth-password" name="password" placeholder="Password" type="password" required>
-                </div>
-                <div class="form-group">
-                    <label for="oauth-confirm-password">Confirm Password</label>
-                    <input class="form-control" id="oauth-confirm-password" name="confirm_password" placeholder="Confirm password" type="password" required>
-                </div>
-                <div class="form-group">
-                    <label for="oauth-email">Email (from provider)</label>
-                    <input autofocus="off" class="form-control" id="oauth-email"
-                           :placeholder="Email" type="email" disabled value="{{ email }}">
-                </div>
-                <button class="btn btn-primary btn-lg btn-block" type="submit">Create and Link</button>
-            </form>
-            <a class="panel-footer" href="/user/login/?identity_linking=1">I already have an account</a>
-
-            {% elif status == 'linked' %}
-            <form>
-                <div class="form-group">
-                    <p class="gray-90">Identity linked successfully.</p>
-                </div>
-                <button class="btn btn-primary btn-lg btn-block" type="button" onclick="location.href='/account-setting'">Go to Account Settings</button>
-            </form>
-
-            {% elif status == 'already_linked' %}
-            <form>
-                <div class="form-group">
-                    <p class="gray-90">This identity is already linked to your account.</p>
-                </div>
-                <button class="btn btn-primary btn-lg btn-block" type="button" onclick="location.href='/account-setting'">Go to Account Settings</button>
-            </form>
-
-            {% elif status == 'conflict' %}
-            <form>
-                <div class="form-group">
-                    <div class="error">This identity is linked to another account.</div>
-                </div>
-                <button class="btn btn-primary btn-lg btn-block" type="button" onclick="location.href='/user/login/'">Login with another account</button>
-            </form>
-
-            {% elif status == 'missing_email' %}
-            <form>
-                <div class="form-group">
-                    <div class="error">The provider did not supply an email address.</div>
-                </div>
-                <button class="btn btn-primary btn-lg btn-block" type="button" onclick="location.href='/user/login/'">Back to Login</button>
-            </form>
-
-            {% else %}
-            <form>
-                <div class="form-group">
-                    <div class="error">OAuth flow error. Please try again.</div>
-                </div>
-                <button class="btn btn-primary btn-lg btn-block" type="button" onclick="location.href='/user/login/'">Back to Login</button>
-            </form>
-            {% endif %}
+    {% if status == 'pending' %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <p class="gray-90">
+                This {{ display_name|default:'OAuth' }} identity is not linked yet. Create a new account to continue.
+            </p>
         </div>
-    </div>
-    {% include "base/footer.html" %}
+        {% if error %}
+        <div class="form-group">
+            <div class="error" role="alert">{{ error }}</div>
+        </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="oauth-username">Username</label>
+            <input autocomplete="username" class="form-control" id="oauth-username" name="username" placeholder="Username" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="oauth-password">Password</label>
+            <input autocomplete="new-password" class="form-control" id="oauth-password" name="password" placeholder="Password" type="password" required>
+        </div>
+        <div class="form-group">
+            <label for="oauth-confirm-password">Confirm Password</label>
+            <input autocomplete="new-password" class="form-control" id="oauth-confirm-password" name="confirm_password" placeholder="Confirm password" type="password" required>
+        </div>
+        <div class="form-group">
+            <label for="oauth-email">Email (from provider)</label>
+            <input autocomplete="email" class="form-control" id="oauth-email"
+                   placeholder="Email" type="email" disabled value="{{ email }}">
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Create and Link</button>
+    </form>
+    <a class="panel-footer" href="/user/login/?identity_linking=1">I already have an account</a>
+
+    {% elif status == 'linked' %}
+    <form>
+        <div class="form-group">
+            <p class="gray-90">Identity linked successfully.</p>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" type="button" onclick="location.href='/account-setting'">Go to Account Settings</button>
+    </form>
+
+    {% elif status == 'already_linked' %}
+    <form>
+        <div class="form-group">
+            <p class="gray-90">This identity is already linked to your account.</p>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" type="button" onclick="location.href='/account-setting'">Go to Account Settings</button>
+    </form>
+
+    {% elif status == 'conflict' %}
+    <form>
+        <div class="form-group">
+            <div class="error" role="alert">This identity is linked to another account.</div>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" type="button" onclick="location.href='/user/login/'">Login with another account</button>
+    </form>
+
+    {% elif status == 'missing_email' %}
+    <form>
+        <div class="form-group">
+            <div class="error" role="alert">The provider did not supply an email address.</div>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" type="button" onclick="location.href='/user/login/'">Back to Login</button>
+    </form>
+
+    {% else %}
+    <form>
+        <div class="form-group">
+            <div class="error" role="alert">OAuth flow error. Please try again.</div>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" type="button" onclick="location.href='/user/login/'">Back to Login</button>
+    </form>
+    {% endif %}
 </div>
+{% endblock %}

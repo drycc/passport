@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { closeToast, showLoadingToast, showToast } from 'vant'
+import { ElLoading, ElMessage } from 'element-plus'
 import {getCookie} from "./array";
 
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
@@ -9,11 +9,11 @@ const loadingToast = [];
 
 axios.interceptors.request.use(
     (config)=>{
-    loadingToast.push(showLoadingToast({
-            duration: 0,
-            forbidClick: true,
-            message: "Loading..."
-        }));
+    loadingToast.push(ElLoading.service({
+      lock: true,
+      text: "Loading...",
+      background: "rgba(0, 0, 0, 0.2)",
+    }));
         let csrftoken = getCookie('csrftoken')
         if(csrftoken){
             config.headers['X-CSRFToken'] = csrftoken;
@@ -25,12 +25,7 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
     response => {
       if (loadingToast.length > 0) {
-        const toast = loadingToast.pop();
-        if (toast && typeof toast.close === 'function') {
-          toast.close();
-        } else {
-          closeToast();
-        }
+        loadingToast.pop().close();
       }
       if ([200, 201, 204].indexOf(response.status) >= 0) {
         return Promise.resolve(response);
@@ -40,12 +35,7 @@ axios.interceptors.response.use(
     },
     error => {
       if (loadingToast.length > 0) {
-        const toast = loadingToast.pop();
-        if (toast && typeof toast.close === 'function') {
-          toast.close();
-        } else {
-          closeToast();
-        }
+        loadingToast.pop().close();
       }
       if (error.response && error.response.status) {
         switch (error.response.status) {
@@ -68,33 +58,33 @@ axios.interceptors.response.use(
           case 404:
             console.log('error.response: ', error.response)
               if(error.response.data){
-                showToast({
-                      message: error.response.data.replace("\"","").replace("\"",""),
-                      duration: 1500,
-                      forbidClick: true
-                  });
+                ElMessage({
+                    message: error.response.data.replace("\"","").replace("\"",""),
+                    type: "error",
+                    duration: 1500,
+                });
               }else {
-                showToast({
-                      message: 'The request does not exist.',
-                      duration: 1500,
-                      forbidClick: true
-                  });
+                ElMessage({
+                    message: 'The request does not exist.',
+                    type: "error",
+                    duration: 1500,
+                });
               }
             break;
           case 400:
             console.log('error.response: ', error.response)
               if(error.response.data.detail){
-                showToast({
-                      message: error.response.data.detail.replace("\"","").replace("\"",""),
-                      duration: 1500,
-                      forbidClick: true
-                  });
+                ElMessage({
+                    message: error.response.data.detail.replace("\"","").replace("\"",""),
+                    type: "error",
+                    duration: 1500,
+                });
               }else {
-                showToast({
-                      message: 'The request parameter error',
-                      duration: 1500,
-                      forbidClick: true
-                  });
+                ElMessage({
+                    message: 'The request parameter error',
+                    type: "error",
+                    duration: 1500,
+                });
               }
             break;
           // other error

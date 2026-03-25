@@ -1,44 +1,39 @@
+{% extends 'base/layout.html' %}
 {% load i18n %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
-<head>
-    <meta charset="UTF-8">
-    <title>Authorize</title>
-    <script type="text/javascript">
-        window.onload=function(){
-            const element = document.getElementById("logout-link")
-            element.href += encodeURIComponent(window.location.pathname + window.location.search)
+{% block title %}Authorize{% endblock %}
+{% block content %}
+<div class="panel">
+    {% if not error %}
+    <h2 class="h3">{% trans "Authorize" %} {{ application.name }}?</h2>
+    {{ updated }}
+    <div>{{ application.name }} wants to access your {{ request.user.username }} account</div>
+    <form id="authorizationForm" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            {% if field.is_hidden %}
+                {{ field }}
+            {% endif %}
+        {% endfor %}
+        {{ form.errors }}
+        {{ form.non_field_errors }}
+        <br>
+        <input type="submit" class="btn btn-primary btn-lg btn-block" name="allow" value="{% trans 'Authorize' %}"/>
+    </form>
+    <a id="logout-link" class="panel-footer" href="/user/logout?next=">With another account? &nbsp;<span>Sign In</span></a>
+    {% else %}
+    <h2 class="h3">{{ error.error }}</h2>
+    <p class="tc gray-90 inverted-wrapper">{{ error.description }}</p>
+    <div class="inverted-wrapper"></div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const element = document.getElementById("logout-link");
+        if (element) {
+            element.href += encodeURIComponent(window.location.pathname + window.location.search);
         }
-    </script>
-</head>
-<body>
-    <div class="page-wrap gradient-primary">
-        <div class="container">
-            <div class="panel">
-                {% if not error %}
-                <h2 class="h3">{% trans "Authorize" %} {{ application.name }}?</h2>
-                {{ updated }}
-                <div>{{ application.name }} wants to access your {{ request.user.username }} account</div>
-                <form id="authorizationForm" method="post">
-                    {% csrf_token %}
-                    {% for field in form %}
-                        {% if field.is_hidden %}
-                            {{ field }}
-                        {% endif %}
-                    {% endfor %}
-                    {{ form.errors }}
-                    {{ form.non_field_errors }}
-                    <br>
-                    <input type="submit" class="btn btn-primary btn-lg btn-block" name="allow" value="{% trans 'Authorize' %}"/>
-                </form>
-                <a id="logout-link" class="panel-footer" href="/user/logout?next=">With another account? &nbsp;<span>Sigin In</span></a>
-                {% else %}
-                <h2 class="h3">{{ error.error }}</h2>
-                <p class="tc gray-90 inverted-wrapper">{{ error.description }}</p>
-                <div class="inverted-wrapper"></div>
-                {% endif %}
-            </div>
-        </div>
-        {% include "base/footer.html" %}
-    </div>
-</body>
+    });
+</script>
+{% endblock %}

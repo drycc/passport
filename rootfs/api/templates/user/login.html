@@ -1,66 +1,60 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
-<head>
-    <meta charset="UTF-8">
-    <title>{% if identity_linking %}Identity Linking{% else %}Login{% endif %}</title>
-</head>
-<div class="page-wrap gradient-primary">
-    <div class="container">
-        <div class="panel">
-            <h2 class="h3">{% if identity_linking %}Identity Linking{% else %}Log in to your account{% endif %}</h2>
+{% extends 'base/layout.html' %}
+{% block title %}{% if identity_linking %}Identity Linking{% else %}Login{% endif %}{% endblock %}
+{% block content %}
+<div class="panel">
+    <h2 class="h3">{% if identity_linking %}Identity Linking{% else %}Log in to your account{% endif %}</h2>
 
-            {% if not identity_linking %}
-            <div class="oauth2-container" id="oauth2-container">
-                <div class="oauth2-buttons" id="oauth2-buttons">
-                </div>
-                <div class="oauth2-divider" id="oauth2-divider">
-                    <span class="divider-line"></span>
-                    <span class="divider-text">or</span>
-                    <span class="divider-line"></span>
-                </div>
-            </div>
-            {% endif %}
-
-            <form method="post" action="{% url 'user_login' %}">
-                {% csrf_token %}
-                {% if form.errors %}
-                {% if identity_linking_error %}
-                <div class="alert alert-danger">
-                    <strong>{{ identity_linking_error|escape }}</strong>
-                </div>
-                {% endif %}
-                {% for error in form.non_field_errors %}
-                <div class="alert alert-danger">
-                    <strong>{{ error|escape }}</strong>
-                </div>
-                {% endfor %}
-                {% endif %}
-                <div class="form-group">
-                    <label for="username">{{ form.username.label_tag }}</label>
-                    <input autofocus="off" class="form-control" id="username" name="username" :placeholder="Username" type="text" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">{{ form.password.label_tag }}</label>
-                    <input autocomplete="off" class="form-control password" id="password" name="password" :placeholder="Password" type="password" required>
-                </div>
-                <button class="btn btn-primary btn-lg btn-block" id="commit" type="submit">Log In</button>
-                <input type="hidden" name="next" value={{ next }}>
-                {% if identity_linking %}
-                <input type="hidden" name="identity_linking" value="1">
-                {% endif %}
-            </form>
-            {% if registration_enabled %}
-            <a class="panel-footer" href="/user/registration/">New to Drycc?  <span>Sign Up</span></a>
-            {% endif %}
+    {% if not identity_linking %}
+    <div class="oauth2-container" id="oauth2-container">
+        <div class="oauth2-buttons" id="oauth2-buttons">
         </div>
-        {% if password_reset_enabled %}
-        <div>
-            <a href="/user/password_reset/" class="white-link">Forgot your password?</a>
+        <div class="oauth2-divider" id="oauth2-divider">
+            <span class="divider-line"></span>
+            <span class="divider-text">or</span>
+            <span class="divider-line"></span>
+        </div>
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'user_login' %}">
+        {% csrf_token %}
+        {% if form.errors %}
+        {% if identity_linking_error %}
+        <div class="alert alert-danger" role="alert">
+            <strong>{{ identity_linking_error|escape }}</strong>
         </div>
         {% endif %}
-    </div>
-    {% include "base/footer.html" %}
+        {% for error in form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+            <strong>{{ error|escape }}</strong>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="form-group">
+            <label for="username">{{ form.username.label_tag }}</label>
+            <input autocomplete="username" class="form-control" id="username" name="username" placeholder="Username" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="password">{{ form.password.label_tag }}</label>
+            <input autocomplete="current-password" class="form-control password" id="password" name="password" placeholder="Password" type="password" required>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" id="commit" type="submit">Log In</button>
+        <input type="hidden" name="next" value="{{ next|escape }}">
+        {% if identity_linking %}
+        <input type="hidden" name="identity_linking" value="1">
+        {% endif %}
+    </form>
+    {% if registration_enabled %}
+    <a class="panel-footer" href="/user/registration/">New to Drycc?  <span>Sign Up</span></a>
+    {% endif %}
 </div>
+{% if password_reset_enabled %}
+<div>
+    <a href="/user/password_reset/" class="white-link">Forgot your password?</a>
+</div>
+{% endif %}
+{% endblock %}
+{% block extra_scripts %}
 <script>
 {% if not identity_linking %}
 fetch('/user/identity-providers/')
@@ -86,3 +80,4 @@ fetch('/user/identity-providers/')
     });
 {% endif %}
 </script>
+{% endblock %}

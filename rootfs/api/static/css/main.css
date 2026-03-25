@@ -28,12 +28,10 @@
     --ui-space-5: 20px;
     --ui-space-6: 24px;
     --ui-space-7: 32px;
+}
 
-    --ui-breakpoint-xs: 320px;
-    --ui-breakpoint-sm: 576px;
-    --ui-breakpoint-md: 768px;
-    --ui-breakpoint-lg: 992px;
-    --ui-breakpoint-xl: 1200px;
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 html,body {
@@ -50,7 +48,7 @@ body {
 }
 
 .privacy {
-    text-align: justify!important;
+    text-align: justify;
 }
 
 .page-wrap {
@@ -97,7 +95,8 @@ h1.logo a:before {
 }
 
 .panel {
-    min-width: 490px;
+    min-width: 0;
+    width: 100%;
     max-width: 520px;
     margin: 0 auto;
     border-radius: var(--ui-radius-lg);
@@ -159,10 +158,6 @@ input:-webkit-autofill {
 }
 
 .form-control {
-    padding-right: 8px;
-}
-
-.form-control {
     display: block;
     width: 100%;
     padding: 10px 16px;
@@ -172,7 +167,6 @@ input:-webkit-autofill {
     border-radius: var(--ui-radius-sm);
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     background-color: var(--ui-color-surface);
-    box-sizing: border-box;
 }
 
 .form-control:focus {
@@ -252,9 +246,7 @@ form .btn {
 
 @media (max-width: 576px) {
     .panel {
-        min-width: auto;
-        width: 100%;
-        max-width: 520px;
+        max-width: 100%;
     }
 
     .panel .h3 {
@@ -272,6 +264,36 @@ form .btn {
         flex: 1 0 100%;
         width: 100%;
     }
+
+    .panel-footer {
+        font-size: 15px;
+        padding: 16px;
+    }
+
+    .inverted-wrapper {
+        padding: 20px 20px 0 20px;
+    }
+
+    .legal li {
+        display: block;
+        margin: 8px 0;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    .panel {
+        max-width: 490px;
+    }
+}
+
+/* hCaptcha responsive */
+.h-captcha {
+    display: flex;
+    justify-content: center;
+}
+
+.h-captcha iframe {
+    max-width: 100%;
 }
 
 .btn-block {
@@ -322,7 +344,6 @@ form .btn {
     max-width: none;
     justify-content: center;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
 }
 
 .oauth2-btn:hover {

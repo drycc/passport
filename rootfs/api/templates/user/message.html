@@ -1,19 +1,9 @@
-{% load static %}
-
-<link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Drycc | Message</title>
-</head>
-
-<div class="page-wrap gradient-primary">
-    <div class="container">
-        <div class="panel">
-            <h2 class="h3">{% block title %}{% endblock %}</h2>
-            <p class="tc gray-90 inverted-wrapper">{% block message %}{% endblock %}</p>
-            <div class="inverted-wrapper"></div>
-        </div>
-    </div>
-    {% include "base/footer.html" %}
+{% extends 'base/layout.html' %}
+{% block title %}Drycc | Message{% endblock %}
+{% block content %}
+<div class="panel">
+    <h2 class="h3">{% block heading %}{% endblock %}</h2>
+    <p class="tc gray-90 inverted-wrapper">{% block message %}{% endblock %}</p>
+    <div class="inverted-wrapper"></div>
 </div>
+{% endblock %}

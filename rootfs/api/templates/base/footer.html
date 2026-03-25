@@ -1,4 +1,5 @@
-<footer class="logo-sfdc">
+<footer class="logo-sfdc" role="contentinfo">
+    <nav aria-label="Footer links">
     <ul class="legal">
         {% if LEGAL_ENABLED %}
         <li><a href="https://www.drycc.cc" rel="nofollow">Drycc Documents</a></li>
@@ -14,4 +15,5 @@
         <li>© {% now 'Y' %} drycc.cc</li>
         {% endif %}
     </ul>
+    </nav>
 </footer>

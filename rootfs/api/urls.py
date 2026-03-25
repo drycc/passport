@@ -1,10 +1,10 @@
 from django.urls import re_path, include
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
 
 from api.views import web, api
 from passport.views import SettingsViewSet
 
-router = DefaultRouter(trailing_slash=False)
+router = SimpleRouter(trailing_slash=False)
 
 urlpatterns = [
     re_path(r'^', include(router.urls)),
