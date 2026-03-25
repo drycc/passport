@@ -3,7 +3,6 @@ import router from './router'
 import { createApp } from 'vue'
 import { i18n, setLang, getUAgentLang } from './lang'
 import './styles/unified.css'
-import 'vant/lib/index.css';
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'

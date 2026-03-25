@@ -5,7 +5,7 @@ import MainNav from "../components/MainNav.vue";
 import MainFooter from "../components/MainFooter.vue";
 import { useRouter } from 'vue-router'
 import { dealUser, getUser, putAccount, putAccountPassword } from "../services/user";
-import { showFailToast, showSuccessToast } from "vant"
+import { ElMessage } from "element-plus"
 import { getIdentityProviders, getLinkedIdentities, unlinkIdentity } from "../services/identities";
 
 export default {
@@ -79,7 +79,7 @@ export default {
 
         const handleLink = (provider) => {
             if (!provider?.login_url) {
-                showFailToast("Provider login URL missing.")
+                ElMessage.error("Provider login URL missing.")
                 return
             }
             window.location.href = provider.login_url
@@ -90,7 +90,7 @@ export default {
                 return
             }
             await unlinkIdentity(identity.id)
-            showSuccessToast("Unlinked successfully.")
+            ElMessage.success("Unlinked successfully.")
             await fetchIdentities()
         }
 
@@ -155,7 +155,7 @@ export default {
         const submitEmail = () => {
             var re = /^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$/;
             if(!re.test(state.user.email)) {
-                showFailToast("this email is not valid.")
+                ElMessage.error("this email is not valid.")
             } else {
                 putAccount({email: state.user.email}).then(res=>{
                     if (res.status == 204) {
@@ -186,11 +186,11 @@ export default {
 
         const submitPassowrd = () => {
             if (currentPassword == newPassword){
-                showFailToast("Current Password and New Password are the same.")
+                ElMessage.error("Current Password and New Password are the same.")
             } else if( newPassword.length < 8){
-                showFailToast("this New Password is not valid.")
+                ElMessage.error("this New Password is not valid.")
             } else if (newPassword != confirmNewPassword){
-                showFailToast("New Password Confirm and New Password are different.")
+                ElMessage.error("New Password Confirm and New Password are different.")
             }else {
                 putAccountPassword({password: currentPassword, new_password: newPassword}).then(res=>{
                     if (res.status == 204) {

@@ -1,5 +1,5 @@
 import { reactive, toRefs } from 'vue'
-import { showSuccessToast } from "vant";
+import { ElMessage } from "element-plus";
 import {deleteAccessToken} from "../services/tokens";
 
 export default {
@@ -19,7 +19,7 @@ export default {
         const deleteToken = () => {
             deleteAccessToken(state.token.id).then(res=>{
                 if (res.status == 204) {
-                    showSuccessToast("OK")
+                    ElMessage.success("OK")
                     context.emit('closeDelete', { hasAccessTokenDeleted: true })
                 }
             })

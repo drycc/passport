@@ -11,7 +11,6 @@
     "@element-plus/icons-vue": "^2.3.2",
     "axios": "^1.13.6",
     "element-plus": "^2.13.6",
-    "vant": "^4.9.22",
     "vue": "^3.5.30",
     "vue-i18n": "^11.3.0",
     "vue-router": "^5.0.4",
