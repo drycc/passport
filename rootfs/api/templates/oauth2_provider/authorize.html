@@ -6,8 +6,10 @@
     {% if not error %}
     <h2 class="h3">{% trans "Authorize" %} {{ application.name }}?</h2>
     {{ updated }}
-    <div>{{ application.name }} wants to access your {{ request.user.username }} account</div>
     <form id="authorizationForm" method="post">
+        <div class="form-group">
+            <p class="gray-90">{{ application.name }} wants to access your {{ request.user.username }} account</p>
+        </div>
         {% csrf_token %}
         {% for field in form %}
             {% if field.is_hidden %}
