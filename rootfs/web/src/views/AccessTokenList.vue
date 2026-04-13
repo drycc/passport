@@ -36,8 +36,7 @@
                             <td>{{ token.expires }}</td>
                             <td class="ui-table__action-cell">
                               <button @click="showDelete(index)" class="ui-icon-btn" title="Delete" type="button" >
-                                <span class="clip">Delete</span>
-                                <svg style="height: 16px; width: 16px;" class="ui-icon-btn__icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="200" height="200"><path d="M574.55 522.35L904.4 192.5c16.65-16.65 16.65-44.1 0-60.75l-1.8-1.8c-16.65-16.65-44.1-16.65-60.75 0L512 460.25l-329.85-330.3c-16.65-16.65-44.1-16.65-60.75 0l-1.8 1.8c-17.1 16.65-17.1 44.1 0 60.75l329.85 329.85L119.6 852.2c-16.65 16.65-16.65 44.1 0 60.75l1.8 1.8c16.65 16.65 44.1 16.65 60.75 0L512 584.9l329.85 329.85c16.65 16.65 44.1 16.65 60.75 0l1.8-1.8c16.65-16.65 16.65-44.1 0-60.75L574.55 522.35z" ></path></svg>
+                                <el-icon class="ui-icon-btn__icon" :size="16"><Delete /></el-icon>
                               </button>
                             </td>
                         </tr>
@@ -165,16 +164,22 @@ export default AccessTokenList
 }
 
 .ui-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
     border: 1px solid transparent;
-    background: #f4f7fc;
-    border-radius: var(--ui-radius-sm);
-    padding: 5px;
+    background: transparent;
+    border-radius: var(--ui-radius-sm, 6px);
+    padding: 0;
     cursor: pointer;
     transition: all 0.16s ease;
 }
 
 .ui-icon-btn__icon {
-    fill: #8a94a6;
+    color: #8a94a6;
+    transition: color 0.16s ease;
 }
 
 .ui-icon-btn:hover {
@@ -183,7 +188,7 @@ export default AccessTokenList
 }
 
 .ui-icon-btn:hover .ui-icon-btn__icon {
-    fill: #de0a0a;
+    color: #de0a0a;
 }
 
 @media (max-width: 900px) {
