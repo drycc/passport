@@ -1,115 +1,50 @@
 <!--导航栏-->
 <template>
-  <header class="ui-top-area">
-    <nav class="ui-topbar">
-      <div class="ui-topbar__layer">
-        <div class="ui-topbar__brand-wrap">
-          <a class="ui-topbar__brand" href="/">
-            <el-icon size="2rem" class="ui-topbar__logo">
-              <img src="../../src/assets/icons/drycc.svg" />
-            </el-icon>
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm w-full">
+    <div class="max-w-[1600px] w-full mx-auto flex items-center justify-between px-6 py-2.5 h-14">
+      <!-- Logo -->
+      <div class="flex items-center">
+          <a href="/" class="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+              <div class="flex items-center justify-center w-8 h-8 bg-primary rounded shadow-sm">
+                  <img class="w-5 h-5 object-contain filter brightness-0 invert" src="../../src/assets/icons/drycc.svg" alt="Drycc" />
+              </div>
+              <span class="text-base font-semibold text-slate-800 tracking-tight">Drycc CaaS</span>
           </a>
-        </div>
-        <div class="ui-topbar__right">
-          <div class="ui-topbar__center">
-            <nav-menu />
-          </div>
-          <div class="ui-topbar__actions">
-            <user-menu :user="user" />
-          </div>
-        </div>
       </div>
-    </nav>
+      
+      <!-- 右侧导航与工具栏合并 -->
+      <div class="flex items-center gap-6 -mr-3">
+          <div class="hidden lg:flex items-center text-sm font-medium text-slate-600">
+              <nav-menu />
+          </div>
+          <div class="flex items-center text-slate-500">
+              <user-menu :user="user" />
+          </div>
+      </div>
+    </div>
   </header>
-
 </template>
 
-<script>
-import NavBar from "./NavBar"
-export default NavBar
+<script lang="ts">
+import NavMenu from "./NavMenu.vue";
+import UserMenu from "./UserMenu.vue";
+
+export default {
+    name: "NavBar",
+    props: {
+        user: {
+            type: Object,
+            default: null
+        }
+    },
+    components: {
+        'nav-menu': NavMenu,
+        'user-menu': UserMenu
+    }
+}
+
 </script>
 
 <style scoped>
-.ui-top-area {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-}
-
-.ui-topbar {
-  height: 68px;
-  background: rgba(255, 255, 255, 0.95);
-  border-bottom: 1px solid rgba(217, 226, 239, 0.88);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 14px rgba(16, 42, 72, 0.06);
-}
-
-.ui-topbar__layer {
-  width: min(var(--ui-shell-max-width), calc(100% - (var(--ui-shell-gutter) * 2)));
-  max-width: none;
-  margin: 0 auto;
-  height: 100%;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-}
-
-.ui-topbar__brand {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: auto;
-  height: auto;
-  padding: 0;
-  border: none;
-  background: transparent;
-  text-decoration: none;
-  line-height: 0;
-}
-
-.ui-topbar__brand-wrap {
-  flex: 0 0 auto;
-}
-
-.ui-topbar__right {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.ui-topbar__center {
-  display: inline-flex;
-  align-items: center;
-}
-
-.ui-topbar__actions {
-  display: flex;
-  align-items: center;
-}
-
-.ui-topbar__logo img {
-  width: 40px;
-  height: 40px;
-  display: block;
-}
-
-@media (max-width: 900px) {
-  .ui-topbar__layer {
-    gap: 8px;
-  }
-
-  .ui-topbar {
-    height: 60px;
-  }
-
-  .ui-topbar__center {
-    justify-self: end;
-  }
-
-  .ui-topbar__right {
-    gap: 0;
-  }
-}
+/* Scoped styles removed */
 </style>

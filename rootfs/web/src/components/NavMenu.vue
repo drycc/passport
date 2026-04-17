@@ -1,12 +1,18 @@
 <template>
-    <ul id="menu-navigator" class="ui-nav-menu" :class="{'ui-nav-menu--open': isMenuActived}">
-        <li class="ui-nav-menu__item">
-            <a class="ui-nav-menu__link" href="/">
-                <el-icon class="ui-nav-menu__icon" aria-hidden="true"><Grid /></el-icon>
+    <ul id="menu-navigator" class="flex flex-wrap items-center justify-center gap-6 list-none m-0 p-0 text-sm font-medium">
+        <li class="relative">
+            <a class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 bg-white border border-transparent rounded-lg hover:bg-slate-50 transition-all focus:outline-none group" href="/">
+                <LayoutGrid class="w-4 h-4 text-primary" aria-hidden="true" />
                 <span>Dashboard</span>
             </a>
         </li>
-        <li class="ui-nav-menu__item ui-nav-menu__item--dropdown">
+        <li class="relative hidden md:block">
+            <a class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 bg-white border border-transparent rounded-lg hover:bg-slate-50 transition-all focus:outline-none group" href="https://www.drycc.cc/zh-cn/docs/roadmap/" target="_blank" rel="noopener noreferrer">
+                <Zap class="w-4 h-4 text-primary" aria-hidden="true" />
+                <span>What's New</span>
+            </a>
+        </li>
+        <li class="relative">
             <dropdown
                 trigger-id="menu-nav"
                 menu-id="ui-nav-menu-resources"
@@ -19,84 +25,47 @@
     </ul>
 </template>
 
-<script>
-import { Connection, Document, Grid } from "@element-plus/icons-vue"
-import NavMenu from "./NavMenu"
-import Dropdown from "./Dropdown.vue"
+<script lang="ts">
+import { markRaw } from "vue";
+import { MessageSquare, FileText, Bookmark, BookOpen, LayoutGrid, Zap } from "lucide-vue-next";
+import Dropdown from "./Dropdown.vue";
 
-NavMenu.components = {
-    ...(NavMenu.components || {}),
-    Dropdown,
-    Grid,
-    Connection,
-    Document,
+export default {
+    name: "NavMenu",
+    components: { LayoutGrid, Zap, Dropdown },
+    data() {
+        return {
+            isMenuActived: false,
+            resourcesTriggerIcon: markRaw(Bookmark),
+            resourceItems: [
+                {
+                    key: "docs",
+                    label: "Documentation",
+                    href: "https://www.drycc.cc/docs/",
+                    icon: markRaw(FileText),
+                    external: true
+                },
+                {
+                    key: "community",
+                    label: "Community Support",
+                    href: "https://www.drycc.cc/community/",
+                    icon: markRaw(MessageSquare),
+                    external: true
+                },
+                {
+                    key: "blog",
+                    label: "Drycc.cc Blog",
+                    href: "https://www.drycc.cc/blog/",
+                    icon: markRaw(BookOpen),
+                    external: true
+                },
+            ]
+        }
+    }
 }
 
-export default NavMenu
 </script>
 
 <style scoped>
-.ui-nav-menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.ui-nav-menu__item {
-    position: relative;
-}
-
-.ui-nav-menu__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    text-decoration: none;
-    color: #4e5e76;
-    font-size: var(--ui-font-size-xl);
-    font-weight: var(--ui-font-weight-semibold);
-    border: 1px solid transparent;
-    border-radius: 8px;
-    padding: 8px 10px;
-    background: transparent;
-    transition: all 0.16s ease;
-}
-
-.ui-nav-menu__icon {
-    font-size: var(--ui-font-size-2xl);
-    color: var(--ui-color-primary);
-}
-
-.ui-nav-menu__icon :deep(svg) {
-    stroke-width: 2.4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.ui-nav-menu__link:hover {
-    color: #394e6b;
-    background: #f5f8fd;
-    border-color: #e1e9f5;
-}
-
-.ui-nav-menu__link:hover .ui-nav-menu__icon {
-    color: var(--ui-color-primary);
-}
-
-@media (max-width: 900px) {
-    .ui-nav-menu {
-        gap: 4px;
-    }
-
-    .ui-nav-menu__link {
-        padding: 6px;
-        font-size: var(--ui-font-size-md);
-    }
-
-    .ui-nav-menu__icon {
-        font-size: var(--ui-font-size-xl);
-    }
-}
+/* Scoped styles removed */
 </style>

@@ -13,9 +13,11 @@
     </div>
 </template>
 
-<script>
-import NavBox from "./NavBox"
-export default NavBox
+<script lang="ts">
+export default {
+    name: "NavBox"
+}
+
 </script>
 
 <style scoped>

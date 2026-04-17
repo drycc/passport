@@ -1,199 +1,172 @@
 <!--app列表页-->
 <template>
-<div :id="'vue-content-'+Math.random().toString(36).substring(2)">
+<div class="min-h-screen bg-slate-50 flex flex-col font-sans" :id="'vue-content-'+Math.random().toString(36).substring(2)">
     <nav-bar />
-    <div class="main-panel ui-page-shell">
-        <div class="main-content">
-            <main-nav :is-access-token-active="true"/>
+    <main class="max-w-[1600px] w-full mx-auto p-6 flex flex-col lg:flex-row gap-6 flex-1">
+        <main-nav :is-access-token-active="true"  />
+        <section class="flex-1 flex flex-col">
             <access-token-delete ref="accessTokenDelete" v-if="isShowDelete"
               :token="token"
               @closeDelete="closeDelete"
             />
-            <div class="ui-table-wrap">
-                <table class="ui-table">
-                    <tbody>
-                        <tr class="ui-table__head-row">
-                            <th>
-                                application
-                            </th>
-                            <th>
-                                token
-                            </th>
-                            <th>
-                                created
-                            </th>
-                            <th>
-                                expires
-                            </th>
-                            <th>
-                            </th>
-                        </tr>
-                    <template v-for="(token, index) in tokens">
-                        <tr class="ui-table__body-row">
-                            <td>{{ token.application }}</td>
-                            <td>{{ token.token }}</td>
-                            <td>{{ token.created }}</td>
-                            <td>{{ token.expires }}</td>
-                            <td class="ui-table__action-cell">
-                              <button @click="showDelete(index)" class="ui-icon-btn" title="Delete" type="button" >
-                                <el-icon class="ui-icon-btn__icon" :size="16"><Delete /></el-icon>
-                              </button>
-                            </td>
-                        </tr>
-                    </template>
-                    <tr v-if="!tokens || tokens.length === 0" class="ui-table__empty-row">
-                        <td class="ui-table__empty-cell" colspan="5">
-                            <div class="ui-table-empty-state">
-                                <div class="ui-table-empty-state__icon" aria-hidden="true"></div>
-                                <p class="ui-table-empty-state__title">No access tokens</p>
-                                <p class="ui-table-empty-state__desc">Create a token when an integration needs API access.</p>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            
+            <!-- Table Card -->
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden flex-1 flex flex-col min-h-[600px]">
+                <!-- Header -->
+                <div class="px-6 py-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-lg font-medium text-slate-800">Access Tokens</h2>
+                        <p class="text-sm text-slate-500 mt-1">Generate and manage API tokens to authenticate with third-party integrations.</p>
+                    </div>
+                </div>
+
+                <!-- Table Content -->
+                <div class="w-full overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="bg-slate-50/50 border-b border-slate-200 text-slate-500 text-xs tracking-wider font-medium">
+                            <tr>
+                                <th class="px-6 py-4">Application</th>
+                                <th class="px-6 py-4">Token</th>
+                                <th class="px-6 py-4">Created</th>
+                                <th class="px-6 py-4">Expires</th>
+                                <th class="px-6 py-4 text-right w-16"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr v-for="(token, index) in tokens" :key="index" class="hover:bg-primary-50 transition-colors">
+                                <td class="px-6 py-4 font-medium text-slate-800">{{ token.application }}</td>
+                                <td class="px-6 py-4 font-mono text-xs text-slate-500 break-all">{{ token.token }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ token.created }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ token.expires }}</td>
+                                <td class="px-6 py-4 text-right whitespace-nowrap">
+                                  <button @click="showDelete(index)" class="text-slate-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-md transition-colors" title="Delete token">
+                                    <Trash2 class="w-4 h-4" />
+                                  </button>
+                                </td>
+                            </tr>
+                            <tr v-if="!tokens || tokens.length === 0">
+                                <td colspan="5" class="px-6 py-16">
+                                    <div class="flex flex-col items-center justify-center text-center">
+                                        <div class="w-16 h-16 bg-slate-50 border border-slate-100 rounded-full flex items-center justify-center mb-4">
+                                            <div class="w-10 h-10 border border-slate-200 bg-white rounded-full flex items-center justify-center shadow-sm">
+                                                <div class="w-4 h-[2px] bg-slate-300 rounded-full"></div>
+                                            </div>
+                                        </div>
+                                        <h3 class="text-lg font-medium text-slate-800 mb-1">No access tokens</h3>
+                                        <p class="text-sm text-slate-500 max-w-sm">You haven't generated any access tokens yet. Create one via Drycc CLI to authenticate API requests.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
+
+        <!-- Right Sidebar (Token Info & Help) -->
+        <aside class="hidden xl:flex flex-col w-[280px] flex-shrink-0 gap-5">
+            <!-- About Tokens -->
+            <div class="bg-white rounded border border-slate-200 overflow-hidden">
+                <div class="px-5 py-3.5 border-b border-slate-100 bg-white">
+                    <h3 class="text-[13px] font-semibold text-slate-700">Security Guidance</h3>
+                </div>
+                <div class="p-5">
+                    <p class="text-[12px] text-slate-500 leading-relaxed mb-4">
+                        Treat your tokens like passwords. Never share them or hardcode them directly into your application source code.
+                    </p>
+                   <a href="https://oauth.net/security/" target="_blank" class="text-[12px] font-medium text-primary hover:text-primary-600 flex items-center gap-1 transition-colors">
+                        Learn more about SSO
+                    </a>
+                </div>
+            </div>
+
+            <!-- Need Help? -->
+            <div class="bg-white rounded border border-slate-200 overflow-hidden">
+                <div class="px-5 py-3.5 border-b border-slate-100 bg-white">
+                    <h3 class="text-[13px] font-semibold text-slate-700">Need Help?</h3>
+                </div>
+                <div class="p-0">
+                    <ul class="divide-y divide-slate-100">
+                        <li>
+                            <a href="https://www.drycc.cc" target="_blank" rel="noopener noreferrer" class="px-5 py-3 text-[12px] text-slate-600 hover:text-slate-900 hover:bg-slate-50 flex items-center justify-between transition-colors w-full">
+                                <span>API Documentation</span>
+                                <i data-lucide="external-link" class="w-3.5 h-3.5 text-slate-400"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://drycc.slack.com/" target="_blank" rel="noopener noreferrer" class="px-5 py-3 text-[12px] text-slate-600 hover:text-slate-900 hover:bg-slate-50 flex items-center justify-between transition-colors w-full">
+                                <span>Community Support</span>
+                                <i data-lucide="external-link" class="w-3.5 h-3.5 text-slate-400"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+    </main>
     <main-footer />
 </div>
 </template>
 
-<script>
-import AccessTokenList from  "./AccessTokenList"
-export default AccessTokenList
+<script lang="ts">
+import NavBar from "../components/NavBar.vue";
+import NavBox from "../components/NavBox.vue";
+import {onBeforeMount, reactive, toRefs} from 'vue'
+import MainNav from "../components/MainNav.vue";
+import MainFooter from "../components/MainFooter.vue";
+import AccessTokenDelete from "../components/AccessTokenDelete.vue"
+import { Trash2 } from "lucide-vue-next"
+
+import {dealAccessTokenList, getAccessTokenList, deleteAccessToken} from "../services/tokens";
+
+export default {
+    name: "AccessTokenList",
+    components: {
+        'nav-bar': NavBar,
+        'nav-box': NavBox,
+        'main-nav': MainNav,
+        'main-footer': MainFooter,
+        'access-token-delete': AccessTokenDelete,
+        Trash2
+    },
+    setup() {
+        const state = reactive({
+            tokens: [],
+            token: Object,
+            isShowDelete: false,
+        })
+
+        onBeforeMount(async () => {
+            await fetchAccessTokenList()
+        })
+
+        const fetchAccessTokenList = (async () => {
+            let res = await getAccessTokenList()
+            state.tokens = res.data ? dealAccessTokenList(res) : []
+        })
+
+        const showDelete = (index) => {
+            state.isShowDelete = true
+            state.token = state.tokens.slice(index, index + 1)[0];
+        }
+
+        const closeDelete = (param) => {
+            state.isShowDelete = false
+            if (param.hasAccessTokenDeleted) {
+                fetchAccessTokenList()
+            }
+        }
+
+        return {
+            ...toRefs(state),
+            showDelete,
+            closeDelete
+        }
+    },
+}
+
 </script>
 
 <style scoped>
-.ui-page-shell {
-    padding: 14px 0 22px;
-}
-
-.ui-table-wrap {
-    margin: 14px 16px 18px;
-    border: 1px solid rgba(217, 226, 239, 0.95);
-    border-radius: 14px;
-    background: #ffffff;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65);
-    overflow-x: auto;
-}
-
-.ui-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.ui-table th,
-.ui-table td {
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--ui-color-border);
-    text-align: left;
-    color: var(--ui-color-text);
-}
-
-.ui-table th {
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-size: var(--ui-font-size-xs);
-    background: var(--ui-color-primary-softer);
-    color: #47607f;
-        font-weight: var(--ui-font-weight-bold);
-}
-
-.ui-table td:nth-child(2) {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-    font-size: var(--ui-font-size-xs);
-    color: #3b4f69;
-}
-
-.ui-table__body-row:hover td {
-    background: var(--ui-color-primary-softer);
-}
-
-.ui-table__action-cell {
-    width: 52px;
-}
-
-.ui-table__empty-cell {
-    padding: 0;
-    border-bottom: none;
-}
-
-.ui-table-empty-state {
-    min-height: 128px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    color: var(--ui-color-text-secondary);
-    background: transparent;
-}
-
-.ui-table-empty-state__icon {
-    width: 26px;
-    height: 26px;
-    border-radius: 999px;
-    border: 2px solid #b9cae3;
-    position: relative;
-}
-
-.ui-table-empty-state__icon::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 8px;
-    height: 2px;
-    margin-left: -4px;
-    margin-top: -1px;
-    border-radius: 2px;
-    background: #8fa8c9;
-}
-
-.ui-table-empty-state__title {
-    margin: 0;
-    font-size: var(--ui-font-size-lg);
-        font-weight: var(--ui-font-weight-semibold);
-    color: #4f6280;
-}
-
-.ui-table-empty-state__desc {
-    margin: 0;
-    font-size: var(--ui-font-size-sm);
-}
-
-.ui-icon-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border: 1px solid transparent;
-    background: transparent;
-    border-radius: var(--ui-radius-sm, 6px);
-    padding: 0;
-    cursor: pointer;
-    transition: all 0.16s ease;
-}
-
-.ui-icon-btn__icon {
-    color: #8a94a6;
-    transition: color 0.16s ease;
-}
-
-.ui-icon-btn:hover {
-    border-color: #fda29b;
-    background: #fff5f4;
-}
-
-.ui-icon-btn:hover .ui-icon-btn__icon {
-    color: #de0a0a;
-}
-
-@media (max-width: 900px) {
-    .ui-table-wrap {
-        margin: 10px;
-    }
-}
+/* Styles removed in favor of Tailwind CSS framework classes */
 </style>

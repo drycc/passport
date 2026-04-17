@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import AccessTokenList from "../views/AccessTokenList.vue";
 import AccountSetting from "../views/AccountSetting.vue";
 
 
-const routes = [
+const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         redirect: '/access-tokens',

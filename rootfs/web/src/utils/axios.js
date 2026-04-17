@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ElLoading, ElMessage } from 'element-plus'
+const ElMessage = { success: alert, error: alert }; const ElLoading = { service: () => ({ close: () => {} }) }
 import {getCookie} from "./array";
 
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL

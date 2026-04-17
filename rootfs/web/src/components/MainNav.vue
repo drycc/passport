@@ -1,20 +1,35 @@
 <template>
-    <nav class="ui-subnav">
-        <div class="ui-subnav__inner">
-            <button @click="goToAccessToken" class="ui-subnav__item" :class="{'is-active': isAccessTokenActive}" type="button">
+    <aside class="w-full lg:w-64 flex-shrink-0 flex flex-col gap-5">
+        <div class="flex flex-col gap-0.5 mt-2">
+            <p class="text-xs font-semibold text-slate-500 mb-2 px-1">Settings</p>
+            <button @click="goToAccessToken" 
+                    class="flex items-center justify-start gap-3 px-3 py-2 transition-all w-full text-left"
+                    :class="isAccessTokenActive ? 'bg-primary-50 text-primary rounded-md font-medium' : 'text-slate-600 hover:bg-white hover:shadow-sm rounded-md'"
+                    type="button">
+                <Key :class="isAccessTokenActive ? 'w-4 h-4' : 'w-4 h-4 text-slate-400'" />
                 <span>Access Tokens</span>
             </button>
-            <button @click="goToAccountSetting" class="ui-subnav__item" :class="{'is-active': isAccountSettingActive}" type="button">
+            <button @click="goToAccountSetting" 
+                    class="flex items-center justify-start gap-3 px-3 py-2 transition-all w-full text-left"
+                    :class="isAccountSettingActive ? 'bg-primary-50 text-primary rounded-md font-medium' : 'text-slate-600 hover:bg-white hover:shadow-sm rounded-md'"
+                    type="button">
+                <Settings :class="isAccountSettingActive ? 'w-4 h-4' : 'w-4 h-4 text-slate-400'" />
                 <span>Account Setting</span>
             </button>
         </div>
-    </nav>
+    </aside>
 </template>
 
-<script>
+<script lang="ts">
 import { useRouter } from 'vue-router'
+import { Key, Settings } from 'lucide-vue-next'
 
 export default {
+    name: "MainNav",
+    components: {
+        Key,
+        Settings
+    },
     props: {
         isAccessTokenActive: {
             type: Boolean,
@@ -27,56 +42,24 @@ export default {
     },
     setup(props) {
         const router = useRouter()
-
         const goToAccessToken = () => {
-            router.push('/access-tokens')
+            router.push({ path: `/access-tokens` })
         }
 
         const goToAccountSetting = () => {
-            router.push('/account-setting')
+            router.push({ path: `/account-setting` })
         }
 
         return {
             goToAccessToken,
-            goToAccountSetting
+            goToAccountSetting,
         }
-    }
+    },
+
 }
+
 </script>
 
 <style scoped>
-.ui-subnav {
-    padding: 14px 16px 8px;
-    border-bottom: 1px solid rgba(217, 226, 239, 0.75);
-    background: linear-gradient(180deg, rgba(247, 250, 255, 0.95) 0%, rgba(255, 255, 255, 1) 100%);
-}
-
-.ui-subnav__inner {
-    display: flex;
-    gap: 8px;
-    padding: 0;
-    flex-wrap: wrap;
-}
-
-.ui-subnav__item {
-    border: none;
-    background: #edf2fa;
-    color: var(--ui-color-text-secondary);
-    padding: 9px 16px;
-    border-radius: 999px;
-    cursor: pointer;
-    font-weight: var(--ui-font-weight-semibold);
-    transition: all 0.18s ease;
-}
-
-.ui-subnav__item:hover {
-    color: var(--ui-color-primary-hover);
-    background: var(--ui-color-primary-soft);
-}
-
-.ui-subnav__item.is-active {
-    color: #fff;
-    background: var(--ui-color-primary);
-    box-shadow: 0 8px 20px rgba(64, 158, 255, 0.34);
-}
+/* Scoped styles removed */
 </style>
