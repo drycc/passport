@@ -11,7 +11,7 @@ declare global {
 }
 
 /**
- * 时间对象的格式化;
+ * Date object formatting;
  */
 Date.prototype.format = function(format: string) {
     var o: Record<string, number> = {
@@ -36,9 +36,9 @@ Date.prototype.format = function(format: string) {
     return format;
 }
 
-// 初始化
+// Initialization
 function init () {
-    // 语言初始化
+    // Language initialization
     const lang = getUAgentLang()
     setLang(lang)
 }

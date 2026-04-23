@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: drycc-passport
+  name: drycc-passport-celery
   labels:
     heritage: drycc
   annotations:
     component.drycc.cc/version: {{ .Values.imageTag }}
 spec:
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.celery.replicas }}
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -16,15 +16,17 @@ spec:
   selector:
     matchLabels:
       app: drycc-passport
+      component: drycc-passport-celery
   template:
     metadata:
       labels: {{- include "common.labels.standard" . | nindent 8 }}
         app: drycc-passport
+        component: drycc-passport-celery
     spec:
       affinity:
-        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.podAffinityPreset.type "component" "" "extraMatchLabels" .Values.podAffinityPreset.extraMatchLabels "topologyKey" "" "context" $) | nindent 10 }}
-        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.podAntiAffinityPreset.type "component" "" "extraMatchLabels" .Values.podAntiAffinityPreset.extraMatchLabels "topologyKey" "" "context" $) | nindent 10 }}
-        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.nodeAffinityPreset.type "key" .Values.nodeAffinityPreset.key "values" .Values.nodeAffinityPreset.values ) | nindent 10 }}
+        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.celery.podAffinityPreset.type "component" "" "extraMatchLabels" .Values.celery.podAffinityPreset.extraMatchLabels "topologyKey" "" "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.celery.podAntiAffinityPreset.type "component" "" "extraMatchLabels" .Values.celery.podAntiAffinityPreset.extraMatchLabels "topologyKey" "" "context" $) | nindent 10 }}
+        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.celery.nodeAffinityPreset.type "key" .Values.celery.nodeAffinityPreset.key "values" .Values.celery.nodeAffinityPreset.values ) | nindent 10 }}
       serviceAccount: drycc-passport
       initContainers:
       - name: drycc-passport-init
@@ -34,35 +36,27 @@ spec:
           - netcat
           - -v
           - -u
-          - $(DRYCC_DATABASE_URL),$(DRYCC_DATABASE_REPLICA_URL)
+          - $(DRYCC_DATABASE_URL),$(DRYCC_DATABASE_REPLICA_URL),$(DRYCC_VALKEY_URL)
         {{- include "passport.envs" . | indent 8 }}
       containers:
-      - name: drycc-passport
+      - name: drycc-passport-celery
         image: {{.Values.imageRegistry}}/{{.Values.imageOrg}}/passport:{{.Values.imageTag}}
         imagePullPolicy: {{.Values.imagePullPolicy}}
         {{- if .Values.diagnosticMode.enabled }}
         command: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.command "context" $) | nindent 10 }}
         args: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.args "context" $) | nindent 10 }}
+        {{- else }}
+        args:
+          - celery
+          - -A
+          - api
+          - worker
+          - -Q
+          - passport.notifications
+          - -l
+          - info
         {{- end }}
-        {{- if not .Values.diagnosticMode.enabled }}
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8000
-          initialDelaySeconds: 30
-          timeoutSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /readiness
-            port: 8000
-          initialDelaySeconds: 30
-          timeoutSeconds: 10
-          periodSeconds: 5
-        {{- end }}
-        ports:
-          - containerPort: 8000
-            name: http
-        {{- with index .Values "resources" }}
+        {{- with index .Values "celery" "resources" }}
         resources:
           {{- toYaml . | nindent 10 }}
         {{- end }}

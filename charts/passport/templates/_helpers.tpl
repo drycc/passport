@@ -16,6 +16,8 @@ rbac.authorization.k8s.io/v1
 env:
 - name: TZ
   value: {{ .Values.time_zone | default "UTC" | quote }}
+- name: "DJANGO_SETTINGS_MODULE"
+  value: "api.settings.production"
 - name: VERSION
   value: {{ .Chart.AppVersion }}
 - name: ADMIN_USERNAME

@@ -7,7 +7,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
   labels:
+    app: drycc-passport
     heritage: drycc
+    component: drycc-passport-api
 spec:
   ports:
     - name: http
@@ -15,3 +17,4 @@ spec:
       targetPort: 8000
   selector:
     app: drycc-passport
+    component: drycc-passport-api

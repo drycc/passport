@@ -2,8 +2,17 @@ import random
 import string
 import os
 
+from api.settings.celery import app
+
 from api.settings.production import *  # noqa
 from api.settings.production import DATABASES
+
+
+app.conf.update(task_always_eager=True)
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'oauth2_provider.AccessToken'
+OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'oauth2_provider.RefreshToken'
+OAUTH2_PROVIDER_GRANT_MODEL = 'oauth2_provider.Grant'
+OAUTH2_PROVIDER_ID_TOKEN_MODEL = 'oauth2_provider.IDToken'
 
 # A boolean that turns on/off debug mode.
 # https://docs.djangoproject.com/en/2.2/ref/settings/#debug

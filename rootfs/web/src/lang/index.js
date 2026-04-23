@@ -31,7 +31,7 @@ export const getLang = () => {
   return i18n && i18n.global.locale.value
 }
 
-// 获取UA语言类型
+// Get the UA language type
 export const getUAgentLang = () => {
   const UA = window.navigator.userAgent
   const regx = new RegExp(`LANG/(${ENUM_LANG.enUS}|${ENUM_LANG.zhHK}|${ENUM_LANG.zhCN})`, 'g')

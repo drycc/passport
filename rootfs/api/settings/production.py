@@ -25,13 +25,19 @@ DEBUG = os.environ.get('DRYCC_DEBUG', 'false').lower() == "true"
 # https://docs.djangoproject.com/en/2.2/ref/settings/#debug-propagate-exceptions
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-# Enable Legal
-LEGAL_ENABLED = os.environ.get('LEGAL_ENABLED', 'false').lower() == "true"
 # Enable Django admin
 ADMIN_ENABLED = os.environ.get('ADMIN_ENABLED', 'false').lower() == "true"
-# Enable Registration
-# If this function is enabled, please set Django email related parameters
+
+# The following information is for configuring app settings
+# Enable Legal
+LEGAL_ENABLED = os.environ.get('LEGAL_ENABLED', 'false').lower() == "true"
+# Enable Registration, email configuration is required
 REGISTRATION_ENABLED = os.environ.get('REGISTRATION_ENABLED', 'false').lower() == "true"
+# URLs for the application
+DASHBOARD_URL = os.environ.get('DASHBOARD_URL', '/')
+# Contact support URL, which can be a mailto: link or a link to a support ticket system
+CONTACT_SUPPORT_URL = os.environ.get('CONTACT_SUPPORT_URL', 'https://community.drycc.cc/')
+
 # Silence two security messages around SSL as router takes care of them
 # https://docs.djangoproject.com/en/2.2/ref/checks/#security
 SILENCED_SYSTEM_CHECKS = [
@@ -297,9 +303,6 @@ DATABASE_ROUTERS = ['api.routers.DefaultReplicaRouter', ]
 STATIC_URL = '/assets/'
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'web', 'dist', 'assets'))
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
-# Avatar URL
-AVATAR_URL = "https://cravatar.cn/avatar/"
 
 # see: https://django-oauth-toolkit.readthedocs.io/en/latest/oidc.html?highlight=oidc.key#creating-rsa-private-key  # noqa
 OIDC_ENABLED = False

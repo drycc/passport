@@ -18,32 +18,52 @@ diagnosticMode:
   args:
     - infinity
 
-resources: {}
-  # limits:
-  #   cpu: 200m
-  #   memory: 50Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 30Mi
+api:
+  replicas: 1
+  resources: {}
+    # limits:
+    #   cpu: 200m
+    #   memory: 50Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 30Mi
+  nodeAffinityPreset:
+    key: "drycc.cc/node"
+    type: "soft"
+    values:
+    - "true"
+  podAffinityPreset:
+    type: ""
+    extraMatchLabels:
+      security: "drycc-security"
+  podAntiAffinityPreset:
+    type: "soft"
+    extraMatchLabels:
+      app: "drycc-passport-api"
 
-nodeAffinityPreset:
-  key: "drycc.cc/node"
-  type: "soft"
-  values:
-  - "true"
-
-podAffinityPreset:
-  type: ""
-  extraMatchLabels:
-    security: "drycc-security"
-
-podAntiAffinityPreset:
-  type: "soft"
-  extraMatchLabels:
-    app: "drycc-passport"
-
-# Set passport deployment replicas
-replicas: 1
+celery:
+  replicas: 1
+  resources: {}
+    # limits:
+    #   cpu: 200m
+    #   memory: 50Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 30Mi
+  nodeAffinityPreset:
+    key: "drycc.cc/node"
+    type: "soft"
+    values:
+    - "true"
+  podAffinityPreset:
+    type: ""
+    extraMatchLabels:
+      security: "drycc-security"
+  podAntiAffinityPreset:
+    type: "soft"
+    extraMatchLabels:
+      app: "drycc-passport"
+      component: "drycc-passport-celery"
 ## valkeyUrl is will no longer use the built-in valkey component
 valkeyUrl: ""
 ## databaseUrl and databaseReplicaUrl are will no longer use the built-in database component
