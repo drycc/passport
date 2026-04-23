@@ -2,21 +2,30 @@ from django.urls import re_path, include
 from rest_framework.routers import SimpleRouter
 
 from api.views import web, api
-from passport.views import SettingsViewSet
+from passport.views import AppSettingsViewSet
 
-router = SimpleRouter(trailing_slash=False)
+
+class OptionalSlashRouter(SimpleRouter):
+    """Router that accepts both trailing-slash and no-trailing-slash URLs."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.trailing_slash = '/?'
+
+
+router = OptionalSlashRouter()
+router.register(r'user/messages', api.UserMessageViewSet, basename='user_messages')
+router.register(r'user/identities', api.UserIdentityViewSet, basename='user_identities')
 
 urlpatterns = [
     re_path(r'^', include(router.urls)),
     # Settings URL (moved from main urls.py)
-    re_path(r'^settings/?$', SettingsViewSet.as_view({'get': 'retrieve'})),
+    re_path(r'^settings/?$', AppSettingsViewSet.as_view({'get': 'retrieve'})),
     # User URLs (add user prefix)
     re_path(r'^user/info/?$',
             api.UserDetailView.as_view({'get': 'retrieve', 'put': 'update'})),
     re_path(r'^user/update/(?P<uidb64>.+)/(?P<token>.+)/?$',
             web.UpdateAccount.as_view(), name='user_update_account'),
-    re_path(r'^user/avatar/(?P<username>[-_\w]+)/?$',
-            api.UserAvatarViewSet.as_view({'get': 'avatar'})),
     re_path(r'^user/registration/?$', web.RegistrationView.as_view(), name='registration'),
     re_path(r'^user/activate/(?P<uidb64>.+)/(?P<token>.+)/?$',
             web.ActivateAccount.as_view(), name='user_activate_account'),
@@ -50,16 +59,16 @@ urlpatterns = [
             name='user_grants'),
     re_path(r'^user/email/?$', api.UserEmailView.as_view({'get': 'retrieve'})),
     re_path(r'^user/password/?$',
-            api.UserAccountPasswordView.as_view({'put': 'update'}),
+            api.UserAccountPasswordView.as_view(),
             name='user_account_update_password'),
     re_path(r'^user/identity-providers/?$',
             api.IdentityProviderView.as_view(), name='user_identity_providers'),
-    re_path(r'^user/identities/?$',
-            api.UserIdentityView.as_view(), name='user_identities'),
-    re_path(r'^user/identities/(?P<identity_id>\d+)/?$',
-            api.UserIdentityView.as_view(), name='user_identity_detail'),
     re_path(r'^user/oauth/pending/?$',
             api.OAuthPendingView.as_view(), name='user_oauth_pending'),
     re_path(r'^user/oauth/create/?$',
             api.OAuthCreateUserView.as_view(), name='user_oauth_create'),
+    re_path(r'^user/message-preferences/?$',
+            api.UserMessagePreferenceViewSet.as_view(
+                {'get': 'retrieve', 'put': 'update', 'patch': 'partial_update'}),
+            name='user_message_preferences'),
 ]

@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from oauth2_provider.models import Grant, AccessToken
 from rest_framework import serializers
 
+from api.models import Message, MessagePreference
 from api.utils import timestamp2datetime
 
 User = get_user_model()
@@ -74,3 +75,26 @@ class UserLogsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['action_time', 'user', 'content_type', 'object_id',
                             'object_repr', 'action_flag', 'change_message']
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    """Serialize message model."""
+    date = serializers.DateTimeField(
+        source='created_at', format='%b %d, %Y, %H:%M', read_only=True
+    )
+
+    class Meta:
+        model = Message
+        fields = ['id', 'category', 'title', 'content', 'full_content',
+                  'severity', 'is_read', 'action_link', 'action_text', 'date']
+        read_only_fields = ['id', 'date']
+
+
+class MessagePreferenceSerializer(serializers.ModelSerializer):
+    """Serialize message preference model."""
+
+    class Meta:
+        model = MessagePreference
+        fields = ['email_alerts', 'push_alerts', 'webhook_url',
+                  'notify_security', 'notify_system', 'notify_product',
+                  'notify_alert', 'notify_service']

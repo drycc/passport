@@ -15,6 +15,7 @@ steps:
     event:
     - tag
     - push
+    - cron
 
 - name: publish-manifest
   image: bash

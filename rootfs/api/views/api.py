@@ -1,16 +1,11 @@
-import hashlib
-
 from django.conf import settings
 from django.core.cache import cache
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django.contrib import auth
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.urls import reverse_lazy
@@ -21,13 +16,16 @@ from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.decorators import action
+from rest_framework.mixins import ListModelMixin, DestroyModelMixin
 
 from oauth2_provider.models import AccessToken
 from social_django.models import UserSocialAuth
 
 from api import serializers
 from api.exceptions import ServiceUnavailable, DryccException
+from api.models import Message, MessagePreference
 from api.utils import get_local_host, get_user_socials, token_generator
 
 
@@ -83,14 +81,19 @@ class IdentityProviderView(APIView):
         return Response({'count': len(results), 'results': results})
 
 
-class UserIdentityView(APIView):
+class UserIdentityViewSet(NormalUserViewSet):
+    serializer_class = serializers.UserEmailSerializer
+    http_method_names = ['get', 'delete']
 
-    def get(self, request, *args, **kwargs):
+    def get_queryset(self):
+        return UserSocialAuth.objects.filter(user=self.request.user).order_by('id')
+
+    def list(self, request, *args, **kwargs):
         results = get_user_socials(request.user)
         return Response({'count': len(results), 'results': results})
 
-    def delete(self, request, identity_id, *args, **kwargs):
-        identity = get_object_or_404(UserSocialAuth, id=identity_id, user=request.user)
+    def destroy(self, request, *args, **kwargs):
+        identity = self.get_object()
         identity.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -115,6 +118,33 @@ class OAuthPendingView(APIView):
             'icon': backend_cls.icon if backend_cls else '',
             'display_name': pending.get('provider', '').title(),
         })
+
+
+class UserMessageViewSet(NormalUserViewSet):
+    serializer_class = serializers.MessageSerializer
+
+    def get_queryset(self):
+        queryset = Message.objects.filter(user=self.request.user)
+        category = self.request.query_params.get('category')
+        if category and category != 'all':
+            queryset = queryset.filter(category=category)
+        return queryset.order_by('-created_at')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def retrieve(self, request, *args, **kwargs):
+        message = self.get_object()
+        if not message.is_read:
+            message.is_read = True
+            message.save(update_fields=['is_read'])
+        serializer = self.get_serializer(message)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['put'], url_path='mark-all-read')
+    def mark_all_read(self, request, *args, **kwargs):
+        self.get_queryset().filter(is_read=False).update(is_read=True)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class OAuthCreateUserView(APIView):
@@ -188,39 +218,27 @@ class UserDetailView(NormalUserViewSet):
             instance=request.user,
             partial=True,
         )
-        if user_serializer.is_valid():
-            if settings.EMAIL_HOST:
-                user = self.get_object()
-                mail_subject = 'Update your account.'
-                uid = urlsafe_base64_encode(force_bytes(user.pk))
-                token = token_generator.make_token(user)
-                message = render_to_string(
-                    self.email_template_name,
-                    {
-                        'uid': uid,
-                        'user': user,
-                        'token': token,
-                        'domain': get_local_host(request),
-                    },
-                )
-                cache_key = "user:serializer:%s" % user.pk
-                cache.set(cache_key, request.data, 60 * 30)
-                user.email_user(mail_subject, message, fail_silently=True)
-            else:
-                user_serializer.save()
+        user_serializer.is_valid(raise_exception=True)
+        if getattr(settings, 'EMAIL_HOST', ''):
+            user = self.get_object()
+            mail_subject = 'Update your account.'
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = token_generator.make_token(user)
+            message = render_to_string(
+                self.email_template_name,
+                {
+                    'uid': uid,
+                    'user': user,
+                    'token': token,
+                    'domain': get_local_host(request),
+                },
+            )
+            cache_key = "user:serializer:%s" % user.pk
+            cache.set(cache_key, request.data, 60 * 30)
+            user.email_user(mail_subject, message, fail_silently=True)
+        else:
+            user_serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class UserAvatarViewSet(NormalUserViewSet):
-
-    @method_decorator(cache_page(60 * 5))
-    def avatar(self, request, *args, **kwargs):
-        user = User.objects.filter(username=kwargs["username"]).first()
-        size = request.GET.get("s", "80")
-        md5 = hashlib.md5()
-        if user:
-            md5.update(user.email.encode("utf8"))
-        return HttpResponseRedirect(settings.AVATAR_URL + md5.hexdigest() + "?s=" + size)
 
 
 class UserEmailView(NormalUserViewSet):
@@ -231,35 +249,19 @@ class UserEmailView(NormalUserViewSet):
         return self.request.user
 
 
-class ListViewSet(ModelViewSet):
-
-    def get_queryset(self, *args, **kwargs):
-        serializer = self.serializer_class(data=self.request.query_params)
-        serializer.is_valid(raise_exception=True)
-
-        serializerlist = serializers.ListSerializer(data=self.request.query_params)
-        serializerlist.is_valid(raise_exception=True)
-        q = Q(user=self.request.user)
-        if serializerlist.validated_data.get('section'):
-            q &= Q(created__range=serializerlist.validated_data.get('section'))
-
-        return self.model.objects.filter(
-            q, **serializer.validated_data
-        ).order_by(self.order_by)[0:100]
-
-
-class UserTokensView(ListViewSet):
-    model = AccessToken
+class UserTokensView(ListModelMixin, DestroyModelMixin, GenericViewSet):
     serializer_class = serializers.UserTokensSerializer
-    order_by = '-created'
+    permission_classes = [IsAuthenticated]
 
-    def destroy(self, request, *args, **kwargs):
-        token = get_object_or_404(self.model, id=self.kwargs['pk'], user=request.user)
-        token.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_queryset(self):
+        return AccessToken.objects.filter(user=self.request.user).order_by('-created')
+
+    def get_object(self):
+        return get_object_or_404(self.get_queryset(), id=self.kwargs['pk'])
 
 
-class UserAccountPasswordView(ListViewSet):
+class UserAccountPasswordView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         if settings.LDAP_ENDPOINT:
@@ -276,3 +278,26 @@ class UserAccountPasswordView(ListViewSet):
         request.user.save()
         auth.logout(request)
         return HttpResponse(status=204)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+
+class UserMessagePreferenceViewSet(NormalUserViewSet):
+    serializer_class = serializers.MessagePreferenceSerializer
+    http_method_names = ['get', 'put', 'patch']
+
+    def get_object(self):
+        preference, _ = MessagePreference.objects.get_or_create(user=self.request.user)
+        return preference
+
+    def retrieve(self, request, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        serializer = self.get_serializer(self.get_object(), data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
