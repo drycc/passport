@@ -3,7 +3,7 @@
 <div class="min-h-screen bg-slate-50 flex flex-col font-sans" :id="'vue-content-'+Math.random().toString(36).substring(2)">
     <nav-bar />
     <main class="max-w-[1600px] w-full mx-auto p-6 flex flex-col lg:flex-row gap-6 flex-1">
-        <main-nav :is-access-token-active="true"  />
+        <account-sidebar :is-access-token-active="true"  />
         <section class="flex-1 flex flex-col">
             <access-token-delete ref="accessTokenDelete" v-if="isShowDelete"
               :token="token"
@@ -110,9 +110,8 @@
 
 <script lang="ts">
 import NavBar from "../components/NavBar.vue";
-import NavBox from "../components/NavBox.vue";
 import {onBeforeMount, reactive, toRefs} from 'vue'
-import MainNav from "../components/MainNav.vue";
+import AccountSidebar from "../components/AccountSidebar.vue";
 import MainFooter from "../components/MainFooter.vue";
 import AccessTokenDelete from "../components/AccessTokenDelete.vue"
 import { Trash2 } from "lucide-vue-next"
@@ -123,8 +122,7 @@ export default {
     name: "AccessTokenList",
     components: {
         'nav-bar': NavBar,
-        'nav-box': NavBox,
-        'main-nav': MainNav,
+        'account-sidebar': AccountSidebar,
         'main-footer': MainFooter,
         'access-token-delete': AccessTokenDelete,
         Trash2

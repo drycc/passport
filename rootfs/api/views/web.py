@@ -38,7 +38,7 @@ class RegistrationView(CreateView):
         self.object = None
         if form.is_valid():
             user = form.save(commit=False)
-            if settings.EMAIL_HOST:
+            if getattr(settings, 'EMAIL_HOST', ''):
                 user.is_active = False
                 user.save()
                 send_activation_email(request, user)
@@ -109,7 +109,7 @@ class UserLoginView(views.LoginView):
         context.update({
             'identity_linking': identity_linking,
             'registration_enabled': settings.REGISTRATION_ENABLED,
-            'password_reset_enabled': True if settings.EMAIL_HOST else False,
+            'password_reset_enabled': True if getattr(settings, 'EMAIL_HOST', '') else False,
             'identity_linking_error': (
                 _('Identity linking login failed. Please try again.')
                 if identity_linking and form is not None and form.errors else None

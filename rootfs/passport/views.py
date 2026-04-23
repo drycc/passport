@@ -4,12 +4,17 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 
-class SettingsViewSet(GenericViewSet):
+class AppSettingsViewSet(GenericViewSet):
 
     permission_classes = (AllowAny, )
 
     def retrieve(self, request, *args, **kwargs):
         return Response(data={
-            "legal": settings.LEGAL_ENABLED,
-            "registration_enabled": settings.REGISTRATION_ENABLED,
+            "legal": getattr(settings, 'LEGAL_ENABLED', False),
+            "dashboard_url": getattr(settings, 'DASHBOARD_URL', '/'),
+            "contact_support_url": getattr(
+                settings, 'CONTACT_SUPPORT_URL',
+                'https://community.drycc.cc/'
+            ),
+            "registration_enabled": getattr(settings, 'REGISTRATION_ENABLED', False),
         })

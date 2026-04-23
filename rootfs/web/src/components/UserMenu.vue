@@ -13,6 +13,11 @@
         :hide-label-on-mobile="true"
         @action="handleMenuAction"
     >
+        <template #trigger>
+            <button class="relative flex items-center justify-center w-8 h-8 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors focus:outline-none" type="button" aria-label="Account profile">
+                <span class="text-sm font-bold">{{ userInitials }}</span>
+            </button>
+        </template>
     </dropdown>
 </template>
 
@@ -62,14 +67,17 @@ export default {
                 is_superuser: null
             },
         })
-        const logout = () => {
-            postLogout().then(res=>{
-                if (res.status == 200) {
+        const logout = async () => {
+            try {
+                const res = await postLogout()
+                if (res.status === 200) {
                     sessionStorage.clear()
-                    router.push({ path: '/'})
+                    await router.push({ path: '/' })
+                    location.reload()
                 }
-            })
-            location.reload()
+            } catch (error) {
+                console.error('Logout failed:', error)
+            }
         }
 
         const accountTriggerIcon = markRaw(User)

@@ -13,7 +13,6 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/avatar": { target: VUE_APP_BASE_URL, changeOrigin: false, xfwd: true },
       "/orgs": { target: VUE_APP_BASE_URL, changeOrigin: false, xfwd: true },
       "/user": { target: VUE_APP_BASE_URL, changeOrigin: false, xfwd: true },
       "/auth": { target: VUE_APP_BASE_URL, changeOrigin: false, xfwd: true },

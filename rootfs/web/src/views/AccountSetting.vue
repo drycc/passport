@@ -3,7 +3,7 @@
 <div class="min-h-screen bg-slate-50 flex flex-col font-sans" :id="'vue-content-'+Math.random().toString(36).substring(2)">
     <nav-bar :user="user" />
     <main class="max-w-[1600px] w-full mx-auto p-6 flex flex-col lg:flex-row gap-6 flex-1">
-        <main-nav :is-account-setting-active="true"  />
+        <account-sidebar :is-account-setting-active="true"  />
         <section class="flex-1 flex flex-col">
         <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden flex-1 flex flex-col min-h-[600px]">
             <!-- Header -->
@@ -87,8 +87,33 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div class="flex items-center justify-between mt-6">
-                                    <p class="text-[13px] text-slate-500">Manage your avatar using <a href="https://gravatar.com" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-primary-600 hover:underline">Gravatar</a>.</p>
+
+                                <!-- Email Confirmation Notice -->
+                                <transition
+                                    enter-active-class="transition duration-300 ease-out"
+                                    enter-from-class="transform -translate-y-2 opacity-0"
+                                    enter-to-class="transform translate-y-0 opacity-100"
+                                    leave-active-class="transition duration-200 ease-in"
+                                    leave-from-class="transform translate-y-0 opacity-100"
+                                    leave-to-class="transform -translate-y-2 opacity-0"
+                                >
+                                    <div v-if="isProfileChanged" class="flex items-start gap-3 p-3.5 bg-primary-50/50 border border-primary-100/60 rounded-lg">
+                                        <div class="mt-0.5 flex-shrink-0 bg-white p-1.5 rounded-md shadow-sm border border-primary-100/50">
+                                            <svg class="w-4 h-4 text-primary-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-[13px] font-medium text-primary-900">Email Confirmation Required</h4>
+                                            <p class="text-[12.5px] text-primary-700/80 mt-0.5 leading-relaxed">
+                                                To secure your account, a verification link will be sent to your email upon updating.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </transition>
+
+                                <div class="flex items-center justify-end mt-6">
                                     <button class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm" :disabled="!isProfileChanged" @click="submitProfile()" type="button">
                                         Update Profile
                                     </button>
@@ -302,9 +327,8 @@
 <style scoped></style>
 <script lang="ts">
 import NavBar from "../components/NavBar.vue";
-import NavBox from "../components/NavBox.vue";
 import {onMounted, reactive, toRefs, computed} from 'vue'
-import MainNav from "../components/MainNav.vue";
+import AccountSidebar from "../components/AccountSidebar.vue";
 import MainFooter from "../components/MainFooter.vue";
 import { useRouter } from 'vue-router'
 import { dealUser, getUser, putAccount, putAccountPassword } from "../services/user";
@@ -315,8 +339,7 @@ export default {
     name: "AccountSetting",
     components: {
         'nav-bar': NavBar,
-        'nav-box': NavBox,
-        'main-nav': MainNav,
+        'account-sidebar': AccountSidebar,
         'main-footer': MainFooter,
     },
     setup() {
