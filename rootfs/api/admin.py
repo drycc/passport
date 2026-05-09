@@ -1,7 +1,22 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from oauth2_provider.admin import ApplicationAdmin as BaseApplicationAdmin
 
-from .models import User, Message, MessagePreference
+from .models import User, Message, MessagePreference, Application
+
+
+try:
+    admin.site.unregister(Application)
+except admin.sites.NotRegistered:
+    pass
+
+
+@admin.register(Application)
+class ApplicationAdmin(BaseApplicationAdmin):
+    list_display = (
+        "id", "name", "user", "client_type",
+        "authorization_grant_type", "allowed_scopes",
+    )
 
 
 class UserAdmin(BaseUserAdmin):

@@ -146,10 +146,10 @@ const getCategoryIndicator = (category: string, severity: string) => {
 
                   <!-- Action button (flows naturally after body) -->
                   <div v-if="message.actionLink" class="mt-12">
-                      <button class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-600 text-white text-sm font-semibold rounded-lg shadow-sm transition-all focus:outline-none">
+                      <a :href="message.actionLink" target="_blank" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-600 text-white text-sm font-semibold rounded-lg shadow-sm transition-all focus:outline-none">
                           {{ message.actionText }}
                           <ChevronRight class="w-4 h-4 opacity-80" />
-                      </button>
+                      </a>
                   </div>
               </div>
           </div>

@@ -3,6 +3,13 @@ from oauth2_provider.oauth2_validators import OAuth2Validator
 
 class CustomOAuth2Validator(OAuth2Validator):
 
+    def validate_scopes(self, client_id, scopes, client, request, *args, **kwargs):
+        if client.allowed_scopes:
+            allowed = set(client.allowed_scopes.split())
+            if not set(scopes).issubset(allowed):
+                return False
+        return super().validate_scopes(client_id, scopes, client, request, *args, **kwargs)
+
     oidc_claim_scope = OAuth2Validator.oidc_claim_scope
     oidc_claim_scope.update({
         "id": "profile",

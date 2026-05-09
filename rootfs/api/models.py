@@ -11,11 +11,21 @@ class User(AbstractUser):
 
 
 class Application(AbstractApplication):
+    GRANT_INTERNAL = "internal"
+    GRANT_TYPES = AbstractApplication.GRANT_TYPES + (
+        (GRANT_INTERNAL, _("Internal")),
+    )
+    allowed_scopes = models.TextField(blank=True, default="")
 
     def allows_grant_type(self, *grant_types):
-        return self.GRANT_AUTHORIZATION_CODE in grant_types or super().allows_grant_type(
-            *grant_types
-        )
+        if self.authorization_grant_type == self.GRANT_INTERNAL:
+            return True
+        return super().allows_grant_type(*grant_types)
+
+    def validate_grant_type(self, client_id, grant_type, client, request, *args, **kwargs):
+        if self.authorization_grant_type == self.GRANT_INTERNAL:
+            return True
+        return super().validate_grant_type(client_id, grant_type, client, request, *args, **kwargs)
 
 
 class Message(models.Model):

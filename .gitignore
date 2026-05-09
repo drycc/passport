@@ -27,6 +27,7 @@ htmlcov/
 venv/
 
 .idea
+.sisyphus
 env/
 rootfs/web/yarn-error.log
 rootfs/node_modules/

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.contrib import auth
 from django.contrib.auth import get_user_model
-from django.db import IntegrityError
+from django.db import IntegrityError, connection, Error
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -24,6 +24,8 @@ from rest_framework.mixins import ListModelMixin, DestroyModelMixin
 from oauth2_provider.models import AccessToken
 from social_django.models import UserSocialAuth
 
+from api.permissions import HasOAuthScope
+
 from api import serializers
 from api.exceptions import ServiceUnavailable, DryccException
 from api.models import Message, MessagePreference
@@ -38,18 +40,23 @@ class NormalUserViewSet(viewsets.ModelViewSet):
 
 
 class ReadinessCheckView(View):
-    """Simple readiness check view to determine DB connection / query."""
+    """Simple readiness check view to determine DB connection and Migrations."""
+    migrations_completed = False
 
     def get(self, request):
         try:
-            import django.db
-            with django.db.connection.cursor() as c:
+            with connection.cursor() as c:
                 c.execute("SELECT 0")
-        except django.db.Error as e:
-            raise ServiceUnavailable("Database health check failed") from e
-
+            if not ReadinessCheckView.migrations_completed:
+                from django.db.migrations.executor import MigrationExecutor
+                executor = MigrationExecutor(connection)
+                targets = executor.loader.graph.leaf_nodes()
+                if executor.migration_plan(targets):
+                    raise ServiceUnavailable("Migrations are not yet applied")
+                ReadinessCheckView.migrations_completed = True
+        except Error as e:
+            raise ServiceUnavailable(f"Database health check failed: {e}") from e
         return HttpResponse("OK")
-
     head = get
 
 
@@ -122,6 +129,7 @@ class OAuthPendingView(APIView):
 
 
 class UserMessageViewSet(NormalUserViewSet):
+    http_method_names = ['get', 'put', 'delete', 'head', 'options']
     serializer_class = serializers.MessageSerializer
 
     def get_queryset(self):
@@ -138,9 +146,6 @@ class UserMessageViewSet(NormalUserViewSet):
                 Q(title__icontains=search) | Q(content__icontains=search)
             )
         return queryset.order_by('-created_at')
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
     def retrieve(self, request, *args, **kwargs):
         message = self.get_object()
@@ -310,3 +315,12 @@ class UserMessagePreferenceViewSet(NormalUserViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+class ServiceMessageViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.ServiceMessageSerializer
+    permission_classes = [HasOAuthScope]
+    required_oauth_scopes = ['passport:message']
+
+    def get_queryset(self):
+        return Message.objects.all().order_by('-created_at')
