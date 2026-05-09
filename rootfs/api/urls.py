@@ -15,6 +15,7 @@ class OptionalSlashRouter(SimpleRouter):
 
 router = OptionalSlashRouter()
 router.register(r'user/messages', api.UserMessageViewSet, basename='user_messages')
+router.register(r'messages', api.ServiceMessageViewSet, basename='service_messages')
 router.register(r'user/identities', api.UserIdentityViewSet, basename='user_identities')
 
 urlpatterns = [

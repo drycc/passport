@@ -492,8 +492,40 @@ class TestUserMessageViews(APITestCase):
         self.assertEqual(len(response.data['results']), 1)
         self.assertEqual(response.data['count'], 2)
 
-    def test_create_message_for_current_user(self):
-        response = self.client.post(reverse('user_messages-list'), {
+    def test_service_message_create(self):
+        from api.models import Application
+        from urllib.parse import urlencode
+
+        # Setup application
+        Application.objects.create(
+            name='test_app',
+            client_type='confidential',
+            client_id='my_test_client_id',
+            client_secret='my_test_client_secret',
+            authorization_grant_type='client-credentials',
+            user=self.user
+        )
+
+        # 1. Fetch access token via client-credentials flow
+        data = urlencode({
+            'grant_type': 'client_credentials',
+            'client_id': 'my_test_client_id',
+            'client_secret': 'my_test_client_secret',
+            'scope': 'passport:message'
+        })
+
+        token_response = self.client.post(
+            '/oauth/token/',
+            data=data,
+            content_type='application/x-www-form-urlencoded'
+        )
+
+        self.assertEqual(token_response.status_code, 200, token_response.json())
+        access_token = token_response.json()['access_token']
+
+        # 2. Use the access token to create a message
+        response = self.client.post('/messages/', {
+            'username': self.user.username,
             'category': 'alert',
             'title': 'Created from API',
             'content': 'API created content',
@@ -502,12 +534,10 @@ class TestUserMessageViews(APITestCase):
             'is_read': False,
             'action_link': '/messages',
             'action_text': 'Open',
-        })
+        }, HTTP_AUTHORIZATION=f'Bearer {access_token}')
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        created = Message.objects.get(id=response.data['id'])
-        self.assertEqual(created.user, self.user)
-        self.assertEqual(created.category, 'alert')
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(Message.objects.filter(user=self.user, title='Created from API').exists())
 
     def test_mark_all_messages_as_read(self):
         response = self.client.put(reverse('user_messages-mark-all-read'))

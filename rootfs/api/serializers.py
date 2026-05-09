@@ -98,3 +98,21 @@ class MessagePreferenceSerializer(serializers.ModelSerializer):
         fields = ['email_alerts', 'push_alerts', 'webhook_url',
                   'notify_security', 'notify_system', 'notify_product',
                   'notify_alert', 'notify_service']
+
+
+class ServiceMessageSerializer(MessageSerializer):
+    username = serializers.CharField(write_only=True)
+
+    class Meta(MessageSerializer.Meta):
+        fields = MessageSerializer.Meta.fields + ['username']
+
+    def create(self, validated_data):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        username = validated_data.pop('username')
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"username": "User not found."})
+        validated_data['user'] = user
+        return super().create(validated_data)

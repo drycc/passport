@@ -35,8 +35,9 @@ class Command(BaseCommand):
                     'client_secret': self._get_creds(item, "secret", 60),
                     'user': user,
                     'redirect_uris': self._get_redirect_uri(item),
-                    'authorization_grant_type': item['grant_type'],
-                    'client_type': 'public',
+                    'authorization_grant_type': item.get('grant_type', 'public'),
+                    'client_type': item.get('client_type', 'public'),
+                    'allowed_scopes': item.get('allowed_scopes', ''),
                     'algorithm': 'RS256'
                 }
             )

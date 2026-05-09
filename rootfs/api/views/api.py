@@ -24,6 +24,8 @@ from rest_framework.mixins import ListModelMixin, DestroyModelMixin
 from oauth2_provider.models import AccessToken
 from social_django.models import UserSocialAuth
 
+from api.permissions import HasOAuthScope
+
 from api import serializers
 from api.exceptions import ServiceUnavailable, DryccException
 from api.models import Message, MessagePreference
@@ -122,6 +124,7 @@ class OAuthPendingView(APIView):
 
 
 class UserMessageViewSet(NormalUserViewSet):
+    http_method_names = ['get', 'put', 'delete', 'head', 'options']
     serializer_class = serializers.MessageSerializer
 
     def get_queryset(self):
@@ -138,9 +141,6 @@ class UserMessageViewSet(NormalUserViewSet):
                 Q(title__icontains=search) | Q(content__icontains=search)
             )
         return queryset.order_by('-created_at')
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
     def retrieve(self, request, *args, **kwargs):
         message = self.get_object()
@@ -310,3 +310,12 @@ class UserMessagePreferenceViewSet(NormalUserViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+class ServiceMessageViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.ServiceMessageSerializer
+    permission_classes = [HasOAuthScope]
+    required_oauth_scopes = ['passport:message']
+
+    def get_queryset(self):
+        return Message.objects.all().order_by('-created_at')
